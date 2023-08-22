@@ -1,0 +1,36 @@
+﻿@model LoginModel
+
+@{
+    ViewData["Title"] = "Sign up";
+}
+
+<div class="min-vh-100 d-flex flex-column align-items-center justify-content-center">
+    <div class="uk-card uk-card-default uk-width-large uk-border-rounded">
+        <div class="uk-card-header">
+            <h3>SIGN UP</h3>
+        </div>
+        <div class="uk-card-body">
+            <form asp-action="SignUp" asp-controller="Account" method="post" asp-route-returnUrl="@Context.Request.Query["ReturnUrl"]">
+                <div class="validation" asp-validation-summary="All"></div>
+
+                <label class="uk-form-label">Username</label>
+                <input class="uk-input uk-border-rounded" name="username" asp-for="Username" type="text" />
+
+                <label class="uk-form-label mt-4">Password</label>
+                <input class="uk-input uk-border-rounded" name="password" asp-for="Password" type="password" />
+
+                <button type="submit" id="sign-up-button" class="uk-button uk-border-rounded mt-5 w-100">
+                    sign up
+                </button>
+            </form>
+            <div class="mt-2">
+                Already have an account?
+                @Html.ActionLink("SIGN IN", "SignIn", new { returnUrl = Context.Request.Query["returnUrl"]})
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
