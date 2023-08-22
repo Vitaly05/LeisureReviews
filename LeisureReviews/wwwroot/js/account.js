@@ -6,4 +6,4 @@ $('#default-form button[type="submit"]').on('click', function () {
         $('#default-form').trigger('submit');
     }
 });
-//# sourceMappingURL=login.js.map
+//# sourceMappingURL=account.js.map
