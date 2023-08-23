@@ -1,7 +1,19 @@
-﻿@{
+﻿@model BaseViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
+@{await Html.RenderPartialAsync("Header", Model);}
+
+@if (Model.IsAuthorized)
+{
+    <div>Authorized</div>
+}
+else
+{
+    <div>Read only</div>
+}
 
 @section Scripts {
     <script src="~/js/site.js"></script>

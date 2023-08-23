@@ -1,0 +1,85 @@
+﻿@model BaseViewModel
+
+<header>
+    <nav class="uk-navbar-container">
+        <div class="uk-container">
+            <div uk-navbar>
+                <div class="uk-navbar-left">
+                    <a class="uk-navbar-item uk-logo" href="/">Leisure Reviews</a>
+                </div>
+                <div class="uk-navbar-right">
+                    <!-- MOBILE -->
+                    <a class="uk-navbar-toggle uk-navbar-toggle-animate d-flex d-md-none" uk-navbar-toggle-icon href="#"></a>
+                    <div class="uk-navbar-dropdown text-center">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            @if (Model.IsAuthorized)
+                            {
+                                <li class="uk-nav-header text-transform-none">@Model.UserName</li>
+                                <li><a href="#">Profile</a></li>
+                                <li class="uk-nav-divider"></li>
+                                <li>
+                                    @using (Html.BeginForm("SignOut", "Account", FormMethod.Get))
+                                    {
+                                        <input type="submit" class="uk-button uk-button-danger uk-border-rounded" value="sign out" />
+                                    }
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    @using(Html.BeginForm("SignIn", "Account", FormMethod.Get))
+                                    {
+                                        <input type="submit" class="uk-button uk-button-primary uk-border-rounded" value="sign in" />
+                                    }
+                                </li>
+                                <li class="mt-2">
+                                    @using (Html.BeginForm("SignUp", "Account", FormMethod.Get))
+                                    {
+                                        <input type="submit" class="uk-button uk-border-rounded" value="sign up" />
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    
+                    <!-- PC -->
+                    <ul class="uk-nav uk-navbar-nav d-none d-md-flex text-center">
+                        @if (Model.IsAuthorized)
+                        {
+                            <li>
+                                <a href="#" class="text-transform-none"><span uk-icon="user"></span> @Model.UserName <span uk-navbar-parent-icon></span></a>
+                                <div class="uk-navbar-dropdown">
+                                    <ul class="uk-nav uk-navbar-dropdown-nav">
+                                        <li><a href="#">Profile</a></li>
+                                        <li class="uk-nav-divider"></li>
+                                        <li>
+                                            @using (Html.BeginForm("SignOut", "Account", FormMethod.Get))
+                                            {
+                                                <input type="submit" class="uk-button uk-button-danger uk-border-rounded" value="sign out" />
+                                            }
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                @using (Html.BeginForm("SignIn", "Account", FormMethod.Get))
+                                {
+                                    <input type="submit" class="uk-button uk-button-primary uk-border-rounded" value="sign in" />
+                                }
+                            </li>
+                            <li>
+                                @using (Html.BeginForm("SignUp", "Account", FormMethod.Get))
+                                {
+                                    <input type="submit" class="uk-button uk-border-rounded" value="sign up" />
+                                }
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>

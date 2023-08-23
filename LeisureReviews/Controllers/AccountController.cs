@@ -58,6 +58,12 @@ namespace LeisureReviews.Controllers
             return result;
         }
 
+        public async new Task<IActionResult> SignOut()
+        {
+            await signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
         private async Task registerUserAsync(User user, string password, Func<Task> onSuccessAsync)
         {
             var result = await usersRepository.CreateAsync(user, password);
