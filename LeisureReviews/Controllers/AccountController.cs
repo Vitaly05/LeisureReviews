@@ -1,8 +1,10 @@
 ﻿using LeisureReviews.Models;
 using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.interfaces;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LeisureReviews.Controllers
 {
@@ -28,6 +30,12 @@ namespace LeisureReviews.Controllers
             return View();
         }
 
+        public IActionResult AdditionalInfo(string email)
+        {
+            AdditionalInfoModel model = new AdditionalInfoModel { Email = email };
+            return View(model);
+        }
+
         [HttpPost]
         public async Task<IActionResult> SignIn(LoginModel model, string returnUrl = "")
         {
@@ -40,6 +48,38 @@ namespace LeisureReviews.Controllers
                     ModelState.AddModelError(string.Empty, "Incorrect username or password.");
             }
             return View(model);
+        }
+
+        public IActionResult GoogleSignIn()
+        {
+            string redirectUrl = Url.Action("GoogleResponse", "Account");
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(GoogleDefaults.AuthenticationScheme, redirectUrl);
+            return new ChallengeResult(GoogleDefaults.AuthenticationScheme, properties);
+        }
+
+        public async Task<IActionResult> GoogleResponse()
+        {
+            var info = await signInManager.GetExternalLoginInfoAsync();
+            if (info == null) RedirectToAction("SignIn");
+            return await checkInfoAsync(info);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveAdditionalInfo(AdditionalInfoModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new User { UserName = model.Username, Email = model.Email };
+                var result = await usersRepository.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    await signInManager.SignInAsync(user, true);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                    addModelErrors(result.Errors);
+            }
+            return View("AdditionalInfo", model);
         }
 
         [HttpPost]
@@ -61,6 +101,15 @@ namespace LeisureReviews.Controllers
         public async new Task<IActionResult> SignOut()
         {
             await signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        private async Task<IActionResult> checkInfoAsync(ExternalLoginInfo info)
+        {
+            var user = await usersRepository.FindUserAsync(info.Principal.FindFirstValue(ClaimTypes.Email));
+            if (user is null)
+                return RedirectToAction("AdditionalInfo", new { email = info.Principal.FindFirstValue(ClaimTypes.Email) });
+            await signInManager.SignInAsync(user, true);
             return RedirectToAction("Index", "Home");
         }
 

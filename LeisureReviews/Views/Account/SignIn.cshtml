@@ -26,6 +26,12 @@
                     <div id="button-spinner" uk-spinner style="display: none"></div>
                 </button>
             </form>
+            <div class="uk-divider-icon"></div>
+            <div class="d-flex justify-content-center align-items-center gap-4">
+                <form asp-action="GoogleSignIn" asp-controller="Account">
+                    <button type="submit" class="uk-icon-button uk-button-primary" uk-icon="google"></button>
+                </form>
+            </div>
             <div class="mt-2">
                 Don't have an account?
                 @Html.ActionLink("SIGN UP", "SignUp", new { returnUrl = Context.Request.Query["returnUrl"]})

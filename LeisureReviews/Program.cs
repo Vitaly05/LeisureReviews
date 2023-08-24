@@ -28,6 +28,14 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.LoginPath = "/Account/SignIn";
 });
 
+builder.Services.AddAuthentication()
+    .AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientId");
+    googleOptions.ClientSecret = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientSecret");
+    googleOptions.SignInScheme = IdentityConstants.ExternalScheme;
+});
+
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
 var app = builder.Build();

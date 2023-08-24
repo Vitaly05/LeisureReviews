@@ -1,0 +1,33 @@
+﻿@model AdditionalInfoModel
+
+@{
+    ViewData["Title"] = "Sign up";
+}
+
+<div class="min-vh-100 d-flex flex-column align-items-center justify-content-center">
+    <div class="uk-card uk-card-default uk-width-large uk-border-rounded">
+        <div class="uk-card-header">
+            <h3>Additional info</h3>
+        </div>
+        <div class="uk-card-body">
+            <form id="default-form" asp-action="SaveAdditionalInfo" asp-controller="Account" method="post" asp-route-returnUrl="@Context.Request.Query["ReturnUrl"]">
+                <div class="validation" asp-validation-summary="All"></div>
+
+                <label class="uk-form-label">Username</label>
+                <input class="uk-input uk-border-rounded" name="username" asp-for="Username" type="text" />
+
+                <input type="hidden" asp-for="Email" />
+
+                <button type="submit" id="sign-up-button" class="uk-button uk-border-rounded mt-5 w-100">
+                    <div id="button-text">sign up</div>
+                    <div id="button-spinner" uk-spinner style="display: none"></div>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/account.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

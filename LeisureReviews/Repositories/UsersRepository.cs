@@ -13,7 +13,13 @@ namespace LeisureReviews.Repositories
             this.userManager = userManager;
         }
 
-        public Task<IdentityResult> CreateAsync(User user, string password) => 
-            userManager.CreateAsync(user, password);
+        public async Task<IdentityResult> CreateAsync(User user, string password) => 
+            await userManager.CreateAsync(user, password);
+
+        public async Task<IdentityResult> CreateAsync(User user) =>
+            await userManager.CreateAsync(user);
+
+        public async Task<User> FindUserAsync(string email) => 
+            await userManager.FindByEmailAsync(email);
     }
 }
