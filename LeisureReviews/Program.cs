@@ -4,6 +4,7 @@ using LeisureReviews.Repositories;
 using LeisureReviews.Repositories.interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,9 +37,30 @@ builder.Services.AddAuthentication()
     googleOptions.SignInScheme = IdentityConstants.ExternalScheme;
 });
 
+if (!builder.Environment.IsDevelopment())
+{
+    builder.Services.AddHsts(options =>
+    {
+        options.Preload = true;
+        options.IncludeSubDomains = true;
+        options.MaxAge = TimeSpan.FromDays(90);
+    });
+    builder.Services.AddHttpsRedirection(options =>
+    {
+        options.RedirectStatusCode = (int)HttpStatusCode.PermanentRedirect;
+        options.HttpsPort = 443;
+    });
+}
+
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 
 var app = builder.Build();
+
+if (!builder.Environment.IsDevelopment())
+{
+    app.UseHsts();
+    app.UseHttpsRedirection();
+}
 
 app.UseStaticFiles();
 
