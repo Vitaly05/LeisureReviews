@@ -1,6 +1,7 @@
 ﻿using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeisureReviews.Repositories
 {
@@ -19,7 +20,7 @@ namespace LeisureReviews.Repositories
         public async Task<IdentityResult> CreateAsync(User user) =>
             await userManager.CreateAsync(user);
 
-        public async Task<User> FindUserAsync(string email) => 
-            await userManager.FindByEmailAsync(email);
+        public async Task<User> FindUserAsync(string externalProvider, string providerKey) => 
+            await userManager.Users.FirstOrDefaultAsync(u => u.ExternalProvider == externalProvider && u.ProviderKey == providerKey);
     }
 }

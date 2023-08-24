@@ -1,4 +1,6 @@
-﻿@model LoginModel
+﻿@using AspNet.Security.OAuth.Vkontakte;
+@using Microsoft.AspNetCore.Authentication.Google;
+@model LoginModel
 
 @{
     ViewData["Title"] = "Sign in";
@@ -28,8 +30,13 @@
             </form>
             <div class="uk-divider-icon"></div>
             <div class="d-flex justify-content-center align-items-center gap-4">
-                <form asp-action="GoogleSignIn" asp-controller="Account">
+                <form asp-action="ExternalSignIn" asp-controller="Account">
+                    <input type="hidden" name="scheme" value="@GoogleDefaults.AuthenticationScheme" />
                     <button type="submit" class="uk-icon-button uk-button-primary" uk-icon="google"></button>
+                </form>
+                <form asp-action="ExternalSignIn" asp-controller="Account">
+                    <input type="hidden" name="scheme" value="@VkontakteAuthenticationDefaults.AuthenticationScheme" />
+                    <button type="submit" class="uk-icon-button uk-button-primary" uk-icon="vk"></button>
                 </form>
             </div>
             <div class="mt-2">
