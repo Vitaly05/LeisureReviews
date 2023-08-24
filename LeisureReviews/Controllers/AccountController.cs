@@ -1,4 +1,5 @@
-﻿using LeisureReviews.Models;
+﻿using AspNet.Security.OAuth.Vkontakte;
+using LeisureReviews.Models;
 using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.interfaces;
 using Microsoft.AspNetCore.Authentication.Google;
@@ -30,9 +31,9 @@ namespace LeisureReviews.Controllers
             return View();
         }
 
-        public IActionResult AdditionalInfo(string email)
+        public IActionResult AdditionalInfo(string externalProvider, string providerKey)
         {
-            AdditionalInfoModel model = new AdditionalInfoModel { Email = email };
+            AdditionalInfoModel model = new AdditionalInfoModel { ExternalProvider = externalProvider, ProviderKey = providerKey};
             return View(model);
         }
 
@@ -50,14 +51,14 @@ namespace LeisureReviews.Controllers
             return View(model);
         }
 
-        public IActionResult GoogleSignIn()
+        public IActionResult ExternalSignIn(string scheme)
         {
-            string redirectUrl = Url.Action("GoogleResponse", "Account");
-            var properties = signInManager.ConfigureExternalAuthenticationProperties(GoogleDefaults.AuthenticationScheme, redirectUrl);
-            return new ChallengeResult(GoogleDefaults.AuthenticationScheme, properties);
+            string redirectUrl = Url.Action("ExternalSignInResponse", "Account");
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(scheme, redirectUrl);
+            return new ChallengeResult(scheme, properties);
         }
 
-        public async Task<IActionResult> GoogleResponse()
+        public async Task<IActionResult> ExternalSignInResponse()
         {
             var info = await signInManager.GetExternalLoginInfoAsync();
             if (info == null) RedirectToAction("SignIn");
@@ -69,7 +70,7 @@ namespace LeisureReviews.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.Username, Email = model.Email };
+                var user = new User { UserName = model.Username, ExternalProvider = model.ExternalProvider, ProviderKey = model.ProviderKey };
                 var result = await usersRepository.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -106,9 +107,9 @@ namespace LeisureReviews.Controllers
 
         private async Task<IActionResult> checkInfoAsync(ExternalLoginInfo info)
         {
-            var user = await usersRepository.FindUserAsync(info.Principal.FindFirstValue(ClaimTypes.Email));
+            var user = await usersRepository.FindUserAsync(info.LoginProvider, info.ProviderKey);
             if (user is null)
-                return RedirectToAction("AdditionalInfo", new { email = info.Principal.FindFirstValue(ClaimTypes.Email) });
+                return RedirectToAction("AdditionalInfo", new { externalProvider = info.LoginProvider, providerKey = info.ProviderKey });
             await signInManager.SignInAsync(user, true);
             return RedirectToAction("Index", "Home");
         }

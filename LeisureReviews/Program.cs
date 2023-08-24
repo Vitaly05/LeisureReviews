@@ -31,11 +31,17 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddAuthentication()
     .AddGoogle(googleOptions =>
-{
-    googleOptions.ClientId = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientId");
-    googleOptions.ClientSecret = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientSecret");
-    googleOptions.SignInScheme = IdentityConstants.ExternalScheme;
-});
+    {
+        googleOptions.ClientId = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientId");
+        googleOptions.ClientSecret = builder.Configuration.GetSection("GoogleAuthSettings").GetValue<string>("ClientSecret");
+        googleOptions.SignInScheme = IdentityConstants.ExternalScheme;
+    }).AddVkontakte(vkOptions =>
+    {
+        vkOptions.ClientId = "51735420";
+        vkOptions.ClientSecret = "wn5i9saZBIVfCXvJuy6p";
+        vkOptions.SignInScheme = IdentityConstants.ExternalScheme;
+        vkOptions.CallbackPath = "/Account/ExternalSignInResponse/";
+    });
 
 if (!builder.Environment.IsDevelopment())
 {

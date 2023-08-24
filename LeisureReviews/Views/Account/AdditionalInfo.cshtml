@@ -16,7 +16,8 @@
                 <label class="uk-form-label">Username</label>
                 <input class="uk-input uk-border-rounded" name="username" asp-for="Username" type="text" />
 
-                <input type="hidden" asp-for="Email" />
+                <input type="hidden" asp-for="ExternalProvider" />
+                <input type="hidden" asp-for="ProviderKey" />
 
                 <button type="submit" id="sign-up-button" class="uk-button uk-border-rounded mt-5 w-100">
                     <div id="button-text">sign up</div>

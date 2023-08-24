@@ -9,6 +9,6 @@ namespace LeisureReviews.Repositories.interfaces
 
         Task<IdentityResult> CreateAsync(User user);
 
-        Task<User> FindUserAsync(string email);
+        Task<User> FindUserAsync(string externalProvider, string providerKey);
     }
 }
