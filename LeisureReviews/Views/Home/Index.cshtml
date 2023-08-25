@@ -4,7 +4,9 @@
     ViewData["Title"] = "Home Page";
 }
 
-@{await Html.RenderPartialAsync("Header", Model);}
+@{
+    await Html.RenderPartialAsync("Header", Model);
+}
 
 @if (Model.IsAuthorized)
 {

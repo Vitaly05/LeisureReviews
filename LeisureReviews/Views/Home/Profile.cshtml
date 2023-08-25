@@ -1,0 +1,29 @@
+﻿@model ProfileViewModel
+
+@{
+    ViewData["Title"] = Model.User.UserName;
+}
+
+@{
+    await Html.RenderPartialAsync("Header", Model);
+}
+
+<div class="uk-border-rounded uk-background-muted mt-3 py-5 px-3">
+    <div class="d-flex align-items-center gap-1">
+        <span uk-icon="user"></span>
+        <h2 class="m-0">@Model.User.UserName</h2>
+    </div>
+</div>
+
+<div class="uk-border-rounded uk-background-muted mt-3 px-2 py-3 d-flex flex-column gap-3">
+    <h3 class="m-0 text-center">Rewiews</h3>
+    @if (Model.CanEdit)
+    {
+        <button class="uk-button uk-button-primary uk-border-rounded align-self-center">Create new</button>
+    }
+    <div class="d-flex flex-column gap-4 align-items-center">
+        @{
+            await Html.RenderPartialAsync("ReviewCard");
+        }
+    </div>
+</div>
