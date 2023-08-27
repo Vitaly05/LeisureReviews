@@ -1,0 +1,98 @@
+﻿@model ReviewEditorViewModel
+
+@{
+    ViewData["Title"] = "Review editor";
+}
+
+@{
+    await Html.RenderPartialAsync("Header", Model);
+}
+
+<div class="uk-border-rounded uk-background-muted mt-3 p-3">
+    <form id="edit-review-form" autocomplete="off">
+        <div class="validation" asp-validation-summary="All"></div>
+
+        <input type="hidden" asp-for="Review.Id" />
+        <input type="hidden" asp-for="Review.AuthorId" />
+        <input class="hidden-form-element" asp-for="Review.Title" />
+        <input class="hidden-form-element" asp-for="Review.Leisure" />
+        <input class="hidden-form-element" asp-for="Review.Group" value="" />
+        <input class="hidden-form-element" asp-for="Review.AuthorRate" />
+        <input class="hidden-form-element" asp-for="Review.Content" />
+
+        <div>
+            <ul class="uk-child-width-expand" uk-tab>
+                <li><a href="#">Main info</a></li>
+                <li><a href="#">Content</a></li>
+            </ul>
+            <ul class="uk-switcher">
+                <li>
+                    <div class="d-flex flex-column align-items-center gap-3">
+                        <div class="d-flex flex-column flex-md-row gap-1 gap-md-2 align-items-center uk-width-expand">
+                            <span class="col-md-1 uk-text-right">Title</span>
+                            <input class="review-field uk-input uk-border-rounded text-center text-md-start" data-field="Title" value="@Model.Review.Title" />
+                        </div>
+                        <div class="d-flex flex-column flex-md-row gap-1 gap-md-2 align-items-center uk-width-expand">
+                            <span class="col-md-1 uk-text-right">Leisure</span>
+                            <input class="review-field uk-input uk-border-rounded text-center text-md-start" data-field="Leisure" value="@Model.Review.Leisure" />
+                        </div>
+                        <div class="d-flex flex-column flex-md-row gap-1 gap-md-4 align-items-center justify-content-around uk-width-expand">
+                            <div class="d-flex align-items-center">
+                                <div uk-form-custom="target: > * > span:first-child">
+                                    <select aria-label="Custom controls" class="review-field" data-field="Group" value="@Model.Review.Group">
+                                        <option value="" disabled selected>Group...</option>
+                                        @foreach (var group in Enum.GetValues(typeof(LeisureGroup)))
+                                        {
+                                            <option value="@((int)group)">@group</option>
+                                        }
+                                    </select>
+                                    <button class="uk-button uk-button-default uk-border-rounded" type="button" tabindex="-1">
+                                        <span></span>
+                                        <span uk-icon="icon: chevron-down"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column flex-md-row gap-1 gap-md-2 align-items-center">
+                                <span class="uk-text-right text-nowrap">Your rate</span>
+                                <input class="review-field uk-input uk-border-rounded text-center" data-field="AuthorRate" value="@Model.Review.AuthorRate" />
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="d-flex flex-column gap-1 align-items-center uk-width-expand">
+                        <span class="col-md-1 uk-text-right">Content</span>
+                        <textarea class="review-field uk-textarea uk-border-rounded" data-field="Content">@Model.Review.Content</textarea>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="d-flex justify-content-center">
+            <button id="save-review-button" class="uk-button uk-button-primary uk-border-rounded mt-4">
+                <div id="button-text">Save</div>
+                <div id="button-spinner" uk-spinner style="display: none"></div>
+            </button>
+        </div>
+    </form>
+</div>
+
+<div id="successful-save-modal" uk-modal>
+    <div class="uk-modal-dialog">
+        <div class="uk-modal-header">
+            <h2 class="uk-modal-title text-center">The review has been successfully saved</h2>
+        </div>
+        <div class="uk-modal-body d-flex flex-column flex-sm-row gap-4 gap-sm-0 align-items-center justify-content-between">
+            <a href="/Profile/@Model.AuthorName" class="uk-button uk-button-primary uk-border-rounded col-12 col-sm-auto">Go to profile</a>
+            <a href="/" class="uk-button uk-button-primary uk-border-rounded  col-12 col-sm-auto">Go to home</a>
+            <button class="uk-button uk-button-default uk-border-rounded uk-modal-close  col-12 col-sm-auto">Continue editing</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        <script src="~/js/reviewEditor.js"></script>
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

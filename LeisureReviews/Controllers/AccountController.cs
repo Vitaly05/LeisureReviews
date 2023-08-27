@@ -1,11 +1,8 @@
-﻿using AspNet.Security.OAuth.Vkontakte;
-using LeisureReviews.Models;
+﻿using LeisureReviews.Models;
 using LeisureReviews.Models.Database;
-using LeisureReviews.Repositories.interfaces;
-using Microsoft.AspNetCore.Authentication.Google;
+using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace LeisureReviews.Controllers
 {

@@ -19,7 +19,9 @@
     <h3 class="m-0 text-center">Rewiews</h3>
     @if (Model.CanEdit)
     {
-        <button class="uk-button uk-button-primary uk-border-rounded align-self-center">Create new</button>
+        <form asp-action="NewReview" asp-controller="Home" method="get" class="d-flex justify-content-center">
+            <button class="uk-button uk-button-primary uk-border-rounded">Create new</button>
+        </form>
     }
     <div class="d-flex flex-column gap-4 align-items-center">
         @{

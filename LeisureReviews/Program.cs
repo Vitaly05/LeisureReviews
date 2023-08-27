@@ -1,7 +1,7 @@
 using LeisureReviews;
 using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories;
-using LeisureReviews.Repositories.interfaces;
+using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -59,6 +59,7 @@ if (!builder.Environment.IsDevelopment())
 }
 
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<IReviewsRepository, ReviewsRepository>();
 
 var app = builder.Build();
 

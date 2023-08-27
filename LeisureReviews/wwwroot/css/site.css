@@ -1,3 +1,12 @@
 ﻿.text-transform-none {
     text-transform: none !important;
 }
+
+.hidden-form-element {
+    position: absolute;
+    top: -9999px;
+}
+
+#edit-review-form textarea {
+    height: 50vh;
+}

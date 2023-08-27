@@ -8,5 +8,7 @@ namespace LeisureReviews
     {
         public ApplicationContext(DbContextOptions<ApplicationContext> options)
             :base(options) { }
+
+        public DbSet<Review> Reviews { get; set; }
     }
 }

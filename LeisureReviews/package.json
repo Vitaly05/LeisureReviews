@@ -4,6 +4,7 @@
   "private": true,
     "devDependencies": {
         "@types/jquery": "3.5.1",
-        "@types/jquery.validation": "1.16.7"
+        "@types/jquery.validation": "1.16.7",
+        "@types/uikit": "3.14.0"
     }
 }

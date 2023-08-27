@@ -1,7 +1,8 @@
 ﻿using LeisureReviews.Models.Database;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
-namespace LeisureReviews.Repositories.interfaces
+namespace LeisureReviews.Repositories.Interfaces
 {
     public interface IUsersRepository
     {
@@ -12,5 +13,7 @@ namespace LeisureReviews.Repositories.interfaces
         Task<User> FindUserAsync(string userName);
 
         Task<User> FindUserAsync(string externalProvider, string providerKey);
+
+        Task<User> GetUserAsync(ClaimsPrincipal principal);
     }
 }

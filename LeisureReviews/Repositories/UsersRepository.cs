@@ -1,7 +1,8 @@
 ﻿using LeisureReviews.Models.Database;
-using LeisureReviews.Repositories.interfaces;
+using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace LeisureReviews.Repositories
 {
@@ -25,5 +26,8 @@ namespace LeisureReviews.Repositories
 
         public async Task<User> FindUserAsync(string externalProvider, string providerKey) => 
             await userManager.Users.FirstOrDefaultAsync(u => u.ExternalProvider == externalProvider && u.ProviderKey == providerKey);
+
+        public async Task<User> GetUserAsync(ClaimsPrincipal principal) =>
+            await userManager.GetUserAsync(principal);
     }
 }
