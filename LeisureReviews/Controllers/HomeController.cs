@@ -75,10 +75,24 @@ namespace LeisureReviews.Controllers
             return Ok(review);
         }
 
+        [Authorize]
+        [HttpDelete("DeleteReview")]
+        public async Task<IActionResult> DeleteReview(string reviewId)
+        {
+            var review = await reviewsRepository.Get(reviewId);
+            if (review is null) return NotFound();
+            if (review.AuthorId != (await getCurrentUser()).Id) return Forbid();
+            await reviewsRepository.DeleteAsync(reviewId);
+            return Ok(reviewId);
+        }
+
         private async Task configureBaseModel(BaseViewModel model)
         {
             model.IsAuthorized = HttpContext.User.Identity.IsAuthenticated;
-            model.CurrentUser = await usersRepository.GetUserAsync(HttpContext.User);
+            model.CurrentUser = await getCurrentUser();
         }
+
+        private async Task<User> getCurrentUser() =>
+            await usersRepository.GetUserAsync(HttpContext.User);
     }
 }

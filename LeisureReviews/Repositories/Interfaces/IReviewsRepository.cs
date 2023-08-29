@@ -9,5 +9,7 @@ namespace LeisureReviews.Repositories.Interfaces
         Task<Review> Get(string id);
 
         void SaveReview(Review review);
+
+        Task DeleteAsync(string id);
     }
 }

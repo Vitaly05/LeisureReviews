@@ -1,6 +1,6 @@
 ﻿@model ReviewCardViewModel
 
-<div class="review-card uk-card uk-card-default uk-border-rounded uk-card-body uk-width-1-1 uk-width-3-4@l">
+<div data-id="@Model.Review.Id" class="review-card uk-card uk-card-default uk-border-rounded uk-card-body uk-width-1-1 uk-width-3-4@l">
     <div class="uk-card-badge uk-label uk-background-secondary">@Model.Review.Group</div>
     <h3 class="uk-card-title">@Model.Review.Title</h3>
     <span>Leisure: <b>@Model.Review.Leisure</b></span>
@@ -18,7 +18,10 @@
                 <a href="/EditReview/@Model.Review.Id" class="uk-button uk-button-primary uk-border-rounded">Edit</a>
                 <button class="uk-icon-button uk-button-default uk-border-rounded" uk-icon="eye" uk-tooltip="Open in viewing mode"></button>
             </div>
-            <button class="uk-icon-button uk-button-danger uk-border-rounded" uk-icon="trash" uk-tooltip="Delete review"></button>
+            <button class="delete-review-button uk-icon-button uk-button-danger uk-border-rounded" uk-tooltip="Delete review">
+                <span id="button-text" uk-icon="trash"></span>
+                <div id="button-spinner" uk-spinner style="display: none"></div>
+            </button>
         </div>
     }
     else
