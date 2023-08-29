@@ -13,17 +13,17 @@ namespace LeisureReviews.Repositories
             this.context = context;
         }
 
-        public async Task<List<Review>> GetAll(string authorId)
+        public async Task<List<Review>> GetAllAsync(string authorId)
         {
             return await context.Reviews.Where(r => r.AuthorId == authorId).ToListAsync();
         }
 
-        public async Task<Review> Get(string id)
+        public async Task<Review> GetAsync(string id)
         {
             return await context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        public void SaveReview(Review review)
+        public void Save(Review review)
         {
             if (context.Reviews.Any(r => r.Id == review.Id))
             {

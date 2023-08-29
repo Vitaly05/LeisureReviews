@@ -104,7 +104,7 @@ namespace LeisureReviews.Controllers
 
         private async Task<IActionResult> checkInfoAsync(ExternalLoginInfo info)
         {
-            var user = await usersRepository.FindUserAsync(info.LoginProvider, info.ProviderKey);
+            var user = await usersRepository.FindAsync(info.LoginProvider, info.ProviderKey);
             if (user is null)
                 return RedirectToAction("AdditionalInfo", new { externalProvider = info.LoginProvider, providerKey = info.ProviderKey });
             await signInManager.SignInAsync(user, true);
