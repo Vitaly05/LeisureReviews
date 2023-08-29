@@ -39,7 +39,7 @@
                         <div class="d-flex flex-column flex-md-row gap-1 gap-md-4 align-items-center justify-content-around uk-width-expand">
                             <div class="d-flex align-items-center">
                                 <div uk-form-custom="target: > * > span:first-child">
-                                    <select aria-label="Custom controls" class="review-field" data-field="Group" value="@Model.Review.Group">
+                                    <select aria-label="Custom controls" class="review-field" data-field="Group" value="@Model.Review.Group" id="group-select">
                                         <option value="" disabled selected>Group...</option>
                                         @foreach (var group in Enum.GetValues(typeof(LeisureGroup)))
                                         {

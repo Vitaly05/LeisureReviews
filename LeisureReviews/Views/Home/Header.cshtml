@@ -47,7 +47,7 @@
                         @if (Model.IsAuthorized)
                         {
                             <li>
-                                <a href="#" class="text-transform-none"><span uk-icon="user"></span> @Model.CurrentUser.UserName <span uk-navbar-parent-icon></span></a>
+                                <a href="#" class="text-transform-none"><span uk-icon="user"></span> <span id="user-name">@Model.CurrentUser.UserName</span> <span uk-navbar-parent-icon></span></a>
                                 <div class="uk-navbar-dropdown">
                                     <ul class="uk-nav uk-navbar-dropdown-nav">
                                         <li><a href="/Profile/@Model.CurrentUser.UserName">Profile</a></li>
