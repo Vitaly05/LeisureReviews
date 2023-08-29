@@ -39,6 +39,13 @@ namespace LeisureReviews.Repositories
             context.SaveChanges();
         }
 
+        public async Task DeleteAsync(string id)
+        {
+            var review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
+            review.IsDeleted = true;
+            context.SaveChanges();
+        }
+
         private void initReview(Review review)
         {
             review.CreateTime = DateTime.Now;

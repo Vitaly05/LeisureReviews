@@ -35,5 +35,7 @@ namespace LeisureReviews.Models.Database
 
         [Required]
         public DateTime CreateTime { get; set; }
+
+        public bool IsDeleted { get; set; } = false;
     }
 }
