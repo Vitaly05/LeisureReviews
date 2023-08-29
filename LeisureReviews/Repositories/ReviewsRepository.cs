@@ -26,16 +26,9 @@ namespace LeisureReviews.Repositories
         public void Save(Review review)
         {
             if (context.Reviews.Any(r => r.Id == review.Id))
-            {
-                context.Reviews.Update(review);
-                context.Entry(review).Property(r => r.CreateTime).IsModified = false;
-                context.Entry(review).Property(r => r.AuthorId).IsModified = false;
-            }
+                updateReview(review);
             else
-            {
-                initReview(review);
-                context.Reviews.Add(review);
-            }
+                addReview(review);
             context.SaveChanges();
         }
 
@@ -46,10 +39,18 @@ namespace LeisureReviews.Repositories
             context.SaveChanges();
         }
 
-        private void initReview(Review review)
+        private void updateReview(Review review)
+        {
+            context.Reviews.Update(review);
+            context.Entry(review).Property(r => r.CreateTime).IsModified = false;
+            context.Entry(review).Property(r => r.AuthorId).IsModified = false;
+        }
+
+        private void addReview(Review review)
         {
             review.CreateTime = DateTime.Now;
             review.Id = Guid.NewGuid().ToString();
+            context.Reviews.Add(review);
         }
     }
 }
