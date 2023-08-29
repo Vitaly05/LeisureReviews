@@ -6,9 +6,11 @@ namespace LeisureReviews.Models
     {
         public User User { get; set; }
 
+        public List<Review> Reviews { get; set; }
+
         public bool CanEdit
         {
-            get => User.UserName == UserName;
+            get => User.UserName == CurrentUser?.UserName;
         }
     }
 }

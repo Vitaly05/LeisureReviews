@@ -3,7 +3,6 @@ using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json.Serialization;
 
 namespace LeisureReviews.Controllers
 {
@@ -21,10 +20,10 @@ namespace LeisureReviews.Controllers
         }
 
         [HttpGet("")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             var model = new BaseViewModel();
-            configureBaseModel(model);
+            await configureBaseModel(model);
             return View(model);
         }
 
@@ -32,8 +31,10 @@ namespace LeisureReviews.Controllers
         public async Task<IActionResult> Profile(string userName)
         {
             var model = new ProfileViewModel();
+            await configureBaseModel(model);
             model.User = await usersRepository.FindUserAsync(userName);
-            configureBaseModel(model);
+            if (model.User is null) return NotFound();
+            model.Reviews = await reviewsRepository.GetAll(model.User.Id);
             return View(model);
         }
 
@@ -43,8 +44,8 @@ namespace LeisureReviews.Controllers
         {
             var currentUser = await usersRepository.GetUserAsync(HttpContext.User);
             var model = new ReviewEditorViewModel { AuthorName = currentUser.UserName };
+            await configureBaseModel(model);
             model.Review = new Review { AuthorId = currentUser.Id };
-            configureBaseModel(model);
             return View("ReviewEditor", model);
         }
 
@@ -58,10 +59,10 @@ namespace LeisureReviews.Controllers
             return Ok(review);
         }
 
-        private void configureBaseModel(BaseViewModel model)
+        private async Task configureBaseModel(BaseViewModel model)
         {
             model.IsAuthorized = HttpContext.User.Identity.IsAuthenticated;
-            model.UserName = HttpContext.User.Identity.Name;
+            model.CurrentUser = await usersRepository.GetUserAsync(HttpContext.User);
         }
     }
 }

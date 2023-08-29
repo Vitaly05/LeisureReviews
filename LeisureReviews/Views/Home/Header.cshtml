@@ -14,8 +14,8 @@
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             @if (Model.IsAuthorized)
                             {
-                                <li class="uk-nav-header text-transform-none">@Model.UserName</li>
-                                <li><a href="/Profile/@Model.UserName">Profile</a></li>
+                                <li class="uk-nav-header text-transform-none">@Model.CurrentUser.UserName</li>
+                                <li><a href="/Profile/@Model.CurrentUser.UserName">Profile</a></li>
                                 <li class="uk-nav-divider"></li>
                                 <li>
                                     @using (Html.BeginForm("SignOut", "Account", FormMethod.Get))
@@ -47,10 +47,10 @@
                         @if (Model.IsAuthorized)
                         {
                             <li>
-                                <a href="#" class="text-transform-none"><span uk-icon="user"></span> @Model.UserName <span uk-navbar-parent-icon></span></a>
+                                <a href="#" class="text-transform-none"><span uk-icon="user"></span> @Model.CurrentUser.UserName <span uk-navbar-parent-icon></span></a>
                                 <div class="uk-navbar-dropdown">
                                     <ul class="uk-nav uk-navbar-dropdown-nav">
-                                        <li><a href="/Profile/@Model.UserName">Profile</a></li>
+                                        <li><a href="/Profile/@Model.CurrentUser.UserName">Profile</a></li>
                                         <li class="uk-nav-divider"></li>
                                         <li>
                                             @using (Html.BeginForm("SignOut", "Account", FormMethod.Get))

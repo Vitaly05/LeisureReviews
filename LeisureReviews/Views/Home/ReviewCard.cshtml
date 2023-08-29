@@ -1,17 +1,17 @@
-﻿
+﻿@model ReviewCardViewModel
 
 <div class="review-card uk-card uk-card-default uk-border-rounded uk-card-body uk-width-1-1 uk-width-3-4@l">
-    <div class="uk-card-badge uk-label uk-background-secondary">Group</div>
-    <h3 class="uk-card-title">Test title</h3>
-    <span>Leisure: <b>Test leisure name</b></span>
+    <div class="uk-card-badge uk-label uk-background-secondary">@Model.Review.Group</div>
+    <h3 class="uk-card-title">@Model.Review.Title</h3>
+    <span>Leisure: <b>@Model.Review.Leisure</b></span>
     <div>
         <span class="uk-label uk-background-secondary">Tag 1</span>
         <span class="uk-label uk-background-secondary">Tag 2</span>
     </div>
     <div class="mt-2" uk-tooltip="title: Rating from the author; pos: bottom-left" style="width: fit-content">
-        <span uk-icon="happy"></span> 7/10
+        <span uk-icon="happy"></span> @Model.Review.AuthorRate/10
     </div>
-    @if (true)
+    @if (Model.CanEdit)
     {
         <div class="mt-4 d-flex justify-content-between align-items-center">
             <div class="d-flex gap-3 align-items-center">

@@ -1,5 +1,6 @@
 ﻿using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeisureReviews.Repositories
 {
@@ -10,6 +11,12 @@ namespace LeisureReviews.Repositories
         public ReviewsRepository(ApplicationContext context)
         {
             this.context = context;
+        }
+
+        public async Task<List<Review>> GetAll(string authorId)
+        {
+            using (context)
+                return await context.Reviews.Where(r => r.AuthorId == authorId).ToListAsync();
         }
 
         public void SaveReview(Review review)
