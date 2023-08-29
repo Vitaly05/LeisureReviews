@@ -4,11 +4,11 @@ namespace LeisureReviews.Repositories.Interfaces
 {
     public interface IReviewsRepository
     {
-        Task<List<Review>> GetAll(string authorId);
+        Task<List<Review>> GetAllAsync(string authorId);
 
-        Task<Review> Get(string id);
+        Task<Review> GetAsync(string id);
 
-        void SaveReview(Review review);
+        void Save(Review review);
 
         Task DeleteAsync(string id);
     }

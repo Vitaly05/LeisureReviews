@@ -21,13 +21,13 @@ namespace LeisureReviews.Repositories
         public async Task<IdentityResult> CreateAsync(User user) =>
             await userManager.CreateAsync(user);
 
-        public async Task<User> FindUserAsync(string userName) =>
+        public async Task<User> FindAsync(string userName) =>
             await userManager.FindByNameAsync(userName);
 
-        public async Task<User> FindUserAsync(string externalProvider, string providerKey) => 
+        public async Task<User> FindAsync(string externalProvider, string providerKey) => 
             await userManager.Users.FirstOrDefaultAsync(u => u.ExternalProvider == externalProvider && u.ProviderKey == providerKey);
 
-        public async Task<User> GetUserAsync(ClaimsPrincipal principal) =>
+        public async Task<User> GetAsync(ClaimsPrincipal principal) =>
             await userManager.GetUserAsync(principal);
     }
 }

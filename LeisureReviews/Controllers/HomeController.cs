@@ -30,12 +30,12 @@ namespace LeisureReviews.Controllers
         [HttpGet("Profile/{userName}")]
         public async Task<IActionResult> Profile(string userName)
         {
-            var user = await usersRepository.FindUserAsync(userName);
+            var user = await usersRepository.FindAsync(userName);
             if (user is null) return NotFound();
             var model = new ProfileViewModel
             {
                 User = user,
-                Reviews = await reviewsRepository.GetAll(user.Id)
+                Reviews = await reviewsRepository.GetAllAsync(user.Id)
             };
             await configureBaseModel(model);
             return View(model);
@@ -58,7 +58,7 @@ namespace LeisureReviews.Controllers
         {
             var model = new ReviewEditorViewModel();
             await configureBaseModel(model);
-            model.Review = await reviewsRepository.Get(reviewId);
+            model.Review = await reviewsRepository.GetAsync(reviewId);
             model.AuthorName = model.CurrentUser.UserName;
             if (model.Review is null) return NotFound();
             if (model.CurrentUser.Id != model.Review.AuthorId) return Forbid();
@@ -71,7 +71,7 @@ namespace LeisureReviews.Controllers
         {
             if (!ModelState.IsValid)
                 return BadRequest();
-            reviewsRepository.SaveReview(review);
+            reviewsRepository.Save(review);
             return Ok(review);
         }
 
@@ -79,7 +79,7 @@ namespace LeisureReviews.Controllers
         [HttpDelete("DeleteReview")]
         public async Task<IActionResult> DeleteReview(string reviewId)
         {
-            var review = await reviewsRepository.Get(reviewId);
+            var review = await reviewsRepository.GetAsync(reviewId);
             if (review is null) return NotFound();
             if (review.AuthorId != (await getCurrentUser()).Id) return Forbid();
             await reviewsRepository.DeleteAsync(reviewId);
@@ -93,6 +93,6 @@ namespace LeisureReviews.Controllers
         }
 
         private async Task<User> getCurrentUser() =>
-            await usersRepository.GetUserAsync(HttpContext.User);
+            await usersRepository.GetAsync(HttpContext.User);
     }
 }
