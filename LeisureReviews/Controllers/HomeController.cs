@@ -30,11 +30,14 @@ namespace LeisureReviews.Controllers
         [HttpGet("Profile/{userName}")]
         public async Task<IActionResult> Profile(string userName)
         {
-            var model = new ProfileViewModel();
+            var user = await usersRepository.FindUserAsync(userName);
+            if (user is null) return NotFound();
+            var model = new ProfileViewModel
+            {
+                User = user,
+                Reviews = await reviewsRepository.GetAll(user.Id)
+            };
             await configureBaseModel(model);
-            model.User = await usersRepository.FindUserAsync(userName);
-            if (model.User is null) return NotFound();
-            model.Reviews = await reviewsRepository.GetAll(model.User.Id);
             return View(model);
         }
 
@@ -42,10 +45,23 @@ namespace LeisureReviews.Controllers
         [HttpGet("NewReview")]
         public async Task<IActionResult> NewReview()
         {
-            var currentUser = await usersRepository.GetUserAsync(HttpContext.User);
-            var model = new ReviewEditorViewModel { AuthorName = currentUser.UserName };
+            var model = new ReviewEditorViewModel();
             await configureBaseModel(model);
-            model.Review = new Review { AuthorId = currentUser.Id };
+            model.AuthorName = model.CurrentUser.UserName;
+            model.Review = new Review { AuthorId = model.CurrentUser.Id };
+            return View("ReviewEditor", model);
+        }
+
+        [Authorize]
+        [HttpGet("EditReview/{reviewId}")]
+        public async Task<IActionResult> EditReview(string reviewId)
+        {
+            var model = new ReviewEditorViewModel();
+            await configureBaseModel(model);
+            model.Review = await reviewsRepository.Get(reviewId);
+            model.AuthorName = model.CurrentUser.UserName;
+            if (model.Review is null) return NotFound();
+            if (model.CurrentUser.Id != model.Review.AuthorId) return Forbid();
             return View("ReviewEditor", model);
         }
 

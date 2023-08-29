@@ -6,6 +6,8 @@ namespace LeisureReviews.Repositories.Interfaces
     {
         Task<List<Review>> GetAll(string authorId);
 
+        Task<Review> Get(string id);
+
         void SaveReview(Review review);
     }
 }

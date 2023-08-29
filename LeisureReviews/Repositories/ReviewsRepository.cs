@@ -15,26 +15,28 @@ namespace LeisureReviews.Repositories
 
         public async Task<List<Review>> GetAll(string authorId)
         {
-            using (context)
-                return await context.Reviews.Where(r => r.AuthorId == authorId).ToListAsync();
+            return await context.Reviews.Where(r => r.AuthorId == authorId).ToListAsync();
+        }
+
+        public async Task<Review> Get(string id)
+        {
+            return await context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
         }
 
         public void SaveReview(Review review)
         {
-            using (context)
+            if (context.Reviews.Any(r => r.Id == review.Id))
             {
-                if (context.Reviews.Any(r => r.Id == review.Id))
-                {
-                    context.Reviews.Update(review);
-                    context.Entry(review).Property(r => r.CreateTime).IsModified = false;
-                }
-                else
-                {
-                    initReview(review);
-                    context.Reviews.Add(review);
-                }
-                context.SaveChanges();
+                context.Reviews.Update(review);
+                context.Entry(review).Property(r => r.CreateTime).IsModified = false;
+                context.Entry(review).Property(r => r.AuthorId).IsModified = false;
             }
+            else
+            {
+                initReview(review);
+                context.Reviews.Add(review);
+            }
+            context.SaveChanges();
         }
 
         private void initReview(Review review)
