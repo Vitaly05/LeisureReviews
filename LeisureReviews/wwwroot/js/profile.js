@@ -41,21 +41,33 @@ $('.delete-review-button').on('click', function () {
             switch (_a.label) {
                 case 0:
                     currentButton = $(this);
-                    showButtonSpinner(currentButton);
                     reviewId = $(this).parents('.review-card').data('id');
-                    return [4 /*yield*/, $.ajax("/DeleteReview?reviewId=".concat(reviewId), {
-                            method: 'DELETE'
-                        }).done(function (reviewId) {
-                            $(document).find(".review-card[data-id=\"".concat(reviewId, "\"]")).fadeOut('slow');
-                            //@ts-ignore
-                            UIkit.notification({ message: 'The review was successfully deleted', status: 'success', pos: 'bottom-center' });
-                        }).fail(function () {
-                            //@ts-ignore
-                            UIkit.notification({ message: 'An error occurred during review deleiton', status: 'danger', pos: 'bottom-center' });
-                        }).always(function () {
-                            hideButtonSpinner(currentButton);
+                    return [4 /*yield*/, UIkit.modal.confirm('Are you sure you want to delete the review?').then(function () {
+                            return __awaiter(this, void 0, void 0, function () {
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            showButtonSpinner(currentButton);
+                                            return [4 /*yield*/, $.ajax("/DeleteReview?reviewId=".concat(reviewId), {
+                                                    method: 'DELETE'
+                                                }).done(function (reviewId) {
+                                                    $(document).find(".review-card[data-id=\"".concat(reviewId, "\"]")).fadeOut('slow');
+                                                    //@ts-ignore
+                                                    UIkit.notification({ message: 'The review was successfully deleted', status: 'success', pos: 'bottom-center' });
+                                                }).fail(function () {
+                                                    //@ts-ignore
+                                                    UIkit.notification({ message: 'An error occurred during review deleiton', status: 'danger', pos: 'bottom-center' });
+                                                }).always(function () {
+                                                    hideButtonSpinner(currentButton);
+                                                })];
+                                        case 1: return [2 /*return*/, _a.sent()];
+                                    }
+                                });
+                            });
                         })];
-                case 1: return [2 /*return*/, _a.sent()];
+                case 1: 
+                //@ts-ignore
+                return [2 /*return*/, _a.sent()];
             }
         });
     });
