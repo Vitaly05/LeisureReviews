@@ -31,7 +31,7 @@ namespace LeisureReviews.Controllers
         }
 
         [Authorize]
-        [HttpGet("Edit/{reviewId}")]
+        [HttpGet("Edit")]
         public async Task<IActionResult> EditReview(string reviewId)
         {
             var model = new ReviewEditorViewModel();

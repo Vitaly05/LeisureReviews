@@ -70,7 +70,7 @@ function saveReview() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, $.post('/SaveReview', getData(), function (data) {
+                case 0: return [4 /*yield*/, $.post("/Review/Save", getData(), function (data) {
                         $('[name="Review.Id"]').val(data.id);
                         $('[name="Review.AuthorId"]').val(data.authorId);
                         //@ts-ignore

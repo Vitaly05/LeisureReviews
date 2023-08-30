@@ -27,7 +27,7 @@ function getTagsInputItems(selector: string): Array<object> {
 }
 
 async function saveReview() {
-    return await $.post('/SaveReview', getData(), function (data) {
+    return await $.post(`/Review/Save`, getData(), function (data) {
         $('[name="Review.Id"]').val(data.id)
         $('[name="Review.AuthorId"]').val(data.authorId)
         //@ts-ignore
