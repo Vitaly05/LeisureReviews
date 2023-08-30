@@ -1,5 +1,4 @@
 ﻿using LeisureReviews.Models.Database;
-using System.ComponentModel.DataAnnotations;
 
 namespace LeisureReviews.Models
 {
@@ -8,5 +7,7 @@ namespace LeisureReviews.Models
         public string AuthorName { get; set; }
 
         public Review Review { get; set; }
+
+        public List<Tag> Tags { get; set; }
     }
 }

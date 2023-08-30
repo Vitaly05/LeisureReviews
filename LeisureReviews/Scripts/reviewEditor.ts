@@ -12,6 +12,20 @@ $('.review-field').on('input', function () {
     $(`[name="Review.${$(this).data('field')}"]`).val($(this).val())
 })
 
+//@ts-ignore
+const tagsInput = new Tokenfield({
+    el: document.querySelector('#tags-input'),
+    items: getTagsInputItems('#used-tags'),
+    setItems: getTagsInputItems('#tags-input'),
+    minChars: 0,
+    delimiters: [',']
+})
+
+function getTagsInputItems(selector: string): Array<object> {
+    const tagsInputValues: Array<string> = ($(selector).val() as string).split(',')
+    return tagsInputValues.every(v => v.length == 0) ? null : tagsInputValues.map((v, i) => ({ id: i++, name: v }))
+}
+
 async function saveReview() {
     return await $.post('/SaveReview', getData(), function (data) {
         $('[name="Review.Id"]').val(data.id)
@@ -36,6 +50,7 @@ function getData(): any {
         leisure: $('[name="Review.Leisure"]').val(),
         group: $('[name="Review.Group"]').val(),
         authorRate: $('[name="Review.AuthorRate"]').val(),
+        tagsNames: tagsInput.getItems().map(i => i.name),
         content: $('[name="Review.Content"]').val(),
         authorId: $('[name="Review.AuthorId"]').val(),
         id: $('[name="Review.Id"]').val(),

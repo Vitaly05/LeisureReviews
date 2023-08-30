@@ -234,24 +234,24 @@
       "id": "6d8408c9-4aac-4e09-87ed-fe463f3dacd1",
       "comment": "",
       "command": "click",
-      "target": "css=.d-flex:nth-child(3) > .d-flex > .review-field",
+      "target": "css=.d-flex:nth-child(4) > .d-flex > .review-field",
       "targets": [
-        ["css=.d-flex:nth-child(3) > .d-flex > .review-field", "css:finder"],
+        ["css=.d-flex:nth-child(4) > .d-flex > .review-field", "css:finder"],
         ["xpath=(//input[@value='0'])[3]", "xpath:attributes"],
-        ["xpath=//li[@id='uk-tab-8-tabpanel-0']/div/div[3]/div[2]/input", "xpath:idRelative"],
-        ["xpath=//div[3]/div[2]/input", "xpath:position"]
+        ["xpath=//li[@id='uk-tab-8-tabpanel-0']/div/div[4]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/div[2]/input", "xpath:position"]
       ],
       "value": ""
     }, {
       "id": "3e4a2d31-9dff-42a1-8a34-0ba621953a1e",
       "comment": "",
       "command": "type",
-      "target": "css=.d-flex:nth-child(3) > .d-flex > .review-field",
+      "target": "css=.d-flex:nth-child(4) > .d-flex > .review-field",
       "targets": [
-        ["css=.d-flex:nth-child(3) > .d-flex > .review-field", "css:finder"],
+        ["css=.d-flex:nth-child(4) > .d-flex > .review-field", "css:finder"],
         ["xpath=(//input[@value='0'])[3]", "xpath:attributes"],
-        ["xpath=//li[@id='uk-tab-8-tabpanel-0']/div/div[3]/div[2]/input", "xpath:idRelative"],
-        ["xpath=//div[3]/div[2]/input", "xpath:position"]
+        ["xpath=//li[@id='uk-tab-8-tabpanel-0']/div/div[4]/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[4]/div[2]/input", "xpath:position"]
       ],
       "value": "1"
     }, {

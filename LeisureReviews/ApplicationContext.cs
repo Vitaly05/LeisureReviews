@@ -10,5 +10,7 @@ namespace LeisureReviews
             :base(options) { }
 
         public DbSet<Review> Reviews { get; set; }
+
+        public DbSet<Tag> Tags { get; set; }
     }
 }

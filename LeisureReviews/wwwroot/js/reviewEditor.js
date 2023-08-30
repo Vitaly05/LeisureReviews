@@ -54,6 +54,18 @@ $('#save-review-button').on('click', function (e) {
 $('.review-field').on('input', function () {
     $("[name=\"Review.".concat($(this).data('field'), "\"]")).val($(this).val());
 });
+//@ts-ignore
+var tagsInput = new Tokenfield({
+    el: document.querySelector('#tags-input'),
+    items: getTagsInputItems('#used-tags'),
+    setItems: getTagsInputItems('#tags-input'),
+    minChars: 0,
+    delimiters: [',']
+});
+function getTagsInputItems(selector) {
+    var tagsInputValues = $(selector).val().split(',');
+    return tagsInputValues.every(function (v) { return v.length == 0; }) ? null : tagsInputValues.map(function (v, i) { return ({ id: i++, name: v }); });
+}
 function saveReview() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
@@ -83,6 +95,7 @@ function getData() {
         leisure: $('[name="Review.Leisure"]').val(),
         group: $('[name="Review.Group"]').val(),
         authorRate: $('[name="Review.AuthorRate"]').val(),
+        tagsNames: tagsInput.getItems().map(function (i) { return i.name; }),
         content: $('[name="Review.Content"]').val(),
         authorId: $('[name="Review.AuthorId"]').val(),
         id: $('[name="Review.Id"]').val(),

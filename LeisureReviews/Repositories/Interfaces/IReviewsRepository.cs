@@ -8,7 +8,7 @@ namespace LeisureReviews.Repositories.Interfaces
 
         Task<Review> GetAsync(string id);
 
-        void Save(Review review);
+        Task SaveAsync(Review review);
 
         Task DeleteAsync(string id);
     }
