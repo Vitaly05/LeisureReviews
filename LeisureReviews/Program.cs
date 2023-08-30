@@ -60,6 +60,7 @@ if (!builder.Environment.IsDevelopment())
 
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IReviewsRepository, ReviewsRepository>();
+builder.Services.AddScoped<ITagsRepository, TagsRepository>();
 
 var app = builder.Build();
 

@@ -5,8 +5,10 @@
     <h3 class="uk-card-title">@Model.Review.Title</h3>
     <span>Leisure: <b>@Model.Review.Leisure</b></span>
     <div>
-        <span class="uk-label uk-background-secondary">Tag 1</span>
-        <span class="uk-label uk-background-secondary">Tag 2</span>
+        @foreach (var tag in Model.Review.Tags.Select(t => t.Name))
+        {
+            <span class="uk-label uk-background-secondary">@tag</span>
+        }
     </div>
     <div class="mt-2" uk-tooltip="title: Rating from the author; pos: bottom-left" style="width: fit-content">
         <span uk-icon="happy"></span> @Model.Review.AuthorRate/10

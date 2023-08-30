@@ -13,10 +13,13 @@ namespace LeisureReviews.Controllers
 
         private readonly IReviewsRepository reviewsRepository;
 
-        public HomeController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository)
+        private readonly ITagsRepository tagsRepository;
+
+        public HomeController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository, ITagsRepository tagsRepository)
         {
             this.usersRepository = usersRepository;
             this.reviewsRepository = reviewsRepository;
+            this.tagsRepository = tagsRepository;
         }
 
         [HttpGet("")]
@@ -46,8 +49,7 @@ namespace LeisureReviews.Controllers
         public async Task<IActionResult> NewReview()
         {
             var model = new ReviewEditorViewModel();
-            await configureBaseModel(model);
-            model.AuthorName = model.CurrentUser.UserName;
+            await configureReviewEditorViewModel(model);
             model.Review = new Review { AuthorId = model.CurrentUser.Id };
             return View("ReviewEditor", model);
         }
@@ -57,9 +59,8 @@ namespace LeisureReviews.Controllers
         public async Task<IActionResult> EditReview(string reviewId)
         {
             var model = new ReviewEditorViewModel();
-            await configureBaseModel(model);
+            await configureReviewEditorViewModel(model);
             model.Review = await reviewsRepository.GetAsync(reviewId);
-            model.AuthorName = model.CurrentUser.UserName;
             if (model.Review is null) return NotFound();
             if (model.CurrentUser.Id != model.Review.AuthorId) return Forbid();
             return View("ReviewEditor", model);
@@ -67,12 +68,13 @@ namespace LeisureReviews.Controllers
 
         [Authorize]
         [HttpPost("SaveReview")]
-        public IActionResult SaveReview(Review review)
+        public async Task<IActionResult> SaveReview(ReviewModel reviewModel)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-            reviewsRepository.Save(review);
-            return Ok(review);
+            if (!ModelState.IsValid) return BadRequest();
+            if (reviewModel.TagsNames is not null) await addTagsAsync(reviewModel);
+            await reviewsRepository.SaveAsync(reviewModel);
+            reviewModel.Tags.Clear();
+            return Ok(reviewModel);
         }
 
         [Authorize]
@@ -86,6 +88,19 @@ namespace LeisureReviews.Controllers
             return Ok(reviewId);
         }
 
+        private async Task addTagsAsync(ReviewModel model)
+        {
+            tagsRepository.AddNewTags(model.TagsNames);
+            model.Tags = await tagsRepository.GetTagsAsync(model.TagsNames);
+        }
+
+        private async Task configureReviewEditorViewModel(ReviewEditorViewModel model)
+        {
+            await configureBaseModel(model);
+            model.AuthorName = model.CurrentUser.UserName;
+            model.Tags = await tagsRepository.GetTagsAsync();
+        }
+
         private async Task configureBaseModel(BaseViewModel model)
         {
             model.IsAuthorized = HttpContext.User.Identity.IsAuthenticated;
@@ -93,6 +108,6 @@ namespace LeisureReviews.Controllers
         }
 
         private async Task<User> getCurrentUser() =>
-            await usersRepository.GetAsync(HttpContext.User);
+                    await usersRepository.GetAsync(HttpContext.User);
     }
 }

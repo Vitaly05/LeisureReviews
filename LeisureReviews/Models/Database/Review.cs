@@ -36,6 +36,8 @@ namespace LeisureReviews.Models.Database
         [Required]
         public DateTime CreateTime { get; set; }
 
+        public ICollection<Tag> Tags { get; set; } = new List<Tag>();
+
         public bool IsDeleted { get; set; } = false;
     }
 }
