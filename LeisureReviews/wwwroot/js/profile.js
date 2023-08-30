@@ -48,7 +48,7 @@ $('.delete-review-button').on('click', function () {
                                     switch (_a.label) {
                                         case 0:
                                             showButtonSpinner(currentButton);
-                                            return [4 /*yield*/, $.ajax("/DeleteReview?reviewId=".concat(reviewId), {
+                                            return [4 /*yield*/, $.ajax("/Review/Delete?reviewId=".concat(reviewId), {
                                                     method: 'DELETE'
                                                 }).done(function (reviewId) {
                                                     $(document).find(".review-card[data-id=\"".concat(reviewId, "\"]")).fadeOut('slow');

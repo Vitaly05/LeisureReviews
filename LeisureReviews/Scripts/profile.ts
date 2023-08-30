@@ -4,7 +4,7 @@
     //@ts-ignore
     return await UIkit.modal.confirm('Are you sure you want to delete the review?').then(async function () {
         showButtonSpinner(currentButton)
-        return await $.ajax(`/DeleteReview?reviewId=${reviewId}`, {
+        return await $.ajax(`/Review/Delete?reviewId=${reviewId}`, {
             method: 'DELETE'
         }).done(function (reviewId) {
             $(document).find(`.review-card[data-id="${reviewId}"]`).fadeOut('slow')
