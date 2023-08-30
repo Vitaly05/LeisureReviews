@@ -64,7 +64,7 @@ var tagsInput = new Tokenfield({
 });
 function getTagsInputItems(selector) {
     var tagsInputValues = $(selector).val().split(',');
-    return tagsInputValues.every(function (v) { return v.length == 0; }) ? null : tagsInputValues.map(function (v, i) { return ({ id: i++, name: v }); });
+    return tagsInputValues.every(function (v) { return v.length == 0; }) ? [] : tagsInputValues.map(function (v, i) { return ({ id: i++, name: v }); });
 }
 function saveReview() {
     return __awaiter(this, void 0, void 0, function () {

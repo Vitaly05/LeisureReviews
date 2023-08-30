@@ -23,7 +23,7 @@ const tagsInput = new Tokenfield({
 
 function getTagsInputItems(selector: string): Array<object> {
     const tagsInputValues: Array<string> = ($(selector).val() as string).split(',')
-    return tagsInputValues.every(v => v.length == 0) ? null : tagsInputValues.map((v, i) => ({ id: i++, name: v }))
+    return tagsInputValues.every(v => v.length == 0) ? [] : tagsInputValues.map((v, i) => ({ id: i++, name: v }))
 }
 
 async function saveReview() {
