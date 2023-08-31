@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.Vkontakte" Version="6.0.15" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
+    <PackageReference Include="Dropbox.Api" Version="6.37.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.21" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.21" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10" />

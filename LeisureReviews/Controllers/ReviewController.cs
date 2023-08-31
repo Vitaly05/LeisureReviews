@@ -3,6 +3,7 @@ using LeisureReviews.Models;
 using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using LeisureReviews.Services.Interfaces;
 
 namespace LeisureReviews.Controllers
 {
@@ -13,11 +14,15 @@ namespace LeisureReviews.Controllers
 
         private readonly ITagsRepository tagsRepository;
 
-        public ReviewController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository, ITagsRepository tagsRepository)
+        private readonly ICloudService cloudService;
+
+        public ReviewController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository, 
+            ITagsRepository tagsRepository, ICloudService cloudService)
         {
             this.usersRepository = usersRepository;
             this.reviewsRepository = reviewsRepository;
             this.tagsRepository = tagsRepository;
+            this.cloudService = cloudService;
         }
 
         [Authorize]
@@ -48,6 +53,7 @@ namespace LeisureReviews.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
             if (reviewModel.TagsNames is not null) await addTagsAsync(reviewModel);
+            if (reviewModel.Illustration is not null) await uploadIllustration(reviewModel.Illustration);
             await reviewsRepository.SaveAsync(reviewModel);
             reviewModel.Tags.Clear();
             return Ok(reviewModel);
@@ -75,6 +81,20 @@ namespace LeisureReviews.Controllers
             await configureBaseModel(model);
             model.AuthorName = model.CurrentUser.UserName;
             model.Tags = await tagsRepository.GetTagsAsync();
+        }
+
+        private async Task uploadIllustration(IFormFile illustration)
+        {
+            using (var reader = new StreamReader(illustration.OpenReadStream()))
+            {
+                var bytes = default(byte[]);
+                using (var memoryStream = new MemoryStream())
+                {
+                    reader.BaseStream.CopyTo(memoryStream);
+                    bytes = memoryStream.ToArray();
+                }
+                await cloudService.Upload(bytes, Path.GetExtension(illustration.FileName));
+            }
         }
     }
 }

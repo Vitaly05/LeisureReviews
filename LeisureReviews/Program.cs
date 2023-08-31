@@ -2,6 +2,8 @@ using LeisureReviews;
 using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories;
 using LeisureReviews.Repositories.Interfaces;
+using LeisureReviews.Services;
+using LeisureReviews.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -61,6 +63,7 @@ if (!builder.Environment.IsDevelopment())
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IReviewsRepository, ReviewsRepository>();
 builder.Services.AddScoped<ITagsRepository, TagsRepository>();
+builder.Services.AddScoped<ICloudService, DropboxCloudService>();
 
 var app = builder.Build();
 
