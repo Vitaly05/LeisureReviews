@@ -2,6 +2,8 @@
 {
     public interface ICloudService
     {
-        Task Upload(byte[] content, string extension);
+        Task<string> UploadAsync(byte[] content, string extension);
+
+        Task<byte[]> GetAsync(string fileId);
     }
 }

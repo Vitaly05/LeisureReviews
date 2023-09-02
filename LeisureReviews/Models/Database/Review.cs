@@ -34,6 +34,8 @@ namespace LeisureReviews.Models.Database
         [Column(TypeName = "ntext")]
         public string Content { get; set; }
 
+        public string IllustrationId { get; set; }
+
         [Required]
         [BindNever]
         public DateTime CreateTime { get; set; }

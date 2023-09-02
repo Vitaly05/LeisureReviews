@@ -25,6 +25,14 @@ namespace LeisureReviews.Controllers
             this.cloudService = cloudService;
         }
 
+        [HttpGet("GetIllustration")]
+        public async Task<IActionResult> GetIllustraton(string fileId)
+        {
+            if (fileId is null) return NotFound();
+            var fileContent = await cloudService.GetAsync(fileId);
+            return Ok($"data:image;base64,{Convert.ToBase64String(fileContent)}");
+        }
+
         [Authorize]
         [HttpGet("New")]
         public async Task<IActionResult> NewReview()
@@ -53,7 +61,7 @@ namespace LeisureReviews.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
             if (reviewModel.TagsNames is not null) await addTagsAsync(reviewModel);
-            if (reviewModel.Illustration is not null) await uploadIllustration(reviewModel.Illustration);
+            await updateIllustrationAsync(reviewModel);
             await reviewsRepository.SaveAsync(reviewModel);
             reviewModel.Tags.Clear();
             return Ok(reviewModel);
@@ -83,7 +91,14 @@ namespace LeisureReviews.Controllers
             model.Tags = await tagsRepository.GetTagsAsync();
         }
 
-        private async Task uploadIllustration(IFormFile illustration)
+        private async Task updateIllustrationAsync(ReviewModel model)
+        {
+            if (model.IllustrationDeleted) model.IllustrationId = null;
+            if (model.Illustration is not null)
+                model.IllustrationId = await uploadIllustrationAsync(model.Illustration);
+        }
+
+        private async Task<string> uploadIllustrationAsync(IFormFile illustration)
         {
             using (var reader = new StreamReader(illustration.OpenReadStream()))
             {
@@ -93,7 +108,7 @@ namespace LeisureReviews.Controllers
                     reader.BaseStream.CopyTo(memoryStream);
                     bytes = memoryStream.ToArray();
                 }
-                await cloudService.Upload(bytes, Path.GetExtension(illustration.FileName));
+                return await cloudService.UploadAsync(bytes, Path.GetExtension(illustration.FileName));
             }
         }
     }

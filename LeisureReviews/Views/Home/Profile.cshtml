@@ -31,7 +31,11 @@
         @foreach (var review in Model.Reviews)
         {
             if (!review.IsDeleted)
-                await Html.RenderPartialAsync("ReviewCard", new ReviewCardViewModel { Review = review, CanEdit = Model.CanEdit });
+                await Html.RenderPartialAsync("ReviewCard", new ReviewCardViewModel 
+                { 
+                    Review = review,
+                    CanEdit = Model.CanEdit,
+                });
         }
     </div>
 </div>
