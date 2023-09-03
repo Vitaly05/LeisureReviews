@@ -11,7 +11,7 @@
 <div class="uk-border-rounded uk-background-muted mt-3 p-3">
     <div class="d-flex gap-4 align-items-center">
         <span class="uk-label uk-background-secondary">@Model.Review.Group</span>
-        <span>@Model.Review.CreateTime.ToShortDateString()</span>
+        <span>@Model.Review.CreateTime.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture)</span>
     </div>
     <div class="mt-4">
         <div>
