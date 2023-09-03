@@ -27,14 +27,20 @@ function getTagsInputItems(selector: string): Array<object> {
 }
 
 async function saveReview() {
-    return await $.post(`/Review/Save`, getData(), function (data) {
+    return await $.ajax({
+        url: '/Review/Save',
+        type: 'POST',
+        data: getData(),
+        processData: false,
+        contentType: false
+    }).always(function () {
+        hideSpinner()
+        $('.validation-summary-errors ul').empty()
+    }).done(function (data) {
         $('[name="Review.Id"]').val(data.id)
         $('[name="Review.AuthorId"]').val(data.authorId)
         //@ts-ignore
         UIkit.modal($('#successful-save-modal')).show()
-    }).always(function () {
-        hideSpinner()
-        $('.validation-summary-errors ul').empty()
     })
 }
 
@@ -45,15 +51,17 @@ function hideSpinner() {
 }
 
 function getData(): any {
-    return {
-        title: $('[name="Review.Title"]').val(),
-        leisure: $('[name="Review.Leisure"]').val(),
-        group: $('[name="Review.Group"]').val(),
-        authorRate: $('[name="Review.AuthorRate"]').val(),
-        tagsNames: tagsInput.getItems().map(i => i.name),
-        content: $('[name="Review.Content"]').val(),
-        authorId: $('[name="Review.AuthorId"]').val(),
-        id: $('[name="Review.Id"]').val(),
-        createTime: $('[name="Review.CreateTime"]').val(),
-    }
+    var formData = new FormData()
+    formData.append('title', $('[name="Review.Title"]').val() as string)
+    formData.append('leisure', $('[name="Review.Leisure"]').val() as string)
+    formData.append('group', $('[name="Review.Group"]').val() as string)
+    formData.append('authorRate', $('[name="Review.AuthorRate"]').val() as string)
+    formData.append('content', $('[name="Review.Content"]').val() as string)
+    formData.append('authorId', $('[name="Review.AuthorId"]').val() as string)
+    const tagsNames: Array<string> = tagsInput.getItems().map(i => i.name)
+    tagsNames.length === 0 || tagsNames.forEach(t => formData.append('tagsNames[]', t))
+    formData.append('id', $('[name="Review.Id"]').val() as string)
+    formData.append('createTime',$('[name="Review.CreateTime"]').val() as string)
+    formData.append('illustration', $('#illustration-file-input').prop('files')[0])
+    return formData
 }

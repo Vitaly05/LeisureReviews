@@ -3,6 +3,7 @@ using LeisureReviews.Models;
 using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using LeisureReviews.Services.Interfaces;
 
 namespace LeisureReviews.Controllers
 {
@@ -13,11 +14,23 @@ namespace LeisureReviews.Controllers
 
         private readonly ITagsRepository tagsRepository;
 
-        public ReviewController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository, ITagsRepository tagsRepository)
+        private readonly ICloudService cloudService;
+
+        public ReviewController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository, 
+            ITagsRepository tagsRepository, ICloudService cloudService)
         {
             this.usersRepository = usersRepository;
             this.reviewsRepository = reviewsRepository;
             this.tagsRepository = tagsRepository;
+            this.cloudService = cloudService;
+        }
+
+        [HttpGet("GetIllustration")]
+        public async Task<IActionResult> GetIllustraton(string fileId)
+        {
+            if (fileId is null) return NotFound();
+            var fileContent = await cloudService.GetAsync(fileId);
+            return Ok($"data:image;base64,{Convert.ToBase64String(fileContent)}");
         }
 
         [Authorize]
@@ -48,6 +61,7 @@ namespace LeisureReviews.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
             if (reviewModel.TagsNames is not null) await addTagsAsync(reviewModel);
+            await updateIllustrationAsync(reviewModel);
             await reviewsRepository.SaveAsync(reviewModel);
             reviewModel.Tags.Clear();
             return Ok(reviewModel);
@@ -75,6 +89,29 @@ namespace LeisureReviews.Controllers
             await configureBaseModel(model);
             model.AuthorName = model.CurrentUser.UserName;
             model.Tags = await tagsRepository.GetTagsAsync();
+        }
+
+        private async Task updateIllustrationAsync(ReviewModel model)
+        {
+            if (!model.IllustrationChanged) return;
+            var oldIllustrationId = model.IllustrationId;
+            model.IllustrationId = await uploadIllustrationAsync(model.Illustration);
+            await cloudService.DeleteAsync(oldIllustrationId);
+        }
+
+        private async Task<string> uploadIllustrationAsync(IFormFile illustration)
+        {
+            if (illustration is null) return null;
+            using (var reader = new StreamReader(illustration.OpenReadStream()))
+            {
+                var bytes = default(byte[]);
+                using (var memoryStream = new MemoryStream())
+                {
+                    reader.BaseStream.CopyTo(memoryStream);
+                    bytes = memoryStream.ToArray();
+                }
+                return await cloudService.UploadAsync(bytes, Path.GetExtension(illustration.FileName));
+            }
         }
     }
 }

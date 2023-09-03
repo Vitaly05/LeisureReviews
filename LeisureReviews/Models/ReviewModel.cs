@@ -5,5 +5,9 @@ namespace LeisureReviews.Models
     public class ReviewModel : Review
     {
         public List<string> TagsNames { get; set; }
+
+        public IFormFile Illustration { get; set; }
+
+        public bool IllustrationChanged { get; set; }
     }
 }

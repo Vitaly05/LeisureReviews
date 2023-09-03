@@ -70,14 +70,20 @@ function saveReview() {
     return __awaiter(this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, $.post("/Review/Save", getData(), function (data) {
+                case 0: return [4 /*yield*/, $.ajax({
+                        url: '/Review/Save',
+                        type: 'POST',
+                        data: getData(),
+                        processData: false,
+                        contentType: false
+                    }).always(function () {
+                        hideSpinner();
+                        $('.validation-summary-errors ul').empty();
+                    }).done(function (data) {
                         $('[name="Review.Id"]').val(data.id);
                         $('[name="Review.AuthorId"]').val(data.authorId);
                         //@ts-ignore
                         UIkit.modal($('#successful-save-modal')).show();
-                    }).always(function () {
-                        hideSpinner();
-                        $('.validation-summary-errors ul').empty();
                     })];
                 case 1: return [2 /*return*/, _a.sent()];
             }
@@ -90,16 +96,18 @@ function hideSpinner() {
     $('#save-review-button').find('#button-spinner').hide();
 }
 function getData() {
-    return {
-        title: $('[name="Review.Title"]').val(),
-        leisure: $('[name="Review.Leisure"]').val(),
-        group: $('[name="Review.Group"]').val(),
-        authorRate: $('[name="Review.AuthorRate"]').val(),
-        tagsNames: tagsInput.getItems().map(function (i) { return i.name; }),
-        content: $('[name="Review.Content"]').val(),
-        authorId: $('[name="Review.AuthorId"]').val(),
-        id: $('[name="Review.Id"]').val(),
-        createTime: $('[name="Review.CreateTime"]').val(),
-    };
+    var formData = new FormData();
+    formData.append('title', $('[name="Review.Title"]').val());
+    formData.append('leisure', $('[name="Review.Leisure"]').val());
+    formData.append('group', $('[name="Review.Group"]').val());
+    formData.append('authorRate', $('[name="Review.AuthorRate"]').val());
+    formData.append('content', $('[name="Review.Content"]').val());
+    formData.append('authorId', $('[name="Review.AuthorId"]').val());
+    var tagsNames = tagsInput.getItems().map(function (i) { return i.name; });
+    tagsNames.length === 0 || tagsNames.forEach(function (t) { return formData.append('tagsNames[]', t); });
+    formData.append('id', $('[name="Review.Id"]').val());
+    formData.append('createTime', $('[name="Review.CreateTime"]').val());
+    formData.append('illustration', $('#illustration-file-input').prop('files')[0]);
+    return formData;
 }
 //# sourceMappingURL=reviewEditor.js.map
