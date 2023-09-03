@@ -1,6 +1,5 @@
 ﻿using Dropbox.Api;
 using LeisureReviews.Services.Interfaces;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace LeisureReviews.Services
 {
@@ -29,6 +28,15 @@ namespace LeisureReviews.Services
             using (var response = await dropboxClient.Files.DownloadAsync(fileId))
             {
                 return await response.GetContentAsByteArrayAsync();
+            }
+        }
+
+        public async Task DeleteAsync(string fileId)
+        {
+            if (fileId is null) return;
+            using (var dropboxClient = new DropboxClient(accessToken))
+            {
+                await dropboxClient.Files.DeleteV2Async(fileId);
             }
         }
     }

@@ -22,7 +22,7 @@ const tagsInput = new Tokenfield({
 
 var illustrationFile
 
-var illustratoinDeleted = false
+var illustratoinChanged = false
 
 $('.get-image').each(async function () {
     const fileId = $(this).data('fileId')
@@ -43,7 +43,7 @@ $('.get-image').each(async function () {
 $('#delete-illustration-button').on('click', function (e) {
     e.preventDefault()
     illustrationFile = null
-    illustratoinDeleted = true
+    illustratoinChanged = true
     $('#illustration-block').hide()
     $('#upload-illustration-panel').show()
 })
@@ -74,7 +74,7 @@ function setImage(image, e) {
     e.stopPropagation()
     if (image.type.startsWith('image/')) {
         illustrationFile = image
-        illustratoinDeleted = false
+        illustratoinChanged = true
         showImage(image)
     }
     else {
@@ -112,6 +112,8 @@ async function saveReview() {
     }).done(function (data) {
         $('[name="Review.Id"]').val(data.id)
         $('[name="Review.AuthorId"]').val(data.authorId)
+        $('#illustration-image').attr('data-file-id', data.illustrationId)
+        illustratoinChanged = false
         UIkit.modal($('#successful-save-modal')).show()
     })
 }
@@ -135,7 +137,10 @@ function getData() {
     formData.append('id', $('[name="Review.Id"]').val())
     formData.append('createTime', $('[name="Review.CreateTime"]').val())
     formData.append('illustration', illustrationFile)
-    formData.append('illustrationId', $('#illustration-image').data('fileId'))
-    formData.append('illustrationDeleted', illustratoinDeleted)
+    const illustrationId = $('#illustration-image').attr('data-file-id');
+    if (illustrationId !== undefined && illustrationId.length !== 0) {
+        formData.append('illustrationId', illustrationId);
+    }
+    formData.append('illustrationChanged', illustratoinChanged)
     return formData
 }

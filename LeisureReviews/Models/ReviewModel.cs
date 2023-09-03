@@ -8,6 +8,6 @@ namespace LeisureReviews.Models
 
         public IFormFile Illustration { get; set; }
 
-        public bool IllustrationDeleted { get; set; }
+        public bool IllustrationChanged { get; set; }
     }
 }

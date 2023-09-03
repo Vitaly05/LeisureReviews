@@ -93,13 +93,15 @@ namespace LeisureReviews.Controllers
 
         private async Task updateIllustrationAsync(ReviewModel model)
         {
-            if (model.IllustrationDeleted) model.IllustrationId = null;
-            if (model.Illustration is not null)
-                model.IllustrationId = await uploadIllustrationAsync(model.Illustration);
+            if (!model.IllustrationChanged) return;
+            var oldIllustrationId = model.IllustrationId;
+            model.IllustrationId = await uploadIllustrationAsync(model.Illustration);
+            await cloudService.DeleteAsync(oldIllustrationId);
         }
 
         private async Task<string> uploadIllustrationAsync(IFormFile illustration)
         {
+            if (illustration is null) return null;
             using (var reader = new StreamReader(illustration.OpenReadStream()))
             {
                 var bytes = default(byte[]);
