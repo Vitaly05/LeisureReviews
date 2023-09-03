@@ -18,7 +18,7 @@
         <div class="mt-4 d-flex justify-content-between align-items-center">
             <div class="d-flex gap-3 align-items-center">
                 <a href="/Review/Edit?ReviewId=@Model.Review.Id" class="uk-button uk-button-primary uk-border-rounded">Edit</a>
-                <button class="uk-icon-button uk-button-default uk-border-rounded" uk-icon="eye" uk-tooltip="Open in viewing mode"></button>
+                <a href="/Review?ReviewId=@Model.Review.Id" class="uk-icon-button uk-button-default uk-border-rounded" uk-icon="eye" uk-tooltip="Open in viewing mode"></a>
             </div>
             <button class="delete-review-button uk-icon-button uk-button-danger uk-border-rounded" uk-tooltip="Delete review">
                 <span id="button-text" uk-icon="trash"></span>
@@ -28,6 +28,6 @@
     }
     else
     {
-        <button class="uk-button uk-button-primary uk-border-rounded w-100 mt-4">Read</button>
+        <a href="/Review?ReviewId=@Model.Review.Id" class="uk-button uk-button-primary uk-border-rounded w-100 mt-4">Read</a>
     }
 </div>

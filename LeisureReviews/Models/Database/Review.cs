@@ -13,6 +13,8 @@ namespace LeisureReviews.Models.Database
         [Required]
         public string AuthorId { get; set; }
 
+        public User Author { get; set; }
+
         [Required]
         [Column(TypeName = "nvarchar(255)")]
         [MaxLength(255)]
