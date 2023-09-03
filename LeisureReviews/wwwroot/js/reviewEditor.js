@@ -1,9 +1,7 @@
 $('#save-review-button').on('click', async function (e) {
     e.preventDefault()
     if ($('#edit-review-form').valid()) {
-        $(this).prop('disabled', true)
-        $(this).find('#button-text').hide()
-        $(this).find('#button-spinner').show()
+        showButtonSpinner($(this))
         await saveReview()
     }
 })
@@ -107,7 +105,7 @@ async function saveReview() {
         processData: false,
         contentType: false
     }).always(function () {
-        hideSpinner()
+        hideButtonSpinner($('#save-review-button'))
         $('.validation-summary-errors ul').empty()
     }).done(function (data) {
         $('[name="Review.Id"]').val(data.id)
@@ -118,29 +116,35 @@ async function saveReview() {
     })
 }
 
-function hideSpinner() {
-    $('#save-review-button').prop('disabled', false)
-    $('#save-review-button').find('#button-text').show()
-    $('#save-review-button').find('#button-spinner').hide()
-}
-
 function getData() {
     var formData = new FormData()
+    appendMainReviewInfo(formData)
+    appendReviewTags(formData)
+    appendIllustrationInfo(formData)
+    return formData
+}
+
+function appendMainReviewInfo(formData) {
     formData.append('title', $('[name="Review.Title"]').val())
     formData.append('leisure', $('[name="Review.Leisure"]').val())
     formData.append('group', $('[name="Review.Group"]').val())
     formData.append('authorRate', $('[name="Review.AuthorRate"]').val())
     formData.append('content', $('[name="Review.Content"]').val())
     formData.append('authorId', $('[name="Review.AuthorId"]').val())
-    const tagsNames = tagsInput.getItems().map(i => i.name)
-    tagsNames.length === 0 || tagsNames.forEach(t => formData.append('tagsNames[]', t))
     formData.append('id', $('[name="Review.Id"]').val())
     formData.append('createTime', $('[name="Review.CreateTime"]').val())
+}
+
+function appendReviewTags(formData) {
+    const tagsNames = tagsInput.getItems().map(i => i.name)
+    tagsNames.length === 0 || tagsNames.forEach(t => formData.append('tagsNames[]', t))
+}
+
+function appendIllustrationInfo(formData) {
     formData.append('illustration', illustrationFile)
     const illustrationId = $('#illustration-image').attr('data-file-id');
     if (illustrationId !== undefined && illustrationId.length !== 0) {
         formData.append('illustrationId', illustrationId);
     }
     formData.append('illustrationChanged', illustratoinChanged)
-    return formData
 }
