@@ -25,6 +25,14 @@ namespace LeisureReviews.Controllers
             this.cloudService = cloudService;
         }
 
+        public async Task<IActionResult> Index(string reviewId)
+        {
+            var model = new ReviewViewModel();
+            await configureBaseModel(model);
+            model.Review = await reviewsRepository.GetAsync(reviewId);
+            return View(model);
+        }
+
         [HttpGet("GetIllustration")]
         public async Task<IActionResult> GetIllustraton(string fileId)
         {

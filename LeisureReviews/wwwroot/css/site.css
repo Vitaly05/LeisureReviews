@@ -10,3 +10,7 @@
 #edit-review-form textarea {
     height: 50vh;
 }
+
+.flex {
+    display: flex;
+}

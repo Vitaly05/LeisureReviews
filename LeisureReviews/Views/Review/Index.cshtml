@@ -1,0 +1,47 @@
+﻿@model ReviewViewModel
+
+@{
+    ViewData["Title"] = Model.Review.Title;
+}
+
+@{
+    await Html.RenderPartialAsync("Header", Model);
+}
+
+<div class="uk-border-rounded uk-background-muted mt-3 p-3">
+    <div class="d-flex gap-4 align-items-center">
+        <span class="uk-label uk-background-secondary">@Model.Review.Group</span>
+        <span>@Model.Review.CreateTime.ToShortDateString()</span>
+    </div>
+    <div class="mt-4">
+        <div>
+            @foreach (var tag in Model.Review.Tags.Select(t => t.Name))
+            {
+                <span class="uk-label uk-background-secondary">@tag</span>
+            }
+        </div>
+        <h1 class="mt-2"><b>@Model.Review.Title</b></h1>
+        <span>Leisure: <b>@Model.Review.Leisure</b></span>
+        <div class="d-flex align-items-center justify-content-between uk-background-default uk-border-pill py-1 px-3 mt-2">
+            <div class="d-flex align-items-center gap-2">
+                <span uk-icon="user"></span>
+                <div class="d-flex flex-column">
+                    <a href="/Profile/@Model.Review.Author.UserName" class="uk-link">@Model.Review.Author.UserName</a>
+                    <span class="uk-text-small uk-text-muted">Review author</span>
+                </div>
+            </div>
+            <div uk-tooltip="title: Rating from the author; pos: top-left" style="width: fit-content">
+                <span uk-icon="happy"></span> @Model.Review.AuthorRate/10
+            </div>
+        </div>
+        <div class="uk-cover-container mx-0 mx-md-5 mt-4 flex gap-3 align-items-center justify-content-center">
+            <img class="get-image" id="illustration-image" data-file-id="@Model.Review.IllustrationId" uk-cover">
+            <div id="illustraion-spinner" uk-spinner style="display: none"></div>
+        </div>
+        <div class="mt-4">@Model.Review.Content</div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/review.js"></script>
+}
