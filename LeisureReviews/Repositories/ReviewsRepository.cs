@@ -42,9 +42,10 @@ namespace LeisureReviews.Repositories
 
         private async Task updateReview(Review review)
         {
-            context.Reviews.Update(getUpdatedReview(await GetAsync(review.Id), review));
-            context.Entry(review).Property(r => r.CreateTime).IsModified = false;
-            context.Entry(review).Property(r => r.AuthorId).IsModified = false;
+            var updatedReview = getUpdatedReview(await GetAsync(review.Id), review);
+            context.Entry(updatedReview).Property(r => r.CreateTime).IsModified = false;
+            context.Entry(updatedReview).Property(r => r.AuthorId).IsModified = false;
+            context.Reviews.Update(updatedReview);
         }
 
         private Review getUpdatedReview(Review existingReview, Review updatedReview)
