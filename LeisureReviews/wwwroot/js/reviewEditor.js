@@ -1,3 +1,12 @@
+const converter = new showdown.Converter()
+
+$('#markdown-preview').html(converter.makeHtml(getReviewContent()))
+
+$('#markdown-input').on('input', function () {
+    $('#markdown-preview').html(converter.makeHtml(getReviewContent()))
+    $(`[name="Review.Content"]`).val(getReviewContent())
+})
+
 $('#save-review-button').on('click', async function (e) {
     e.preventDefault()
     if ($('#edit-review-form').valid()) {
@@ -129,7 +138,7 @@ function appendMainReviewInfo(formData) {
     formData.append('leisure', $('[name="Review.Leisure"]').val())
     formData.append('group', $('[name="Review.Group"]').val())
     formData.append('authorRate', $('[name="Review.AuthorRate"]').val())
-    formData.append('content', $('[name="Review.Content"]').val())
+    formData.append('content', getReviewContent())
     formData.append('authorId', $('[name="Review.AuthorId"]').val())
     formData.append('id', $('[name="Review.Id"]').val())
     formData.append('createTime', $('[name="Review.CreateTime"]').val())
@@ -147,4 +156,8 @@ function appendIllustrationInfo(formData) {
         formData.append('illustrationId', illustrationId);
     }
     formData.append('illustrationChanged', illustratoinChanged)
+}
+
+function getReviewContent() {
+    return $('#markdown-input').html().replace(/<br>/g, "\n")
 }
