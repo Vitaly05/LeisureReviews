@@ -5,6 +5,10 @@
     {
       "library": "uikit@3.16.24",
       "destination": "wwwroot/lib/uikit/"
+    },
+    {
+      "library": "showdown@2.1.0",
+      "destination": "wwwroot/lib/showdown/"
     }
   ]
 }

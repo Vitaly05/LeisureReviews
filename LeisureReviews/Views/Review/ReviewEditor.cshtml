@@ -91,9 +91,15 @@
                     </div>
                 </li>
                 <li>
-                    <div class="d-flex flex-column gap-1 align-items-center uk-width-expand">
-                        <span class="col-md-1 uk-text-right">Content</span>
-                        <textarea class="review-field uk-textarea uk-border-rounded" data-field="Content">@Model.Review.Content</textarea>
+                    <div class="d-flex flex-column flex-lg-row gap-3">
+                        <div class="d-flex flex-column gap-1 align-items-center uk-width-expand">
+                            <span class="col-md-1 uk-text-right">Markdown</span>
+                            <pre contenteditable="true" id="markdown-input" class="review-field uk-textarea uk-border-rounded">@Model.Review.Content</pre>
+                        </div>
+                        <div class="d-flex flex-column gap-1 align-items-center uk-width-expand">
+                            <span class="col-md-1 uk-text-right">Preview</span>
+                            <div id="markdown-preview" class="uk-textarea uk-border-rounded"></div>
+                        </div>
                     </div>
                 </li>
             </ul>
@@ -116,14 +122,15 @@
         <div class="uk-modal-body d-flex flex-column flex-sm-row gap-4 gap-sm-0 align-items-center justify-content-between">
             <a href="/Profile/@Model.AuthorName" class="uk-button uk-button-primary uk-border-rounded col-12 col-sm-auto">Go to profile</a>
             <a href="/" class="uk-button uk-button-primary uk-border-rounded  col-12 col-sm-auto">Go to home</a>
-            <button class="uk-button uk-button-default uk-border-rounded uk-modal-close  col-12 col-sm-auto">Continue editing</button>
+            <button class="uk-button uk-button-default uk-border-rounded uk-modal-close col-12 col-sm-auto">Continue editing</button>
         </div>
     </div>
 </div>
 
 @section Scripts {
+    <script src="~/lib/showdown/showdown.min.js"></script>
+    <script src="~/js/reviewEditor.js"></script>
     @{
-        <script src="~/js/reviewEditor.js"></script>
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }

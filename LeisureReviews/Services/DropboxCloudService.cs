@@ -1,4 +1,5 @@
 ﻿using Dropbox.Api;
+using Dropbox.Api.Files;
 using LeisureReviews.Services.Interfaces;
 
 namespace LeisureReviews.Services
@@ -36,7 +37,14 @@ namespace LeisureReviews.Services
             if (fileId is null) return;
             using (var dropboxClient = new DropboxClient(accessToken))
             {
-                await dropboxClient.Files.DeleteV2Async(fileId);
+                try
+                {
+                    await dropboxClient.Files.DeleteV2Async(fileId);
+                }
+                catch (ApiException<DeleteError> ex)
+                {
+                    Console.WriteLine($"An error occurred while deleting a file: {ex.Message}");
+                }
             }
         }
     }

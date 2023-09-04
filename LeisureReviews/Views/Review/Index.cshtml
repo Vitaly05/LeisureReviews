@@ -38,10 +38,11 @@
             <img class="get-image" id="illustration-image" data-file-id="@Model.Review.IllustrationId" uk-cover">
             <div id="illustraion-spinner" uk-spinner style="display: none"></div>
         </div>
-        <div class="mt-4">@Model.Review.Content</div>
+        <div id="content" class="mt-4">@Model.Review.Content</div>
     </div>
 </div>
 
 @section Scripts {
+    <script src="~/lib/showdown/showdown.min.js"></script>
     <script src="~/js/review.js"></script>
 }
