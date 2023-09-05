@@ -38,6 +38,8 @@ namespace LeisureReviews.Models.Database
 
         public string IllustrationId { get; set; }
 
+        public ICollection<User> LikedUsers { get; set; } = new List<User>();
+
         [Required]
         [BindNever]
         public DateTime CreateTime { get; set; }

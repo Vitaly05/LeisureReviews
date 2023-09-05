@@ -19,10 +19,11 @@ namespace LeisureReviews.Repositories
             await context.Reviews.Where(r => r.AuthorId == authorId).OrderByDescending(r => r.CreateTime).Include(r => r.Tags).ToListAsync();
 
         public async Task<Review> GetAsync(string id) =>
-            await context.Reviews.Include(r => r.Tags).FirstOrDefaultAsync(r => r.Id == id);
+            await context.Reviews.Include(r => r.Tags).Include(r => r.LikedUsers).Include(r => r.Author).FirstOrDefaultAsync(r => r.Id == id);
 
         public async Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize) =>
-            await context.Reviews.OrderByDescending(r => r.CreateTime).Include(r => r.Tags).Where(predicate).Skip(page * pageSize).Take(pageSize).ToListAsync();
+            await context.Reviews.OrderByDescending(r => r.CreateTime).Include(r => r.Tags).Include(r => r.LikedUsers)
+                .Where(predicate).Skip(page * pageSize).Take(pageSize).ToListAsync();
 
         public async Task<int> GetPagesCountAsync(int pageSize) =>
             (int)Math.Ceiling(await context.Reviews.CountAsync() / (double)pageSize);
@@ -41,6 +42,15 @@ namespace LeisureReviews.Repositories
             var review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
             review.IsDeleted = true;
             context.SaveChanges();
+        }
+
+        public async Task LikeAsync(string reviewId, User likedUser)
+        {
+            var review = await GetAsync(reviewId);
+            if (review.LikedUsers.Any(u => u.Id == likedUser.Id)) return;
+            review.LikedUsers.Add(likedUser);
+            context.Reviews.Update(review);
+            await context.SaveChangesAsync();
         }
 
         private async Task updateReview(Review review)

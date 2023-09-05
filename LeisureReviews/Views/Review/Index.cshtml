@@ -34,15 +34,33 @@
                 <span uk-icon="happy"></span> @Model.Review.AuthorRate/10
             </div>
         </div>
+        <div>
+            <div uk-tooltip="title: Number of likes; pos: bottom-left">
+                <span uk-icon="heart"></span> @Model.Review.LikedUsers.Count()
+            </div>
+        </div>
         <div class="uk-cover-container mx-0 mx-md-5 mt-4 flex gap-3 align-items-center justify-content-center">
             <img class="get-image" id="illustration-image" data-file-id="@Model.Review.IllustrationId" uk-cover">
             <div id="illustraion-spinner" uk-spinner style="display: none"></div>
         </div>
         <div id="content" class="mt-4">@Model.Review.Content</div>
+        @if (Model.IsAuthorized && !Model.Review.LikedUsers.Any(u => u.Id == Model.CurrentUser.Id))
+        {
+            <div id="like-panel" class="flex flex-column flex-sm-row gap-2 justify-content-center align-items-center">
+                <span>Do you like this review?</span>
+                <button id="like-review-button" class="uk-button uk-border-rounded uk-button-default uk-label-success">
+                    <div id="button-text"><span uk-icon="heart"></span> Like</div>
+                    <div id="button-spinner" uk-spinner style="display: none"></div>
+                </button>
+            </div>
+        }
     </div>
 </div>
 
+<div id="review-info" data-id="@Model.Review.Id"></div>
+
 @section Scripts {
     <script src="~/lib/showdown/showdown.min.js"></script>
+    <script src="~/js/base.js"></script>
     <script src="~/js/review.js"></script>
 }
