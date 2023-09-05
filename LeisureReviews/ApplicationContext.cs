@@ -13,6 +13,8 @@ namespace LeisureReviews
 
         public DbSet<Tag> Tags { get; set; }
 
+        public DbSet<Comment> Comments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Review>()

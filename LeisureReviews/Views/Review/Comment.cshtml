@@ -1,0 +1,14 @@
+﻿@model Comment
+
+<article class="uk-comment my-2 p-3 uk-border-rounded uk-background-default">
+    <header class="uk-comment-header">
+        <div class="uk-comment-title d-flex flex-column">
+            <div class="d-flex align-items-center gap-2">
+                <span uk-icon="user"></span>
+                <a id="profile-link" href="/Profile/@Model.Author.UserName">@Model.Author.UserName</a>
+            </div>
+            <span id="create-time" class="uk-text-small">@Model.CreateTime.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture)</span>
+        </div>
+    </header>
+    <div id="text" class="uk-comment-body">@Model.Text</div>
+</article>

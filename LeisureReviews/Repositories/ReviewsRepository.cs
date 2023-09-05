@@ -19,7 +19,7 @@ namespace LeisureReviews.Repositories
             await context.Reviews.Where(r => r.AuthorId == authorId).OrderByDescending(r => r.CreateTime).Include(r => r.Tags).ToListAsync();
 
         public async Task<Review> GetAsync(string id) =>
-            await context.Reviews.Include(r => r.Tags).Include(r => r.LikedUsers).Include(r => r.Author).FirstOrDefaultAsync(r => r.Id == id);
+            await context.Reviews.Include(r => r.Tags).Include(r => r.LikedUsers).Include(r => r.Author).Include(r => r.Comments).FirstOrDefaultAsync(r => r.Id == id);
 
         public async Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize) =>
             await context.Reviews.OrderByDescending(r => r.CreateTime).Include(r => r.Tags).Include(r => r.LikedUsers)

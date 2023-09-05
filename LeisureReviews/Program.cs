@@ -1,4 +1,5 @@
 using LeisureReviews;
+using LeisureReviews.Hubs;
 using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories;
 using LeisureReviews.Repositories.Interfaces;
@@ -60,9 +61,12 @@ if (!builder.Environment.IsDevelopment())
     });
 }
 
+builder.Services.AddSignalR();
+
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IReviewsRepository, ReviewsRepository>();
 builder.Services.AddScoped<ITagsRepository, TagsRepository>();
+builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
 builder.Services.AddScoped<ICloudService, DropboxCloudService>();
 
 var app = builder.Build();
@@ -83,5 +87,10 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<CommentsHub>("/Comments");
+});
 
 app.Run();
