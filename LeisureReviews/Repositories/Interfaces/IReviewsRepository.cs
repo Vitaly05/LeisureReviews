@@ -1,4 +1,5 @@
 ﻿using LeisureReviews.Models.Database;
+using System.Linq.Expressions;
 
 namespace LeisureReviews.Repositories.Interfaces
 {
@@ -8,7 +9,7 @@ namespace LeisureReviews.Repositories.Interfaces
 
         Task<Review> GetAsync(string id);
 
-        Task<List<Review>> GetLatestAsync(int page, int pageSize);
+        Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize);
 
         Task<int> GetPagesCountAsync(int pageSize);
 

@@ -2,6 +2,7 @@
 using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace LeisureReviews.Repositories
 {
@@ -14,18 +15,14 @@ namespace LeisureReviews.Repositories
             this.context = context;
         }
 
-        public async Task<List<Review>> GetAllAsync(string authorId)
-        {
-            var f = context.Reviews.Where(r => r.AuthorId == authorId).Select(r => r.Tags);
-            var d = await context.Reviews.Where(r => r.AuthorId == authorId).ToListAsync();
-            return await context.Reviews.Where(r => r.AuthorId == authorId).Include(r => r.Tags).ToListAsync();
-        }
+        public async Task<List<Review>> GetAllAsync(string authorId) =>
+            await context.Reviews.Where(r => r.AuthorId == authorId).OrderByDescending(r => r.CreateTime).Include(r => r.Tags).ToListAsync();
 
         public async Task<Review> GetAsync(string id) =>
             await context.Reviews.Include(r => r.Tags).FirstOrDefaultAsync(r => r.Id == id);
 
-        public async Task<List<Review>> GetLatestAsync(int page, int pageSize) =>
-            await context.Reviews.Include(r => r.Tags).OrderByDescending(r => r.CreateTime).Skip(page * pageSize).Take(pageSize).ToListAsync();
+        public async Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize) =>
+            await context.Reviews.OrderByDescending(r => r.CreateTime).Include(r => r.Tags).Where(predicate).Skip(page * pageSize).Take(pageSize).ToListAsync();
 
         public async Task<int> GetPagesCountAsync(int pageSize) =>
             (int)Math.Ceiling(await context.Reviews.CountAsync() / (double)pageSize);

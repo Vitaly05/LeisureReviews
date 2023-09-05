@@ -38,6 +38,9 @@
                 });
         }
     </div>
+    @{
+        await Html.RenderPartialAsync("ReviewsListPagination", Model);
+    }
 </div>
 
 @section Scripts {

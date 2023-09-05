@@ -2,7 +2,7 @@
 
 namespace LeisureReviews.Models
 {
-    public class HomeViewModel : BaseViewModel
+    public class ReviewsListViewModel : BaseViewModel
     {
         public int Page { get; set; } = 0;
 

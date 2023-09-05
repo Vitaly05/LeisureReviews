@@ -2,11 +2,9 @@
 
 namespace LeisureReviews.Models
 {
-    public class ProfileViewModel : BaseViewModel
+    public class ProfileViewModel : ReviewsListViewModel
     {
         public User User { get; set; }
-
-        public List<Review> Reviews { get; set; }
 
         public bool CanEdit
         {
