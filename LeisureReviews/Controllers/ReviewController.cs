@@ -87,6 +87,15 @@ namespace LeisureReviews.Controllers
             return Ok(reviewId);
         }
 
+        [Authorize]
+        [HttpPost("{reviewId}/Like")]
+        public async Task<IActionResult> LikeReview(string reviewId)
+        {
+            if (reviewId is null) return BadRequest();
+            await reviewsRepository.LikeAsync(reviewId, await getCurrentUser());
+            return Ok();
+        }
+
         private async Task addTagsAsync(ReviewModel model)
         {
             tagsRepository.AddNewTags(model.TagsNames);

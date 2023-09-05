@@ -16,3 +16,11 @@ $('.get-image').each(async function () {
         $(self).attr('src', file)
     })
 })
+
+$('#like-review-button').on('click', async function () {
+    showButtonSpinner($('#like-review-button'))
+    await $.post(`/Review/${$('#review-info').data('id')}/Like`).done(function () {
+        hideButtonSpinner($('#like-review-button'))
+        $('#like-panel').fadeOut('slow')
+    })
+})
