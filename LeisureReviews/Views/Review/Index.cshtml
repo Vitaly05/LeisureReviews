@@ -56,11 +56,41 @@
         }
     </div>
 </div>
+<div class="uk-border-rounded uk-background-muted mt-3 p-3">
+    <h2 class="text-center">Comments</h2>
+    @if (Model.IsAuthorized)
+    {
+        <div class="d-flex flex-column gap-2 my-5">
+            <h4 class="text-center">Write a comment</h4>
+            <textarea class="uk-textarea uk-border-rounded" id="comment-input"></textarea>
+            <button class="uk-button uk-button-primary uk-border-rounded" id="send-comment-button">
+                <div id="button-text">Send</div>
+                <div id="button-spinner" uk-spinner style="display: none"></div>
+            </button>
+        </div>
+    }
+    <div id="comment-template" style="display: none">
+        @{
+            await Html.RenderPartialAsync("Comment", new Comment() { Author = new(), CreateTime = new() });
+        }
+    </div>
+    @if (Model.Review.Comments.Count() == 0)
+    {
+        <div id="no-comments-text" class="text-center m-3">There are no comments</div>
+    }
+    <div id="comments">
+        @foreach (var comment in Model.Review.Comments.OrderByDescending(c => c.CreateTime))
+        {
+            await Html.RenderPartialAsync("Comment", comment);
+        }
+    </div>
+</div>
 
 <div id="review-info" data-id="@Model.Review.Id"></div>
 
 @section Scripts {
     <script src="~/lib/showdown/showdown.min.js"></script>
+    <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/js/base.js"></script>
     <script src="~/js/review.js"></script>
 }

@@ -40,6 +40,8 @@ namespace LeisureReviews.Models.Database
 
         public ICollection<User> LikedUsers { get; set; } = new List<User>();
 
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
         [Required]
         [BindNever]
         public DateTime CreateTime { get; set; }
