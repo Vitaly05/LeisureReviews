@@ -24,6 +24,12 @@ namespace LeisureReviews.Repositories
         public async Task<Review> GetAsync(string id) =>
             await context.Reviews.Include(r => r.Tags).FirstOrDefaultAsync(r => r.Id == id);
 
+        public async Task<List<Review>> GetLatestAsync(int page, int pageSize) =>
+            await context.Reviews.Include(r => r.Tags).OrderByDescending(r => r.CreateTime).Skip(page * pageSize).Take(pageSize).ToListAsync();
+
+        public async Task<int> GetPagesCountAsync(int pageSize) =>
+            (int)Math.Ceiling(await context.Reviews.CountAsync() / (double)pageSize);
+
         public async Task SaveAsync(Review review)
         {
             if (context.Reviews.Any(r => r.Id == review.Id))

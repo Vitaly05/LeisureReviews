@@ -1,4 +1,4 @@
-﻿@model BaseViewModel
+﻿@model HomeViewModel
 
 @{
     ViewData["Title"] = "Home Page";
@@ -8,14 +8,43 @@
     await Html.RenderPartialAsync("Header", Model);
 }
 
-@if (Model.IsAuthorized)
-{
-    <div>Authorized</div>
-}
-else
-{
-    <div>Read only</div>
-}
+
+<div class="uk-border-rounded uk-background-muted mt-3 py-5 px-3">
+    <h3 class="text-center">Latest added reviews</h3>
+    <div class="d-flex flex-column gap-4 align-items-center">
+        @if (Model.Reviews.Where(r => !r.IsDeleted).Count() == 0)
+        {
+            <div>There are no reviews</div>
+        }
+        @foreach (var review in Model.Reviews)
+        {
+            if (!review.IsDeleted)
+                await Html.RenderPartialAsync("ReviewCard", new ReviewCardViewModel 
+                { 
+                    Review = review,
+                    CanEdit = false
+                });
+        }
+    </div>
+    <ul class="uk-pagination justify-content-center">
+        @if (Model.PagesCount > 1)
+        {
+            <li><a href="?page=@(Model.Page - 1)&pageSize=@Model.PageSize"><span uk-pagination-previous></span></a></li>
+            @for (int i = 0; i < Model.PagesCount; i++)
+            {
+                if (i == Model.Page)
+                {
+                    <li class="uk-background-secondary uk-border-rounded uk-disabled"><a href="?page=@i&pageSize=@Model.PageSize">@(i + 1)</a></li>
+                }
+                else
+                {
+                    <li><a href="?page=@i&pageSize=@Model.PageSize">@(i + 1)</a></li>
+                }
+            }
+            <li><a href="?page=@(Model.Page + 1)&pageSize=@Model.PageSize"><span uk-pagination-next></span></a></li>
+        }
+    </ul>
+</div>
 
 @section Scripts {
     <script src="~/js/site.js"></script>

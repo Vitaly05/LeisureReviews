@@ -16,9 +16,15 @@ namespace LeisureReviews.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 0, int pageSize = 5)
         {
-            var model = new BaseViewModel();
+            var model = new HomeViewModel()
+            {
+                Page = page,
+                PageSize = pageSize,
+                PagesCount = await reviewsRepository.GetPagesCountAsync(pageSize),
+                Reviews = await reviewsRepository.GetLatestAsync(page, pageSize)
+            };
             await configureBaseModel(model);
             return View(model);
         }
