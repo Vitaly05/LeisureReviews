@@ -8,6 +8,6 @@ namespace LeisureReviews.Models
 
         public Rate CurrentUserRate { get; set; }
 
-        public double AverateRate { get; set; }
+        public double AverageRate { get; set; }
     }
 }

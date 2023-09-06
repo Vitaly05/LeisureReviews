@@ -17,6 +17,9 @@
         <div uk-tooltip="title: Number of likes; pos: bottom-left">
             <span uk-icon="heart"></span> @Model.Review.LikedUsers.Count()
         </div>
+        <div uk-tooltip="title: Average rating; pos: bottom-left">
+            <span uk-icon="star"></span> @(Model.Review.AverageRate is double.NaN ? "-" : Model.Review.AverageRate)/5
+        </div>
     </div>
     @if (Model.CanEdit)
     {

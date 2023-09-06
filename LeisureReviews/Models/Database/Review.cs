@@ -44,6 +44,9 @@ namespace LeisureReviews.Models.Database
 
         public ICollection<Rate> Rates { get; set; } = new List<Rate>();
 
+        [NotMapped]
+        public double AverageRate { get; set; }
+
         [Required]
         [BindNever]
         public DateTime CreateTime { get; set; }

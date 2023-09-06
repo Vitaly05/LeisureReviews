@@ -11,10 +11,14 @@ namespace LeisureReviews.Controllers
     {
         private readonly IReviewsRepository reviewsRepository;
 
-        public HomeController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository)
+        private readonly IRatesRepository ratesRepository;
+
+        public HomeController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository,
+            IRatesRepository ratesRepository)
         {
             this.usersRepository = usersRepository;
             this.reviewsRepository = reviewsRepository;
+            this.ratesRepository = ratesRepository;
         }
 
         [HttpGet("")]
@@ -43,6 +47,8 @@ namespace LeisureReviews.Controllers
             model.PageSize = pageSize;
             model.PagesCount = await reviewsRepository.GetPagesCountAsync(pageSize);
             model.Reviews = await reviewsRepository.GetLatestAsync(predicate, page, pageSize);
+            foreach (var review in model.Reviews)
+                review.AverageRate = await ratesRepository.GetAverageRateAsync(review);
         }
     }
 }

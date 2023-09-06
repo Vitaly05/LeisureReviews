@@ -16,7 +16,7 @@ namespace LeisureReviews.Repositories
         public async Task<Rate> GetAsync(User user, Review review) =>
             await context.Rates.FirstOrDefaultAsync(r => r.User.Id == user.Id && r.Review.Id == review.Id);
 
-        public async Task<double> GetAverageRate(Review review)
+        public async Task<double> GetAverageRateAsync(Review review)
         {
             IQueryable<Rate> allRates = context.Rates.Where(r => r.Review.Id == review.Id);
             if (await allRates.CountAsync() == 0) return double.NaN;

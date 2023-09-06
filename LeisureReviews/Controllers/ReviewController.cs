@@ -34,7 +34,7 @@ namespace LeisureReviews.Controllers
             var model = new ReviewViewModel();
             await configureBaseModel(model);
             model.Review = await reviewsRepository.GetAsync(reviewId);
-            model.AverateRate = await ratesRepository.GetAverageRate(model.Review);
+            model.AverageRate = await ratesRepository.GetAverageRateAsync(model.Review);
             if (model.IsAuthorized) model.CurrentUserRate = await ratesRepository.GetAsync(model.CurrentUser, model.Review);
             return View(model);
         }
@@ -112,7 +112,7 @@ namespace LeisureReviews.Controllers
                 Value = value
             };
             await ratesRepository.SaveAsync(rate);
-            return Ok(new { value = rate.Value, average = await ratesRepository.GetAverageRate(rate.Review) });
+            return Ok(new { value = rate.Value, average = await ratesRepository.GetAverageRateAsync(rate.Review) });
         }
 
         private async Task addTagsAsync(ReviewModel model)

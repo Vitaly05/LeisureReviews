@@ -6,7 +6,7 @@ namespace LeisureReviews.Repositories.Interfaces
     {
         Task<Rate> GetAsync(User user, Review review);
 
-        Task<double> GetAverageRate(Review review);
+        Task<double> GetAverageRateAsync(Review review);
 
         Task SaveAsync(Rate rate);
     }
