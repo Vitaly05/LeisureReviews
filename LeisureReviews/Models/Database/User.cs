@@ -11,5 +11,7 @@ namespace LeisureReviews.Models.Database
         public ICollection<Review> AuthoredReviews { get; set; } = new List<Review>();
 
         public ICollection<Review> LikedReviews { get; set; } = new List<Review>();
+
+        public ICollection<Rate> Rates { get; set; }
     }
 }

@@ -19,3 +19,23 @@
     display: block;
     margin: auto;
 }
+
+.yellow-svg svg {
+    filter: invert(89%) sepia(86%) saturate(923%) hue-rotate(358deg) brightness(102%) contrast(109%);
+}
+.yellow-svg polygon {
+    fill: black;
+}
+
+.yellow-svg-temp svg {
+    filter: invert(89%) sepia(86%) saturate(923%) hue-rotate(358deg) brightness(102%) contrast(109%) !important;
+}
+.yellow-svg-temp polygon {
+    fill: black !important;
+}
+.clear-svg-temp svg {
+    filter: none !important;
+}
+.clear-svg-temp polygon {
+    fill: none !important;
+}

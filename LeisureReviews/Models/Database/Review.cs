@@ -42,6 +42,8 @@ namespace LeisureReviews.Models.Database
 
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
+        public ICollection<Rate> Rates { get; set; } = new List<Rate>();
+
         [Required]
         [BindNever]
         public DateTime CreateTime { get; set; }
