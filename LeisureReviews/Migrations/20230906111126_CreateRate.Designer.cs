@@ -4,6 +4,7 @@ using LeisureReviews;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeisureReviews.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20230906111126_CreateRate")]
+    partial class CreateRate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,7 +51,7 @@ namespace LeisureReviews.Migrations
 
                     b.HasIndex("ReviewId");
 
-                    b.ToTable("Comments", (string)null);
+                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("LeisureReviews.Models.Database.Rate", b =>
@@ -73,7 +76,7 @@ namespace LeisureReviews.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Rates", (string)null);
+                    b.ToTable("Rates");
                 });
 
             modelBuilder.Entity("LeisureReviews.Models.Database.Review", b =>
@@ -118,7 +121,7 @@ namespace LeisureReviews.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("LeisureReviews.Models.Database.Tag", b =>
@@ -135,7 +138,7 @@ namespace LeisureReviews.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Tags", (string)null);
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("LeisureReviews.Models.Database.User", b =>
@@ -354,7 +357,7 @@ namespace LeisureReviews.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("ReviewTag", (string)null);
+                    b.ToTable("ReviewTag");
                 });
 
             modelBuilder.Entity("ReviewUser", b =>

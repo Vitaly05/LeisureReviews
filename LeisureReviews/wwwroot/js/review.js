@@ -53,6 +53,38 @@ commentsHubConnection.start().then(function () {
     commentsHubConnection.invoke('Init', reviewId)
 })
 
+$('.rating-button').on('mouseenter', function () {
+    updateRatingButtonsClass($(this).data('value'), 'yellow-svg-temp')
+})
+
+$('.rating-button').on('mouseleave', function () {
+    $('.rating-button').removeClass('yellow-svg-temp')
+    $('.rating-button').removeClass('clear-svg-temp')
+})
+
+$('.rating-button').on('click', async function () {
+    await $.post(`/Review/${reviewId}/Rate/${$(this).data('value')}`).done(function (data) {
+        updateRatingButtonsClass(data.value, 'yellow-svg')
+        $('#average-rate').text(`(${data.average})`)
+        UIkit.notification('Your rate saved', { status: 'success', pos: 'bottom-center' })
+    }).fail(response => {
+        if (response.status === 401) {
+            UIkit.notification('Please sign in to rate', { status: 'warning', pos: 'bottom-center' })
+        }
+    })
+})
+
+function updateRatingButtonsClass(currentRate, activeClass) {
+    for (let i = 1; i <= currentRate; i++) {
+        $(`[data-value="${i}"]`).removeClass('clear-svg-temp')
+        $(`[data-value="${i}"]`).addClass(activeClass)
+    }
+    for (let i = currentRate + 1; i <= 5; i++) {
+        $(`[data-value="${i}"]`).removeClass(activeClass)
+        $(`[data-value="${i}"]`).addClass('clear-svg-temp')
+    }
+}
+
 function createCommentClone(authorName, createTime, text) {
     const commentClone = $('#comment-template').clone()
     commentClone.find('#text').text(text)

@@ -34,9 +34,23 @@
                 <span uk-icon="happy"></span> @Model.Review.AuthorRate/10
             </div>
         </div>
-        <div>
+        <div class="d-flex gap-4 justify-content-between">
             <div uk-tooltip="title: Number of likes; pos: bottom-left">
                 <span uk-icon="heart"></span> @Model.Review.LikedUsers.Count()
+            </div>
+            <div uk-tooltip="title: Rating (average); pos: bottom-left" class="d-flex align-items-center">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (Model.CurrentUserRate is not null && Model.CurrentUserRate.Value >= i)
+                    {
+                        <a class="rating-button yellow-svg px-1" data-value="@i"><span uk-icon="star"></span></a>
+                    }
+                    else
+                    {
+                        <a class="rating-button px-1" data-value="@i"><span uk-icon="star"></span></a>
+                    }
+                }
+                <span id="average-rate">(@(Model.AverateRate is double.NaN ? "-" : Model.AverateRate))</span>
             </div>
         </div>
         <div class="uk-cover-container mx-0 mx-md-5 mt-4 flex gap-3 align-items-center justify-content-center">

@@ -15,14 +15,17 @@ namespace LeisureReviews.Controllers
 
         private readonly ITagsRepository tagsRepository;
 
+        private readonly IRatesRepository ratesRepository;
+
         private readonly ICloudService cloudService;
 
         public ReviewController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository, 
-            ITagsRepository tagsRepository, ICloudService cloudService)
+            ITagsRepository tagsRepository, IRatesRepository ratesRepository, ICloudService cloudService)
         {
             this.usersRepository = usersRepository;
             this.reviewsRepository = reviewsRepository;
             this.tagsRepository = tagsRepository;
+            this.ratesRepository = ratesRepository;
             this.cloudService = cloudService;
         }
 
@@ -31,6 +34,8 @@ namespace LeisureReviews.Controllers
             var model = new ReviewViewModel();
             await configureBaseModel(model);
             model.Review = await reviewsRepository.GetAsync(reviewId);
+            model.AverateRate = await ratesRepository.GetAverageRate(model.Review);
+            if (model.IsAuthorized) model.CurrentUserRate = await ratesRepository.GetAsync(model.CurrentUser, model.Review);
             return View(model);
         }
 
@@ -94,6 +99,20 @@ namespace LeisureReviews.Controllers
             if (reviewId is null) return BadRequest();
             await reviewsRepository.LikeAsync(reviewId, await getCurrentUser());
             return Ok();
+        }
+
+        [Authorize]
+        [HttpPost("{reviewId}/Rate/{value}")]
+        public async Task<IActionResult> RateReview(string reviewId, int value)
+        {
+            var rate = new Rate
+            {
+                Review = await reviewsRepository.GetAsync(reviewId),
+                User = await getCurrentUser(),
+                Value = value
+            };
+            await ratesRepository.SaveAsync(rate);
+            return Ok(new { value = rate.Value, average = await ratesRepository.GetAverageRate(rate.Review) });
         }
 
         private async Task addTagsAsync(ReviewModel model)
