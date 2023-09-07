@@ -13,12 +13,15 @@ namespace LeisureReviews.Controllers
 
         private readonly IRatesRepository ratesRepository;
 
+        private readonly ILikesRepository likesRepository;
+
         public HomeController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository,
-            IRatesRepository ratesRepository)
+            IRatesRepository ratesRepository, ILikesRepository likesRepository)
         {
             this.usersRepository = usersRepository;
             this.reviewsRepository = reviewsRepository;
             this.ratesRepository = ratesRepository;
+            this.likesRepository = likesRepository;
         }
 
         [HttpGet("")]
@@ -35,7 +38,7 @@ namespace LeisureReviews.Controllers
         {
             var user = await usersRepository.FindAsync(userName);
             if (user is null) return NotFound();
-            var model = new ProfileViewModel { User = user };
+            var model = new ProfileViewModel { User = user, LikesCount = await likesRepository.GetCountAsync(user) };
             await configureReviewsListViewModel(model, (r) => r.AuthorId == user.Id, page, pageSize);
             await configureBaseModel(model);
             return View(model);
