@@ -9,9 +9,14 @@
 }
 
 <div class="uk-border-rounded uk-background-muted mt-3 py-5 px-3">
-    <div class="d-flex align-items-center gap-1">
-        <span uk-icon="user"></span>
-        <h2 class="m-0">@Model.User.UserName</h2>
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-1">
+            <span uk-icon="user"></span>
+            <h2 class="m-0">@Model.User.UserName</h2>
+        </div>
+        <div uk-tooltip="title: Number of likes; pos: bottom-left">
+            <span uk-icon="heart"></span> @Model.LikesCount
+        </div>
     </div>
 </div>
 

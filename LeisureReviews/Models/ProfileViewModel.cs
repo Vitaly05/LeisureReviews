@@ -6,6 +6,8 @@ namespace LeisureReviews.Models
     {
         public User User { get; set; }
 
+        public int LikesCount { get; set; }
+
         public bool CanEdit
         {
             get => User.UserName == CurrentUser?.UserName;

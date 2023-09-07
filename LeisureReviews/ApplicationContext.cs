@@ -13,6 +13,8 @@ namespace LeisureReviews
 
         public DbSet<Tag> Tags { get; set; }
 
+        public DbSet<Like> Likes { get; set; }
+
         public DbSet<Comment> Comments { get; set; }
 
         public DbSet<Rate> Rates { get; set; }
@@ -25,11 +27,6 @@ namespace LeisureReviews
                 .HasForeignKey(r => r.AuthorId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
-
-            builder.Entity<Review>()
-                .HasMany(r => r.LikedUsers)
-                .WithMany(u => u.LikedReviews)
-                .UsingEntity(j => j.ToTable("UserLikesReview"));
 
             base.OnModelCreating(builder);
         }

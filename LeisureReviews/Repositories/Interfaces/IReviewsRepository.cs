@@ -16,7 +16,5 @@ namespace LeisureReviews.Repositories.Interfaces
         Task SaveAsync(Review review);
 
         Task DeleteAsync(string id);
-
-        Task LikeAsync(string reviewId, User likedUser);
     }
 }

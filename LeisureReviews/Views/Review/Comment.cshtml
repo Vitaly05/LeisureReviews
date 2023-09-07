@@ -6,6 +6,9 @@
             <div class="d-flex align-items-center gap-2">
                 <span uk-icon="user"></span>
                 <a id="profile-link" href="/Profile/@Model.Author.UserName">@Model.Author.UserName</a>
+                <div uk-tooltip="title: Number of likes; pos: bottom-left">
+                    <span uk-icon="heart"></span> <span class="uk-text-small">@Model.Author.LikesCount</span>
+                </div>
             </div>
             <span id="create-time" class="uk-text-small">@Model.CreateTime.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture)</span>
         </div>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LeisureReviews.Models.Database
 {
@@ -10,8 +11,11 @@ namespace LeisureReviews.Models.Database
 
         public ICollection<Review> AuthoredReviews { get; set; } = new List<Review>();
 
-        public ICollection<Review> LikedReviews { get; set; } = new List<Review>();
+        public ICollection<Like> Likes { get; set; } = new List<Like>();
 
         public ICollection<Rate> Rates { get; set; }
+
+        [NotMapped]
+        public int LikesCount { get; set; }
     }
 }

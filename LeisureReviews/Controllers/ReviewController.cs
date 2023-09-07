@@ -16,16 +16,20 @@ namespace LeisureReviews.Controllers
         private readonly ITagsRepository tagsRepository;
 
         private readonly IRatesRepository ratesRepository;
+        
+        private readonly ILikesRepository likesRepository;
 
         private readonly ICloudService cloudService;
 
         public ReviewController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository, 
-            ITagsRepository tagsRepository, IRatesRepository ratesRepository, ICloudService cloudService)
+            ITagsRepository tagsRepository, IRatesRepository ratesRepository, ILikesRepository likesRepository,
+            ICloudService cloudService)
         {
             this.usersRepository = usersRepository;
             this.reviewsRepository = reviewsRepository;
             this.tagsRepository = tagsRepository;
             this.ratesRepository = ratesRepository;
+            this.likesRepository = likesRepository;
             this.cloudService = cloudService;
         }
 
@@ -34,6 +38,9 @@ namespace LeisureReviews.Controllers
             var model = new ReviewViewModel();
             await configureBaseModel(model);
             model.Review = await reviewsRepository.GetAsync(reviewId);
+            model.Review.Author.LikesCount = await likesRepository.GetCountAsync(model.Review.Author);
+            foreach (var comment in model.Review.Comments)
+                comment.Author.LikesCount = await likesRepository.GetCountAsync(comment.Author);
             model.AverageRate = await ratesRepository.GetAverageRateAsync(model.Review);
             if (model.IsAuthorized) model.CurrentUserRate = await ratesRepository.GetAsync(model.CurrentUser, model.Review);
             return View(model);
@@ -97,7 +104,7 @@ namespace LeisureReviews.Controllers
         public async Task<IActionResult> LikeReview(string reviewId)
         {
             if (reviewId is null) return BadRequest();
-            await reviewsRepository.LikeAsync(reviewId, await getCurrentUser());
+            await likesRepository.LikeAsync(await reviewsRepository.GetAsync(reviewId), await getCurrentUser());
             return Ok();
         }
 
