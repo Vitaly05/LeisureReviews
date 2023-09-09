@@ -1,3 +1,4 @@
+using Algolia.Search.Clients;
 using LeisureReviews;
 using LeisureReviews.Hubs;
 using LeisureReviews.Models.Database;
@@ -70,6 +71,11 @@ builder.Services.AddScoped<ILikesRepository, LikesRepository>();
 builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
 builder.Services.AddScoped<IRatesRepository, RatesRepository>();
 builder.Services.AddScoped<ICloudService, DropboxCloudService>();
+
+builder.Services.AddSingleton<ISearchService, AlgoliaSearchService>();
+builder.Services.AddSingleton<ISearchClient>(new SearchClient(
+    builder.Configuration.GetSection("AlgoliaSearch").GetValue<string>("ApplicationId"),
+    builder.Configuration.GetSection("AlgoliaSearch").GetValue<string>("ApiKey")));
 
 var app = builder.Build();
 

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.Interfaces;
+using LeisureReviews.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -10,9 +11,12 @@ namespace LeisureReviews.Repositories
     {
         private readonly ApplicationContext context;
 
-        public ReviewsRepository(ApplicationContext context)
+        private readonly ISearchService searchService;
+
+        public ReviewsRepository(ApplicationContext context, ISearchService searchService)
         {
             this.context = context;
+            this.searchService = searchService;
         }
 
         public async Task<List<Review>> GetAllAsync(string authorId) =>
@@ -32,9 +36,9 @@ namespace LeisureReviews.Repositories
         public async Task SaveAsync(Review review)
         {
             if (context.Reviews.Any(r => r.Id == review.Id))
-                await updateReview(review);
+                await updateReviewAsync(review);
             else
-                addReview(review);
+                await addReviewAsync(review);
             context.SaveChanges();
         }
 
@@ -45,26 +49,31 @@ namespace LeisureReviews.Repositories
             context.SaveChanges();
         }
 
-        private async Task updateReview(Review review)
+        private async Task updateReviewAsync(Review review)
         {
             var updatedReview = getUpdatedReview(await GetAsync(review.Id), review);
             context.Entry(updatedReview).Property(r => r.CreateTime).IsModified = false;
             context.Entry(updatedReview).Property(r => r.AuthorId).IsModified = false;
             context.Reviews.Update(updatedReview);
+            await searchService.UpdateAsync(await GetAsync(updatedReview.Id));
         }
 
         private Review getUpdatedReview(Review existingReview, Review updatedReview)
         {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<Review, Review>());
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<Review, Review>()
+                .ForMember(r => r.Comments, opt => opt.Ignore())
+                .ForMember(r => r.Likes, opt => opt.Ignore())
+                .ForMember(r => r.Rates, opt => opt.Ignore()));
             var mapper = new Mapper(config);
             return mapper.Map(updatedReview, existingReview);
         }
 
-        private void addReview(Review review)
+        private async Task addReviewAsync(Review review)
         {
             review.CreateTime = DateTime.Now;
             review.Id = Guid.NewGuid().ToString();
             context.Reviews.Add(review);
+            await searchService.CreateAsync(review);
         }
     }
 }

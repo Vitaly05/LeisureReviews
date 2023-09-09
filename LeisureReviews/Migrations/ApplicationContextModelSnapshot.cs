@@ -48,7 +48,7 @@ namespace LeisureReviews.Migrations
 
                     b.HasIndex("ReviewId");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", (string)null);
                 });
 
             modelBuilder.Entity("LeisureReviews.Models.Database.Like", b =>
@@ -70,7 +70,7 @@ namespace LeisureReviews.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Likes");
+                    b.ToTable("Likes", (string)null);
                 });
 
             modelBuilder.Entity("LeisureReviews.Models.Database.Rate", b =>
@@ -95,7 +95,7 @@ namespace LeisureReviews.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Rates");
+                    b.ToTable("Rates", (string)null);
                 });
 
             modelBuilder.Entity("LeisureReviews.Models.Database.Review", b =>
@@ -140,7 +140,7 @@ namespace LeisureReviews.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("LeisureReviews.Models.Database.Tag", b =>
@@ -157,7 +157,7 @@ namespace LeisureReviews.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Tags");
+                    b.ToTable("Tags", (string)null);
                 });
 
             modelBuilder.Entity("LeisureReviews.Models.Database.User", b =>
@@ -376,7 +376,7 @@ namespace LeisureReviews.Migrations
 
                     b.HasIndex("TagsId");
 
-                    b.ToTable("ReviewTag");
+                    b.ToTable("ReviewTag", (string)null);
                 });
 
             modelBuilder.Entity("LeisureReviews.Models.Database.Comment", b =>

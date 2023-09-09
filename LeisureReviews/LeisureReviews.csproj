@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Algolia.Search" Version="6.15.0" />
     <PackageReference Include="AspNet.Security.OAuth.Vkontakte" Version="6.0.15" />
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="Dropbox.Api" Version="6.37.0" />
