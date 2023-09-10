@@ -39,3 +39,20 @@
 .clear-svg-temp polygon {
     fill: none !important;
 }
+
+#hits {
+    min-height: 70vh;
+}
+#hits .ais-Hits-item {
+    padding: 10px;
+}
+#pagination .ais-Pagination {
+    display: flex;
+    justify-content: center;
+}
+#pagination .ais-Pagination-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 90%;
+}

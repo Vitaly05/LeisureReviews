@@ -35,6 +35,7 @@ namespace LeisureReviews.Controllers
 
         public async Task<IActionResult> Index(string reviewId)
         {
+            if (reviewId is null) return BadRequest();
             var model = new ReviewViewModel();
             await configureBaseModel(model);
             model.Review = await reviewsRepository.GetAsync(reviewId);
