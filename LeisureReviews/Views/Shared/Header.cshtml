@@ -8,6 +8,9 @@
                     <a class="uk-navbar-item uk-logo" href="/">Leisure Reviews</a>
                 </div>
                 <div class="uk-navbar-right">
+                    <div>
+                        <a href="" class="search-button uk-icon-button" uk-icon="search"></a>
+                    </div>
                     <!-- MOBILE -->
                     <a class="uk-navbar-toggle uk-navbar-toggle-animate d-flex d-md-none" uk-navbar-toggle-icon href="#"></a>
                     <div class="uk-navbar-dropdown text-center">
@@ -43,7 +46,7 @@
                     </div>
                     
                     <!-- PC -->
-                    <ul class="uk-nav uk-navbar-nav d-none d-md-flex text-center">
+                    <ul class="uk-nav uk-navbar-nav d-none d-md-flex text-center align-items-center">
                         @if (Model.IsAuthorized)
                         {
                             <li>
@@ -83,3 +86,24 @@
         </div>
     </nav>
 </header>
+
+<div id="search-modal" uk-modal bg-close="false">
+    <div class="uk-modal-header uk-border-rounded">
+        <button class="uk-modal-close-default m-2" type="button" uk-close></button>
+        <div class="uk-inline uk-width-expand mt-4">
+            <span class="uk-form-icon" uk-icon="search"></span>
+            <input class="uk-input uk-border-rounded" id="search-input" placeholder="Search...">
+        </div>
+    </div>
+    <div class="uk-modal-dialog uk-border-rounded uk-modal-body mt-2 w-100 p-0">
+        <div id="hits" class="m-0 uk-border-rounded"></div>
+        <div id="pagination" class="my-4"></div>
+
+        <div id="hit-template" style="display: none">
+            <a class="uk-button uk-button-default uk-border-rounded uk-width-expand uk-text-left">
+                <h3 class="mb-1 mt-3" id="title"></h3>
+                Leisure: <b id="leisure"></b>
+            </a>
+        </div>
+    </div>
+</div>
