@@ -77,6 +77,14 @@ builder.Services.AddSingleton<ISearchClient>(new SearchClient(
     builder.Configuration.GetSection("AlgoliaSearch").GetValue<string>("ApplicationId"),
     builder.Configuration.GetSection("AlgoliaSearch").GetValue<string>("ApiKey")));
 
+using (var serviceProvider = builder.Services.BuildServiceProvider())
+{
+    var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
+    var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
+    await new RolesInitializer(userManager, roleManager, configuration).InitializeAsync();
+}
+
 var app = builder.Build();
 
 if (!builder.Environment.IsDevelopment())

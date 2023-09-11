@@ -1,6 +1,7 @@
 ﻿using LeisureReviews.Models;
 using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
 
@@ -41,17 +42,39 @@ namespace LeisureReviews.Controllers
             var model = new ProfileViewModel { User = user, LikesCount = await likesRepository.GetCountAsync(user) };
             await configureReviewsListViewModel(model, (r) => r.AuthorId == user.Id, page, pageSize);
             await configureBaseModel(model);
+            if (model.CurrentUser is not null)
+                model.CurrentUser.Roles = await usersRepository.GetRolesAsync(model.CurrentUser);
+            return View(model);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpGet("AdminPanel")]
+        public async Task<IActionResult> AdminPanel(int page = 0, int pageSize = 10)
+        {
+            var model = new AdminPanelViewModel()
+            {
+                Users = await usersRepository.GetAllAsync(page, pageSize)
+            };
+            foreach (var user in model.Users)
+                user.LikesCount = await likesRepository.GetCountAsync(user);
+            await configureBaseModel(model);
+            configurePagesViewModel(model, page, pageSize, await usersRepository.GetPagesCountAsync(pageSize));
             return View(model);
         }
 
         private async Task configureReviewsListViewModel(ReviewsListViewModel model, Expression<Func<Review, bool>> predicate, int page, int pageSize)
         {
-            model.Page = page;
-            model.PageSize = pageSize;
-            model.PagesCount = await reviewsRepository.GetPagesCountAsync(pageSize);
+            configurePagesViewModel(model, page, pageSize, await reviewsRepository.GetPagesCountAsync(pageSize));
             model.Reviews = await reviewsRepository.GetLatestAsync(predicate, page, pageSize);
             foreach (var review in model.Reviews)
                 review.AverageRate = await ratesRepository.GetAverageRateAsync(review);
+        }
+
+        private void configurePagesViewModel(PagesViewModel model, int page, int pageSize, int pagesCount)
+        {
+            model.Page = page;
+            model.PageSize = pageSize;
+            model.PagesCount = pagesCount;
         }
     }
 }

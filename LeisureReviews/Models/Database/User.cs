@@ -17,5 +17,8 @@ namespace LeisureReviews.Models.Database
 
         [NotMapped]
         public int LikesCount { get; set; }
+
+        [NotMapped]
+        public List<string> Roles { get; set; } = new List<string>();
     }
 }

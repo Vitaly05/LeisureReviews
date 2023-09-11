@@ -10,7 +10,11 @@ namespace LeisureReviews.Models
 
         public bool CanEdit
         {
-            get => User.UserName == CurrentUser?.UserName;
+            get  
+            {
+                if (CurrentUser is null) return false;
+                return User.UserName == CurrentUser.UserName || CurrentUser.Roles.Contains("Admin");
+            }
         }
     }
 }

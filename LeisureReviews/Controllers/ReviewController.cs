@@ -4,7 +4,6 @@ using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LeisureReviews.Services.Interfaces;
-using System.Net;
 
 namespace LeisureReviews.Controllers
 {
@@ -39,6 +38,7 @@ namespace LeisureReviews.Controllers
             var model = new ReviewViewModel();
             await configureBaseModel(model);
             model.Review = await reviewsRepository.GetAsync(reviewId);
+            if (model.Review is null) return NotFound();
             model.Review.Author.LikesCount = await likesRepository.GetCountAsync(model.Review.Author);
             foreach (var comment in model.Review.Comments)
                 comment.Author.LikesCount = await likesRepository.GetCountAsync(comment.Author);
@@ -57,11 +57,11 @@ namespace LeisureReviews.Controllers
 
         [Authorize]
         [HttpGet("New")]
-        public async Task<IActionResult> NewReview()
+        public async Task<IActionResult> NewReview(string authorId)
         {
             var model = new ReviewEditorViewModel();
+            model.Review = new Review { AuthorId = authorId };
             await configureReviewEditorViewModel(model);
-            model.Review = new Review { AuthorId = model.CurrentUser.Id };
             return View("ReviewEditor", model);
         }
 
@@ -70,10 +70,10 @@ namespace LeisureReviews.Controllers
         public async Task<IActionResult> EditReview(string reviewId)
         {
             var model = new ReviewEditorViewModel();
-            await configureReviewEditorViewModel(model);
             model.Review = await reviewsRepository.GetAsync(reviewId);
             if (model.Review is null) return NotFound();
-            if (model.CurrentUser.Id != model.Review.AuthorId) return Forbid();
+            await configureReviewEditorViewModel(model);
+            if (!await canEditAsync(model.CurrentUser, model.Review)) return Forbid();
             return View("ReviewEditor", model);
         }
 
@@ -95,7 +95,7 @@ namespace LeisureReviews.Controllers
         {
             var review = await reviewsRepository.GetAsync(reviewId);
             if (review is null) return NotFound();
-            if (review.AuthorId != (await getCurrentUser()).Id) return Forbid();
+            if (!await canEditAsync(await getCurrentUser(), review)) return Forbid();
             await reviewsRepository.DeleteAsync(reviewId);
             return Ok(reviewId);
         }
@@ -123,6 +123,12 @@ namespace LeisureReviews.Controllers
             return Ok(new { value = rate.Value, average = await ratesRepository.GetAverageRateAsync(rate.Review) });
         }
 
+        private async Task<bool> canEditAsync(User user, Review review)
+        {
+            var isAdmin = (await usersRepository.GetRolesAsync(user)).Contains("Admin");
+            return isAdmin ? true : review.AuthorId == user.Id;
+        }
+
         private async Task addTagsAsync(ReviewModel model)
         {
             tagsRepository.AddNewTags(model.TagsNames);
@@ -132,7 +138,7 @@ namespace LeisureReviews.Controllers
         private async Task configureReviewEditorViewModel(ReviewEditorViewModel model)
         {
             await configureBaseModel(model);
-            model.AuthorName = model.CurrentUser.UserName;
+            model.AuthorName = await usersRepository.GetUserNameAsync(model.Review.AuthorId);
             model.Tags = await tagsRepository.GetTagsAsync();
         }
 

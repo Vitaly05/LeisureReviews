@@ -15,5 +15,13 @@ namespace LeisureReviews.Repositories.Interfaces
         Task<User> FindAsync(string externalProvider, string providerKey);
 
         Task<User> GetAsync(ClaimsPrincipal principal);
+
+        Task<List<User>> GetAllAsync(int page, int pageSize);
+
+        Task<int> GetPagesCountAsync(int pageSize);
+
+        Task<List<string>> GetRolesAsync(User user);
+
+        Task<string> GetUserNameAsync(string id);
     }
 }
