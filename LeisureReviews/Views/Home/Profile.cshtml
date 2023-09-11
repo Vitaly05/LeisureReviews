@@ -25,7 +25,7 @@
     @if (Model.CanEdit)
     {
         <div class="d-flex justify-content-center">
-            <a href="/Review/New" class="uk-button uk-button-primary uk-border-rounded" id="create-review-button">Create new</a>
+            <a href="/Review/New?authorId=@Model.User.Id" class="uk-button uk-button-primary uk-border-rounded" id="create-review-button">Create new</a>
         </div>
     }
     <div class="d-flex flex-column gap-4 align-items-center">
@@ -44,7 +44,7 @@
         }
     </div>
     @{
-        await Html.RenderPartialAsync("ReviewsListPagination", Model);
+        await Html.RenderPartialAsync("Pagination", Model);
     }
 </div>
 
