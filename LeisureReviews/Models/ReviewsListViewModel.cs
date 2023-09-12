@@ -7,6 +7,6 @@ namespace LeisureReviews.Models
     {
         public List<Review> Reviews { get; set; }
 
-        public ReviewsListType ReviewsListType { get; set; } = ReviewsListType.Latest;
+        public ReviewSortModel ReviewSortModel { get; set; } = new();
     }
 }

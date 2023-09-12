@@ -1,0 +1,24 @@
+﻿@model ProfileViewModel
+
+@foreach (var target in Enum.GetValues(typeof(ReviewSortTarget)))
+{
+    <div class="d-flex align-items-center justify-content-center gap-2 uk-background-default uk-border-rounded p-2">
+        @if ((ReviewSortTarget)target == Model.ReviewSortModel.Target && Model.ReviewSortModel.Type == SortType.Descending)
+        {
+            <a href="/Profile/@Model.User.UserName/@target/Descending" class="uk-icon-button uk-button-secondary uk-disabled"><span uk-icon="arrow-down"></span></a>
+        }
+        else
+        {
+            <a href="/Profile/@Model.User.UserName/@target/Descending" class="uk-icon-button"><span uk-icon="arrow-down"></span></a>
+        }
+        <b>@target</b>
+        @if ((ReviewSortTarget)target == Model.ReviewSortModel.Target && Model.ReviewSortModel.Type == SortType.Ascending)
+        {
+            <a href="/Profile/@Model.User.UserName/@target/Ascending" class="uk-icon-button uk-button-secondary uk-disabled"><span uk-icon="arrow-up"></span></a>
+        }
+        else
+        {
+            <a href="/Profile/@Model.User.UserName/@target/Ascending" class="uk-icon-button"><span uk-icon="arrow-up"></span></a>
+        }
+    </div>
+}

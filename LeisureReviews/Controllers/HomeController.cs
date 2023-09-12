@@ -1,6 +1,7 @@
 ﻿using LeisureReviews.Data;
 using LeisureReviews.Models;
 using LeisureReviews.Models.Database;
+using LeisureReviews.Models.Search;
 using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,18 +28,13 @@ namespace LeisureReviews.Controllers
         }
 
         [HttpGet("")]
-        [HttpGet("Latest")]
-        public async Task<IActionResult> LatestReviews(int page = 0, int pageSize = 5)
+        [HttpGet("Home/{sortTarget}/{sortType}")]
+        public async Task<IActionResult> Index(string sortTarget, string sortType, int page = 0, int pageSize = 5)
         {
-            var model = new ReviewsListViewModel { ReviewsListType = ReviewsListType.Latest };
-            return await homePageAsync(model, page, pageSize);
-        }
-
-        [HttpGet("TopRated")]
-        public async Task<IActionResult> TopRatedReviews(int page = 0, int pageSize = 5)
-        {
-            var model = new ReviewsListViewModel { ReviewsListType = ReviewsListType.TopRated };
-            return await homePageAsync(model, page, pageSize);
+            var model = new ReviewsListViewModel { ReviewSortModel = getReviewSortModel(sortTarget, sortType) };
+            await configureReviewsListViewModel(model, r => true, page, pageSize);
+            await configureBaseModel(model);
+            return View(model);
         }
 
         [HttpGet("Profile/{userName}")]
@@ -47,7 +43,20 @@ namespace LeisureReviews.Controllers
             var user = await usersRepository.FindAsync(userName);
             if (user is null) return NotFound();
             var model = new ProfileViewModel { User = user, LikesCount = await likesRepository.GetCountAsync(user) };
-            await configureReviewsListViewModel(model, (r) => r.AuthorId == user.Id, page, pageSize);
+            await configureReviewsListViewModel(model, r => r.AuthorId == user.Id, page, pageSize);
+            await configureBaseModel(model);
+            if (model.CurrentUser is not null)
+                model.CurrentUser.Roles = await usersRepository.GetRolesAsync(model.CurrentUser);
+            return View(model);
+        }
+
+        [HttpGet("Profile/{userName}/{sortTarget}/{sortType}")]
+        public async Task<IActionResult> Profile(string userName, string sortTarget, string sortType, int page = 0, int pageSize = 5)
+        {
+            var user = await usersRepository.FindAsync(userName);
+            if (user is null) return NotFound();
+            var model = new ProfileViewModel { User = user, LikesCount = await likesRepository.GetCountAsync(user), ReviewSortModel = getReviewSortModel(sortTarget, sortType) };
+            await configureReviewsListViewModel(model, r => r.AuthorId == user.Id, page, pageSize);
             await configureBaseModel(model);
             if (model.CurrentUser is not null)
                 model.CurrentUser.Roles = await usersRepository.GetRolesAsync(model.CurrentUser);
@@ -69,17 +78,10 @@ namespace LeisureReviews.Controllers
             return View(model);
         }
 
-        private async Task<IActionResult> homePageAsync(ReviewsListViewModel model, int page, int pageSize)
-        {
-            await configureReviewsListViewModel(model, (r) => true, page, pageSize);
-            await configureBaseModel(model);
-            return View("Index", model);
-        }
-
         private async Task configureReviewsListViewModel(ReviewsListViewModel model, Expression<Func<Review, bool>> predicate, int page, int pageSize)
         {
             configurePagesViewModel(model, page, pageSize, await reviewsRepository.GetPagesCountAsync(pageSize, predicate));
-            model.Reviews = await getReviewsAsync(model.ReviewsListType, predicate, page, pageSize);
+            model.Reviews = await getReviewsAsync(model.ReviewSortModel, predicate, page, pageSize);
             foreach (var review in model.Reviews)
                 review.AverageRate = await ratesRepository.GetAverageRateAsync(review);
         }
@@ -91,12 +93,20 @@ namespace LeisureReviews.Controllers
             model.PagesCount = pagesCount;
         }
 
-        private async Task<List<Review>> getReviewsAsync(ReviewsListType listType, Expression<Func<Review, bool>> predicate, int page, int pageSize) =>
-            listType switch
+        private async Task<List<Review>> getReviewsAsync(ReviewSortModel sortModel, Expression<Func<Review, bool>> predicate, int page, int pageSize) =>
+            sortModel.Target switch
             {
-                ReviewsListType.Latest => await reviewsRepository.GetLatestAsync(predicate, page, pageSize),
-                ReviewsListType.TopRated => await reviewsRepository.GetTopRatedAsync(predicate, page, pageSize),
+                ReviewSortTarget.Date => await reviewsRepository.GetLatestAsync(predicate, sortModel.Type, page, pageSize),
+                ReviewSortTarget.Rate => await reviewsRepository.GetTopRatedAsync(predicate, sortModel.Type, page, pageSize),
+                ReviewSortTarget.Likes => await reviewsRepository.GetTopLikedAsync(predicate, sortModel.Type, page, pageSize),
                 _ => new()
             };
+
+        private ReviewSortModel getReviewSortModel(string sortTarget, string sortType)
+        {
+            Enum.TryParse(sortTarget, out ReviewSortTarget target);
+            Enum.TryParse(sortType, out SortType type);
+            return new ReviewSortModel { Target = target, Type = type };
+        }
     }
 }
