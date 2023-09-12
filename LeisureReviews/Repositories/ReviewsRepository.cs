@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LeisureReviews.Data;
 using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.Interfaces;
 using LeisureReviews.Services.Interfaces;
@@ -26,15 +27,21 @@ namespace LeisureReviews.Repositories
             await context.Reviews.Include(r => r.Tags).Include(r => r.Author).Include(r => r.Likes).ThenInclude(l => l.User)
                 .Include(r => r.Comments).ThenInclude(c => c.Author).FirstOrDefaultAsync(r => r.Id == id);
 
-        public async Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize)
+        public async Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, SortType sortType, int page, int pageSize)
         {
-            IQueryable<Review> query = context.Reviews.OrderByDescending(r => r.CreateTime).Include(r => r.Tags).Include(r => r.Likes);
+            IQueryable<Review> query = orderReviews(sortType, r => r.CreateTime);
             return await getPageAsync(query, predicate, page, pageSize);
         }
 
-        public async Task<List<Review>> GetTopRatedAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize)
+        public async Task<List<Review>> GetTopRatedAsync(Expression<Func<Review, bool>> predicate, SortType sortType, int page, int pageSize)
         {
-            IQueryable<Review> query = context.Reviews.OrderByDescending(r => r.Rates.Average(r => r.Value)).Include(r => r.Tags).Include(r => r.Likes);
+            IQueryable<Review> query = orderReviews(sortType, r => r.Rates.Average(r => r.Value));
+            return await getPageAsync(query, predicate, page, pageSize);
+        }
+
+        public async Task<List<Review>> GetTopLikedAsync(Expression<Func<Review, bool>> predicate, SortType sortType, int page, int pageSize)
+        {
+            IQueryable<Review> query = orderReviews(sortType, r => r.Likes.Count());
             return await getPageAsync(query, predicate, page, pageSize);
         }
 
@@ -86,5 +93,12 @@ namespace LeisureReviews.Repositories
             context.Reviews.Add(review);
             await searchService.CreateAsync(review);
         }
+
+        private IQueryable<Review> orderReviews<TKey>(SortType sortType, Expression<Func<Review, TKey>> keySelector) =>
+            sortType switch
+            {
+                SortType.Descending => context.Reviews.OrderByDescending(keySelector).Include(r => r.Tags).Include(r => r.Likes),
+                _ => context.Reviews.OrderBy(keySelector).Include(r => r.Tags).Include(r => r.Likes)
+            };
     }
 }

@@ -11,19 +11,18 @@
 
 <div class="uk-border-rounded uk-background-muted mt-3 py-5 px-3">
     <div class="d-flex flex-column flex-md-row gap-2 gap-md-4 align-items-center justify-content-center">
-        @foreach (var valuePair in ReviewsListTypesExtensions.StringValues)
+        @foreach (var valuePair in ReviewSortTargetExtensions.StringValues)
         {
-            if (valuePair.Key == Model.ReviewsListType)
+            if (valuePair.Key == Model.ReviewSortModel.Target)
             {
-                <a href="/@valuePair.Key" class="uk-button uk-button-secondary uk-disabled uk-border-rounded col-12 col-md-4">@valuePair.Value</a>
+                <a href="/@valuePair.Key/Descending" class="uk-button uk-button-secondary uk-disabled uk-border-rounded col-12 col-md-4">@valuePair.Value</a>
             }
             else
             {
-                <a href="/@valuePair.Key" class="uk-button uk-button-default uk-border-rounded col-12 col-md-4">@valuePair.Value</a>
+                <a href="/@valuePair.Key/Descending" class="uk-button uk-button-default uk-border-rounded col-12 col-md-4">@valuePair.Value</a>
             }
         }
     </div>
-    <h3 class="text-center">@ReviewsListTypesExtensions.StringValues[Model.ReviewsListType]</h3>
     <div class="d-flex flex-column gap-4 align-items-center mt-3">
         @if (Model.Reviews.Where(r => !r.IsDeleted).Count() == 0)
         {

@@ -28,6 +28,11 @@
             <a href="/Review/New?authorId=@Model.User.Id" class="uk-button uk-button-primary uk-border-rounded" id="create-review-button">Create new</a>
         </div>
     }
+    <div class="mt-4 d-flex flex-sm-row flex-column align-items-center justify-content-center gap-2 uk-child-width-1-2 uk-child-width-1-5@l">
+        @{
+            await Html.RenderPartialAsync("SortingControls", Model);
+        }
+    </div>
     <div class="d-flex flex-column gap-4 align-items-center">
         @if (Model.Reviews.Where(r => !r.IsDeleted).Count() == 0)
         {

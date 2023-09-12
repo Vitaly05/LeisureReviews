@@ -1,4 +1,5 @@
-﻿using LeisureReviews.Models.Database;
+﻿using LeisureReviews.Data;
+using LeisureReviews.Models.Database;
 using System.Linq.Expressions;
 
 namespace LeisureReviews.Repositories.Interfaces
@@ -9,9 +10,11 @@ namespace LeisureReviews.Repositories.Interfaces
 
         Task<Review> GetAsync(string id);
 
-        Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize);
+        Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, SortType sortType, int page, int pageSize);
 
-        Task<List<Review>> GetTopRatedAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize);
+        Task<List<Review>> GetTopRatedAsync(Expression<Func<Review, bool>> predicate, SortType sortType, int page, int pageSize);
+
+        Task<List<Review>> GetTopLikedAsync(Expression<Func<Review, bool>> predicate, SortType sortType, int page, int pageSize);
 
         Task<int> GetPagesCountAsync(int pageSize, Expression<Func<Review, bool>> predicate);
 
