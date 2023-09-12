@@ -11,7 +11,7 @@ namespace LeisureReviews.Repositories.Interfaces
 
         Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize);
 
-        Task<int> GetPagesCountAsync(int pageSize);
+        Task<int> GetPagesCountAsync(int pageSize, Expression<Func<Review, bool>> predicate);
 
         Task SaveAsync(Review review);
 

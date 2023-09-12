@@ -64,7 +64,7 @@ namespace LeisureReviews.Controllers
 
         private async Task configureReviewsListViewModel(ReviewsListViewModel model, Expression<Func<Review, bool>> predicate, int page, int pageSize)
         {
-            configurePagesViewModel(model, page, pageSize, await reviewsRepository.GetPagesCountAsync(pageSize));
+            configurePagesViewModel(model, page, pageSize, await reviewsRepository.GetPagesCountAsync(pageSize, predicate));
             model.Reviews = await reviewsRepository.GetLatestAsync(predicate, page, pageSize);
             foreach (var review in model.Reviews)
                 review.AverageRate = await ratesRepository.GetAverageRateAsync(review);

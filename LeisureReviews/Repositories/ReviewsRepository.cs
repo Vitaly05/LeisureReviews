@@ -24,14 +24,14 @@ namespace LeisureReviews.Repositories
 
         public async Task<Review> GetAsync(string id) =>
             await context.Reviews.Include(r => r.Tags).Include(r => r.Author).Include(r => r.Likes).ThenInclude(l => l.User)
-            .Include(r => r.Comments).ThenInclude(c => c.Author).FirstOrDefaultAsync(r => r.Id == id);
+                .Include(r => r.Comments).ThenInclude(c => c.Author).FirstOrDefaultAsync(r => r.Id == id);
 
         public async Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize) =>
             await context.Reviews.OrderByDescending(r => r.CreateTime).Include(r => r.Tags).Include(r => r.Likes)
                 .Where(predicate).Skip(page * pageSize).Take(pageSize).ToListAsync();
 
-        public async Task<int> GetPagesCountAsync(int pageSize) =>
-            (int)Math.Ceiling(await context.Reviews.CountAsync() / (double)pageSize);
+        public async Task<int> GetPagesCountAsync(int pageSize, Expression<Func<Review, bool>> predicate) =>
+            (int)Math.Ceiling(await context.Reviews.Where(predicate).CountAsync() / (double)pageSize);
 
         public async Task SaveAsync(Review review)
         {
