@@ -1,4 +1,5 @@
-﻿using LeisureReviews.Models;
+﻿using LeisureReviews.Data;
+using LeisureReviews.Models;
 using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -26,12 +27,18 @@ namespace LeisureReviews.Controllers
         }
 
         [HttpGet("")]
-        public async Task<IActionResult> Index(int page = 0, int pageSize = 5)
+        [HttpGet("Latest")]
+        public async Task<IActionResult> LatestReviews(int page = 0, int pageSize = 5)
         {
-            var model = new ReviewsListViewModel();
-            await configureReviewsListViewModel(model, (r) => true, page, pageSize);
-            await configureBaseModel(model);
-            return View(model);
+            var model = new ReviewsListViewModel { ReviewsListType = ReviewsListType.Latest };
+            return await homePageAsync(model, page, pageSize);
+        }
+
+        [HttpGet("TopRated")]
+        public async Task<IActionResult> TopRatedReviews(int page = 0, int pageSize = 5)
+        {
+            var model = new ReviewsListViewModel { ReviewsListType = ReviewsListType.TopRated };
+            return await homePageAsync(model, page, pageSize);
         }
 
         [HttpGet("Profile/{userName}")]
@@ -62,10 +69,17 @@ namespace LeisureReviews.Controllers
             return View(model);
         }
 
+        private async Task<IActionResult> homePageAsync(ReviewsListViewModel model, int page, int pageSize)
+        {
+            await configureReviewsListViewModel(model, (r) => true, page, pageSize);
+            await configureBaseModel(model);
+            return View("Index", model);
+        }
+
         private async Task configureReviewsListViewModel(ReviewsListViewModel model, Expression<Func<Review, bool>> predicate, int page, int pageSize)
         {
             configurePagesViewModel(model, page, pageSize, await reviewsRepository.GetPagesCountAsync(pageSize, predicate));
-            model.Reviews = await reviewsRepository.GetLatestAsync(predicate, page, pageSize);
+            model.Reviews = await getReviewsAsync(model.ReviewsListType, predicate, page, pageSize);
             foreach (var review in model.Reviews)
                 review.AverageRate = await ratesRepository.GetAverageRateAsync(review);
         }
@@ -76,5 +90,13 @@ namespace LeisureReviews.Controllers
             model.PageSize = pageSize;
             model.PagesCount = pagesCount;
         }
+
+        private async Task<List<Review>> getReviewsAsync(ReviewsListType listType, Expression<Func<Review, bool>> predicate, int page, int pageSize) =>
+            listType switch
+            {
+                ReviewsListType.Latest => await reviewsRepository.GetLatestAsync(predicate, page, pageSize),
+                ReviewsListType.TopRated => await reviewsRepository.GetTopRatedAsync(predicate, page, pageSize),
+                _ => new()
+            };
     }
 }

@@ -26,9 +26,17 @@ namespace LeisureReviews.Repositories
             await context.Reviews.Include(r => r.Tags).Include(r => r.Author).Include(r => r.Likes).ThenInclude(l => l.User)
                 .Include(r => r.Comments).ThenInclude(c => c.Author).FirstOrDefaultAsync(r => r.Id == id);
 
-        public async Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize) =>
-            await context.Reviews.OrderByDescending(r => r.CreateTime).Include(r => r.Tags).Include(r => r.Likes)
-                .Where(predicate).Skip(page * pageSize).Take(pageSize).ToListAsync();
+        public async Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize)
+        {
+            IQueryable<Review> query = context.Reviews.OrderByDescending(r => r.CreateTime).Include(r => r.Tags).Include(r => r.Likes);
+            return await getPageAsync(query, predicate, page, pageSize);
+        }
+
+        public async Task<List<Review>> GetTopRatedAsync(Expression<Func<Review, bool>> predicate, int page, int pageSize)
+        {
+            IQueryable<Review> query = context.Reviews.OrderByDescending(r => r.Rates.Average(r => r.Value)).Include(r => r.Tags).Include(r => r.Likes);
+            return await getPageAsync(query, predicate, page, pageSize);
+        }
 
         public async Task<int> GetPagesCountAsync(int pageSize, Expression<Func<Review, bool>> predicate) =>
             (int)Math.Ceiling(await context.Reviews.Where(predicate).CountAsync() / (double)pageSize);
@@ -48,6 +56,9 @@ namespace LeisureReviews.Repositories
             review.IsDeleted = true;
             context.SaveChanges();
         }
+
+        private async Task<List<Review>> getPageAsync(IQueryable<Review> reviewQuery, Expression<Func<Review, bool>> predicate, int page, int pageSize) =>
+            await reviewQuery.Where(predicate).Skip(page * pageSize).Take(pageSize).ToListAsync();
 
         private async Task updateReviewAsync(Review review)
         {
