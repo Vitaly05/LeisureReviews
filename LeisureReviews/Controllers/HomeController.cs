@@ -37,6 +37,16 @@ namespace LeisureReviews.Controllers
             return View(model);
         }
 
+        [HttpGet("Home/{tag}")]
+        [HttpGet("Home/{tag}/{sortTarget}/{sortType}")]
+        public async Task<IActionResult> GetReviewsWithTag(string tag, string sortTarget, string sortType, int page = 0, int pageSize = 5)
+        {
+            var model = new ReviewsListViewModel { ReviewSortModel = getReviewSortModel(sortTarget, sortType), AdditionalUrl = $"/{tag}" };
+            await configureReviewsListViewModel(model, r => r.Tags.Any(t => t.Name == tag), page, pageSize);
+            await configureBaseModel(model);
+            return View("Index", model);
+        }
+
         [HttpGet("Profile/{userName}")]
         public async Task<IActionResult> Profile(string userName, int page = 0, int pageSize = 5)
         {

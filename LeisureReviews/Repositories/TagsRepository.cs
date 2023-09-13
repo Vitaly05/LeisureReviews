@@ -1,4 +1,5 @@
-﻿using LeisureReviews.Models.Database;
+﻿using LeisureReviews.Models;
+using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,6 +24,9 @@ namespace LeisureReviews.Repositories
                 tags.Add(await context.Tags.FirstOrDefaultAsync(t => t.Name == tagName));
             return tags;
         }
+
+        public async Task<List<TagWeightModel>> GetWeightsAsync() =>
+            await context.Tags.Select(t => new TagWeightModel { Text = t.Name, Weight = t.Reviews.Count(), Link = $"/Home/{t.Name}" }).ToListAsync();
 
         public void AddNewTags(IEnumerable<string> tagsNames)
         {

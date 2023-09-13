@@ -56,3 +56,45 @@
     flex-wrap: wrap;
     max-width: 90%;
 }
+
+#tags-cloud-modal .uk-modal-header {
+    height: 10%;
+}
+#tags-cloud-modal .uk-modal-body {
+    height: 90%;
+}
+
+#tags-cloud span:hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+#tags-cloud .w1 {
+    font-size:  1.5em;
+}
+#tags-cloud .w2 {
+    font-size: 2em;
+}
+#tags-cloud .w3 {
+    font-size: 3em;
+}
+#tags-cloud .w4 {
+    font-size: 4em;
+}
+#tags-cloud .w5 {
+    font-size: 5em;
+}
+#tags-cloud .w6 {
+    font-size: 6em;
+}
+#tags-cloud .w7 {
+    font-size: 7em;
+}
+#tags-cloud .w8 {
+    font-size: 8em;
+}
+#tags-cloud .w9 {
+    font-size: 9em;
+}
+#tags-cloud .w10 {
+    font-size: 10em;
+}
