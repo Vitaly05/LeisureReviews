@@ -10,16 +10,19 @@
 
 
 <div class="uk-border-rounded uk-background-muted mt-3 py-5 px-3">
-    <div class="d-flex flex-column flex-md-row gap-2 gap-md-4 align-items-center justify-content-center">
+    <div class="d-flex justify-content-center">
+        <a href="" id="tags-cloud-button">Tags cloud</a>
+    </div>
+    <div class="d-flex flex-column flex-md-row gap-2 gap-md-4 align-items-center justify-content-center mt-4">
         @foreach (var valuePair in ReviewSortTargetExtensions.StringValues)
         {
             if (valuePair.Key == Model.ReviewSortModel.Target)
             {
-                <a href="/Home/@valuePair.Key/Descending" class="uk-button uk-button-secondary uk-disabled uk-border-rounded col-12 col-md-4">@valuePair.Value</a>
+                <a href="/Home@(Model.AdditionalUrl)/@valuePair.Key/Descending" class="uk-button uk-button-secondary uk-disabled uk-border-rounded col-12 col-md-4">@valuePair.Value</a>
             }
             else
             {
-                <a href="/Home/@valuePair.Key/Descending" class="uk-button uk-button-default uk-border-rounded col-12 col-md-4">@valuePair.Value</a>
+                <a href="/Home@(Model.AdditionalUrl)/@valuePair.Key/Descending" class="uk-button uk-button-default uk-border-rounded col-12 col-md-4">@valuePair.Value</a>
             }
         }
     </div>
@@ -43,6 +46,20 @@
     }
 </div>
 
+<div id="tags-cloud-modal" class="uk-modal-full" uk-modal>
+    <div class="uk-modal-dialog vh-100">
+        <button class="uk-modal-close-full uk-close-large" type="button" uk-close></button>
+        <div class="uk-modal-header">
+            <h2 class="uk-modal-title text-center">Tags cloud</h2>
+        </div>
+        <div class="uk-modal-body d-flex align-items-center justify-content-center">
+            <div id="spinner" uk-spinner style="display: none"></div>
+            <div id="tags-cloud" class="w-100 h-100 overflow-scroll"></div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
-    
+    <script src="~/lib/jqcloud/jqcloud-1.0.4.min.js"></script>
+    <script src="~/js/home.js"></script>
 }
