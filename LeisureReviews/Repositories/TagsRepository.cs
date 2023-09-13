@@ -26,7 +26,7 @@ namespace LeisureReviews.Repositories
         }
 
         public async Task<List<TagWeightModel>> GetWeightsAsync() =>
-            await context.Tags.Select(t => new TagWeightModel { Text = t.Name, Weight = t.Reviews.Count(), Link = $"/Home/{t.Name}" }).ToListAsync();
+            await context.Tags.Where(r => r.Reviews.Count() > 0).Select(t => new TagWeightModel { Text = t.Name, Weight = t.Reviews.Count(), Link = $"/Home/{t.Name}" }).ToListAsync();
 
         public void AddNewTags(IEnumerable<string> tagsNames)
         {

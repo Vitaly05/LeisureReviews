@@ -61,6 +61,7 @@ namespace LeisureReviews.Repositories
         {
             var review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
             review.IsDeleted = true;
+            await searchService.DeleteAsync(review);
             context.SaveChanges();
         }
 

@@ -7,5 +7,7 @@ namespace LeisureReviews.Services.Interfaces
         Task CreateAsync(Review review);
 
         Task UpdateAsync(Review review);
+
+        Task DeleteAsync(Review review);
     }
 }

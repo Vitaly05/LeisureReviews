@@ -21,6 +21,8 @@ namespace LeisureReviews
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Review>().HasQueryFilter(r => !r.IsDeleted);
+
             builder.Entity<Review>()
                 .HasOne(r => r.Author)
                 .WithMany(u => u.AuthoredReviews)

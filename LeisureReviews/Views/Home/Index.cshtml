@@ -27,18 +27,17 @@
         }
     </div>
     <div class="d-flex flex-column gap-4 align-items-center mt-3">
-        @if (Model.Reviews.Where(r => !r.IsDeleted).Count() == 0)
+        @if (Model.Reviews.Count() == 0)
         {
             <div>There are no reviews</div>
         }
         @foreach (var review in Model.Reviews)
         {
-            if (!review.IsDeleted)
-                await Html.RenderPartialAsync("ReviewCard", new ReviewCardViewModel 
-                { 
-                    Review = review,
-                    CanEdit = false
-                });
+            await Html.RenderPartialAsync("ReviewCard", new ReviewCardViewModel 
+            { 
+                Review = review,
+                CanEdit = false
+            });
         }
     </div>
     @{

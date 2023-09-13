@@ -18,8 +18,12 @@ namespace LeisureReviews.Services
         public async Task CreateAsync(Review review) =>
             await reviewSearchIndex.SaveObjectAsync(getSearchModel(review));
 
+
         public async Task UpdateAsync(Review review) =>
             await reviewSearchIndex.PartialUpdateObjectAsync(getSearchModel(review));
+
+        public async Task DeleteAsync(Review review) =>
+            await reviewSearchIndex.DeleteObjectAsync(review.Id);
 
         private ReviewSearchModel getSearchModel(Review review) =>
             new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<Review, ReviewSearchModel>()
