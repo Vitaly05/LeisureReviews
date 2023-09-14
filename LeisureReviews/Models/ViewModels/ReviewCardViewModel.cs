@@ -1,6 +1,6 @@
 ﻿using LeisureReviews.Models.Database;
 
-namespace LeisureReviews.Models
+namespace LeisureReviews.Models.ViewModels
 {
     public class ReviewCardViewModel
     {

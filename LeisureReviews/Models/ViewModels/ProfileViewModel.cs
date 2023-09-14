@@ -1,6 +1,6 @@
 ﻿using LeisureReviews.Models.Database;
 
-namespace LeisureReviews.Models
+namespace LeisureReviews.Models.ViewModels
 {
     public class ProfileViewModel : ReviewsListViewModel
     {
@@ -10,7 +10,7 @@ namespace LeisureReviews.Models
 
         public bool CanEdit
         {
-            get  
+            get
             {
                 if (CurrentUser is null) return false;
                 return User.UserName == CurrentUser.UserName || CurrentUser.Roles.Contains("Admin");

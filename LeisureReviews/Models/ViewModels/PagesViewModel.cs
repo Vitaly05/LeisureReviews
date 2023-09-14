@@ -1,4 +1,4 @@
-﻿namespace LeisureReviews.Models
+﻿namespace LeisureReviews.Models.ViewModels
 {
     public class PagesViewModel : BaseViewModel
     {

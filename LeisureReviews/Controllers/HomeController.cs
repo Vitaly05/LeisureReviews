@@ -2,6 +2,7 @@
 using LeisureReviews.Models;
 using LeisureReviews.Models.Database;
 using LeisureReviews.Models.Search;
+using LeisureReviews.Models.ViewModels;
 using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

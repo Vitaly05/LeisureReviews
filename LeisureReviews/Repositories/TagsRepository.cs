@@ -22,7 +22,7 @@ namespace LeisureReviews.Repositories
         {
             foreach (var tagName in tagsNames)
                 if (!await context.Tags.AnyAsync(t => t.Name == tagName))
-                    await context.Tags.AddAsync(new Tag() { Id = Guid.NewGuid().ToString(), Name = tagName });
+                    await context.Tags.AddAsync(new Tag() { Name = tagName });
             await context.SaveChangesAsync();
         }
     }

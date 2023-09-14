@@ -85,8 +85,6 @@ namespace LeisureReviews.Repositories
 
         private async Task addReviewAsync(Review review)
         {
-            review.CreateTime = DateTime.Now;
-            review.Id = Guid.NewGuid().ToString();
             context.Reviews.Add(review);
             await searchService.CreateAsync(review);
         }

@@ -1,7 +1,7 @@
 ﻿using LeisureReviews.Models.Database;
-using LeisureReviews.Models;
 using Microsoft.AspNetCore.Mvc;
 using LeisureReviews.Repositories.Interfaces;
+using LeisureReviews.Models.ViewModels;
 
 namespace LeisureReviews.Controllers
 {

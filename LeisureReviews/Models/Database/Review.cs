@@ -8,7 +8,7 @@ namespace LeisureReviews.Models.Database
     public class Review
     {
         [Key]
-        public string Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
 
         [Required]
         public string AuthorId { get; set; }
@@ -49,7 +49,7 @@ namespace LeisureReviews.Models.Database
 
         [Required]
         [BindNever]
-        public DateTime CreateTime { get; set; }
+        public DateTime CreateTime { get; set; } = DateTime.Now;
 
         public ICollection<Tag> Tags { get; set; } = new List<Tag>();
 

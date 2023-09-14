@@ -4,6 +4,7 @@ using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using LeisureReviews.Services.Interfaces;
+using LeisureReviews.Models.ViewModels;
 
 namespace LeisureReviews.Controllers
 {
