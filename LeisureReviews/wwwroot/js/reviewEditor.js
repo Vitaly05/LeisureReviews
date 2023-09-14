@@ -19,6 +19,8 @@ $('.review-field').on('input', function () {
     $(`[name="Review.${$(this).data('field')}"]`).val($(this).val())
 })
 
+$(`[name="Review.Group"]`).val($('.review-field[data-field="Group"]').val())
+
 const tagsInput = new Tokenfield({
     el: document.querySelector('#tags-input'),
     items: getTagsInputItems('#used-tags'),
