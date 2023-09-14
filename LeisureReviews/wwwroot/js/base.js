@@ -15,6 +15,17 @@ $('.search-button')?.on('click', function (e) {
     UIkit.modal($('#search-modal')).show()
 })
 
+$('#theme-switcher')?.on('click', function (e) {
+    e.preventDefault()
+    if ($('#theme-link').attr('href').length === 0) {
+        localStorage.setItem('themeHref', '/lib/uikit/themes/dark.css')
+    } else {
+        localStorage.setItem('themeHref', '')
+    }
+    $('#theme-link').attr('href', localStorage.getItem('themeHref'))
+})
+
+$('#theme-link').attr('href', localStorage.getItem('themeHref') ?? '')
 
 const searchClient = algoliasearch('MS6370NITB', 'ddd1467673a13e7a1031cd9aff4a0130');
 

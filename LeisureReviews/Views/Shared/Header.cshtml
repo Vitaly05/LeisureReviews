@@ -1,15 +1,18 @@
 ﻿@model BaseViewModel
 
 <header>
-    <nav class="uk-navbar-container">
+    <nav class="uk-navbar-container uk-border-rounded">
         <div class="uk-container">
             <div uk-navbar>
                 <div class="uk-navbar-left">
                     <a class="uk-navbar-item uk-logo" href="/">Leisure Reviews</a>
                 </div>
-                <div class="uk-navbar-right">
+                <div class="uk-navbar-right gap-1 gap-sm-4">
                     <div>
                         <a href="" class="search-button uk-icon-button" uk-icon="search"></a>
+                    </div>
+                    <div>
+                        <a href="" id="theme-switcher" class="uk-icon-button" uk-icon="theme"></a>
                     </div>
                     <!-- MOBILE -->
                     <a class="uk-navbar-toggle uk-navbar-toggle-animate d-flex d-md-none" uk-navbar-toggle-icon href="#"></a>
@@ -109,7 +112,7 @@
         <div id="hit-template" style="display: none">
             <a class="uk-button uk-button-default uk-border-rounded uk-width-expand uk-text-left">
                 <h3 class="mb-1 mt-3" id="title"></h3>
-                Leisure: <b id="leisure"></b>
+                <span>Leisure:</span> <b id="leisure"></b>
             </a>
         </div>
     </div>
