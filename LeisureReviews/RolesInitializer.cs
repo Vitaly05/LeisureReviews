@@ -1,7 +1,6 @@
-﻿using LeisureReviews.Models.Database;
+﻿using LeisureReviews.Data;
+using LeisureReviews.Models.Database;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-
 namespace LeisureReviews
 {
     public class RolesInitializer
@@ -27,8 +26,8 @@ namespace LeisureReviews
 
         private async Task initializeRolesAsync()
         {
-            if (await roleManager.FindByNameAsync("Admin") is null)
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
+            if (await roleManager.FindByNameAsync(configuration.GetSection("AdminData").GetValue<string>("UserName")) is null)
+                await roleManager.CreateAsync(new IdentityRole(Roles.Admin.ToString()));
         }
 
         private async Task initializeAdminAsync()
@@ -43,7 +42,7 @@ namespace LeisureReviews
             var admin = new User { UserName = userName };
             IdentityResult result = await userManager.CreateAsync(admin, password);
             if (result.Succeeded)
-                await userManager.AddToRoleAsync(admin, "admin");
+                await userManager.AddToRoleAsync(admin, Roles.Admin.ToString());
         }
     }
 }
