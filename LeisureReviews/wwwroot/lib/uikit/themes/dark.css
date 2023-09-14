@@ -8,7 +8,8 @@ body,
 .uk-input:focus,
 .uk-textarea:focus,
 .uk-background-default,
-.uk-modal-close-full {
+.uk-modal-close-full,
+option {
     background-color: #303030 !important;
 }
 
