@@ -1,7 +1,6 @@
 ﻿using LeisureReviews.Data;
 using LeisureReviews.Models;
 using LeisureReviews.Models.Database;
-using LeisureReviews.Models.Search;
 using LeisureReviews.Models.ViewModels;
 using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -20,9 +19,8 @@ namespace LeisureReviews.Controllers
         private readonly ILikesRepository likesRepository;
 
         public HomeController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository,
-            IRatesRepository ratesRepository, ILikesRepository likesRepository)
+            IRatesRepository ratesRepository, ILikesRepository likesRepository) : base(usersRepository)
         {
-            this.usersRepository = usersRepository;
             this.reviewsRepository = reviewsRepository;
             this.ratesRepository = ratesRepository;
             this.likesRepository = likesRepository;
@@ -34,7 +32,6 @@ namespace LeisureReviews.Controllers
         {
             var model = new ReviewsListViewModel { ReviewSortModel = getReviewSortModel(sortTarget, sortType) };
             await configureReviewsListViewModel(model, r => true, page, pageSize);
-            await configureBaseModel(model);
             return View(model);
         }
 
@@ -44,7 +41,6 @@ namespace LeisureReviews.Controllers
         {
             var model = new ReviewsListViewModel { ReviewSortModel = getReviewSortModel(sortTarget, sortType), AdditionalUrl = $"/{tag}" };
             await configureReviewsListViewModel(model, r => r.Tags.Any(t => t.Name == tag), page, pageSize);
-            await configureBaseModel(model);
             return View("Index", model);
         }
 
@@ -55,9 +51,6 @@ namespace LeisureReviews.Controllers
             if (user is null) return NotFound();
             var model = new ProfileViewModel { User = user, LikesCount = await likesRepository.GetCountAsync(user) };
             await configureReviewsListViewModel(model, r => r.AuthorId == user.Id, page, pageSize);
-            await configureBaseModel(model);
-            if (model.CurrentUser is not null)
-                model.CurrentUser.Roles = await usersRepository.GetRolesAsync(model.CurrentUser);
             return View(model);
         }
 
@@ -68,9 +61,6 @@ namespace LeisureReviews.Controllers
             if (user is null) return NotFound();
             var model = new ProfileViewModel { User = user, LikesCount = await likesRepository.GetCountAsync(user), ReviewSortModel = getReviewSortModel(sortTarget, sortType) };
             await configureReviewsListViewModel(model, r => r.AuthorId == user.Id, page, pageSize);
-            await configureBaseModel(model);
-            if (model.CurrentUser is not null)
-                model.CurrentUser.Roles = await usersRepository.GetRolesAsync(model.CurrentUser);
             return View(model);
         }
 
@@ -78,13 +68,9 @@ namespace LeisureReviews.Controllers
         [HttpGet("AdminPanel")]
         public async Task<IActionResult> AdminPanel(int page = 0, int pageSize = 10)
         {
-            var model = new AdminPanelViewModel()
-            {
-                Users = await usersRepository.GetAllAsync(page, pageSize)
-            };
-            foreach (var user in model.Users)
-                user.LikesCount = await likesRepository.GetCountAsync(user);
-            await configureBaseModel(model);
+            var model = new AdminPanelViewModel { Users = await usersRepository.GetAllAsync(page, pageSize)};
+            foreach (var user in model.Users) user.LikesCount = await likesRepository.GetCountAsync(user);
+            await configureBaseModelAsync(model);
             configurePagesViewModel(model, page, pageSize, await usersRepository.GetPagesCountAsync(pageSize));
             return View(model);
         }
@@ -95,6 +81,7 @@ namespace LeisureReviews.Controllers
             model.Reviews = await getReviewsAsync(model.ReviewSortModel, predicate, page, pageSize);
             foreach (var review in model.Reviews)
                 review.AverageRate = await ratesRepository.GetAverageRateAsync(review);
+            await configureBaseModelAsync(model);
         }
 
         private void configurePagesViewModel(PagesViewModel model, int page, int pageSize, int pagesCount)

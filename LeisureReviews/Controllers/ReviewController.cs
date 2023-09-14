@@ -23,9 +23,8 @@ namespace LeisureReviews.Controllers
 
         public ReviewController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository, 
             ITagsRepository tagsRepository, IRatesRepository ratesRepository, ILikesRepository likesRepository,
-            ICloudService cloudService)
+            ICloudService cloudService) : base(usersRepository)
         {
-            this.usersRepository = usersRepository;
             this.reviewsRepository = reviewsRepository;
             this.tagsRepository = tagsRepository;
             this.ratesRepository = ratesRepository;
@@ -36,15 +35,8 @@ namespace LeisureReviews.Controllers
         public async Task<IActionResult> Index(string reviewId)
         {
             if (reviewId is null) return BadRequest();
-            var model = new ReviewViewModel();
-            await configureBaseModel(model);
-            model.Review = await reviewsRepository.GetAsync(reviewId);
-            if (model.Review is null) return NotFound();
-            model.Review.Author.LikesCount = await likesRepository.GetCountAsync(model.Review.Author);
-            foreach (var comment in model.Review.Comments)
-                comment.Author.LikesCount = await likesRepository.GetCountAsync(comment.Author);
-            model.AverageRate = await ratesRepository.GetAverageRateAsync(model.Review);
-            if (model.IsAuthorized) model.CurrentUserRate = await ratesRepository.GetAsync(model.CurrentUser, model.Review);
+            var model = await initReviewViewModelAsync(reviewId);
+            if (model is null) return NotFound();
             return View(model);
         }
 
@@ -62,7 +54,7 @@ namespace LeisureReviews.Controllers
         {
             var model = new ReviewEditorViewModel();
             model.Review = new Review { AuthorId = authorId };
-            await configureReviewEditorViewModel(model);
+            await configureReviewEditorViewModelAsync(model);
             return View("ReviewEditor", model);
         }
 
@@ -70,10 +62,9 @@ namespace LeisureReviews.Controllers
         [HttpGet("Edit")]
         public async Task<IActionResult> EditReview(string reviewId)
         {
-            var model = new ReviewEditorViewModel();
-            model.Review = await reviewsRepository.GetAsync(reviewId);
+            var model = new ReviewEditorViewModel { Review = await reviewsRepository.GetAsync(reviewId) };
             if (model.Review is null) return NotFound();
-            await configureReviewEditorViewModel(model);
+            await configureReviewEditorViewModelAsync(model);
             if (!await canEditAsync(model.CurrentUser, model.Review)) return Forbid();
             return View("ReviewEditor", model);
         }
@@ -83,9 +74,7 @@ namespace LeisureReviews.Controllers
         public async Task<IActionResult> SaveReview(ReviewModel reviewModel)
         {
             if (!ModelState.IsValid) return BadRequest();
-            if (reviewModel.TagsNames is not null) await addTagsAsync(reviewModel);
-            await updateIllustrationAsync(reviewModel);
-            await reviewsRepository.SaveAsync(reviewModel);
+            await saveReviewAsync(reviewModel);
             reviewModel.Tags.Clear();
             return Ok(reviewModel);
         }
@@ -96,7 +85,7 @@ namespace LeisureReviews.Controllers
         {
             var review = await reviewsRepository.GetAsync(reviewId);
             if (review is null) return NotFound();
-            if (!await canEditAsync(await getCurrentUser(), review)) return Forbid();
+            if (!await canEditAsync(await getCurrentUserAsync(), review)) return Forbid();
             await reviewsRepository.DeleteAsync(reviewId);
             return Ok(reviewId);
         }
@@ -106,7 +95,7 @@ namespace LeisureReviews.Controllers
         public async Task<IActionResult> LikeReview(string reviewId)
         {
             if (reviewId is null) return BadRequest();
-            await likesRepository.LikeAsync(await reviewsRepository.GetAsync(reviewId), await getCurrentUser());
+            await likesRepository.LikeAsync(await reviewsRepository.GetAsync(reviewId), await getCurrentUserAsync());
             return Ok();
         }
 
@@ -117,7 +106,7 @@ namespace LeisureReviews.Controllers
             var rate = new Rate
             {
                 Review = await reviewsRepository.GetAsync(reviewId),
-                User = await getCurrentUser(),
+                User = await getCurrentUserAsync(),
                 Value = value
             };
             await ratesRepository.SaveAsync(rate);
@@ -127,7 +116,14 @@ namespace LeisureReviews.Controllers
         private async Task<bool> canEditAsync(User user, Review review)
         {
             var isAdmin = (await usersRepository.GetRolesAsync(user)).Contains("Admin");
-            return isAdmin ? true : review.AuthorId == user.Id;
+            return isAdmin || review.AuthorId == user.Id;
+        }
+
+        private async Task saveReviewAsync(ReviewModel reviewModel)
+        {
+            if (reviewModel.TagsNames is not null) await addTagsAsync(reviewModel);
+            await updateIllustrationAsync(reviewModel);
+            await reviewsRepository.SaveAsync(reviewModel);
         }
 
         private async Task addTagsAsync(ReviewModel model)
@@ -136,9 +132,32 @@ namespace LeisureReviews.Controllers
             model.Tags = await tagsRepository.GetAsync(model.TagsNames);
         }
 
-        private async Task configureReviewEditorViewModel(ReviewEditorViewModel model)
+        private async Task<ReviewViewModel> initReviewViewModelAsync(string reviewId)
         {
-            await configureBaseModel(model);
+            var model = new ReviewViewModel { Review = await reviewsRepository.GetAsync(reviewId) };
+            if (model.Review is null) return null;
+            await configureReviewViewModelAsync(model);
+            return model;
+        }
+
+        private async Task configureReviewViewModelAsync(ReviewViewModel model)
+        {
+            model.Review.Author.LikesCount = await likesRepository.GetCountAsync(model.Review.Author);
+            await configureCommentsAuthorsLikesCountAsync(model);
+            model.AverageRate = await ratesRepository.GetAverageRateAsync(model.Review);
+            await configureBaseModelAsync(model);
+            if (model.IsAuthorized) model.CurrentUserRate = await ratesRepository.GetAsync(model.CurrentUser, model.Review);
+        }
+
+        private async Task configureCommentsAuthorsLikesCountAsync(ReviewViewModel model)
+        {
+            foreach (var comment in model.Review.Comments)
+                comment.Author.LikesCount = await likesRepository.GetCountAsync(comment.Author);
+        }
+
+        private async Task configureReviewEditorViewModelAsync(ReviewEditorViewModel model)
+        {
+            await configureBaseModelAsync(model);
             model.AuthorName = await usersRepository.GetUserNameAsync(model.Review.AuthorId);
             model.Tags = await tagsRepository.GetAsync();
         }

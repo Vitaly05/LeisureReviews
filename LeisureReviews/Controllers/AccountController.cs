@@ -6,15 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LeisureReviews.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
-        private readonly IUsersRepository usersRepository;
-
         private readonly SignInManager<User> signInManager;
 
-        public AccountController(IUsersRepository usersRepository, SignInManager<User> signInManager)
+        public AccountController(IUsersRepository usersRepository, SignInManager<User> signInManager) : base(usersRepository)
         {
-            this.usersRepository = usersRepository;
             this.signInManager = signInManager;
         }
 
@@ -30,7 +27,7 @@ namespace LeisureReviews.Controllers
 
         public IActionResult AdditionalInfo(string externalProvider, string providerKey)
         {
-            AdditionalInfoModel model = new AdditionalInfoModel { ExternalProvider = externalProvider, ProviderKey = providerKey};
+            var model = new AdditionalInfoModel { ExternalProvider = externalProvider, ProviderKey = providerKey};
             return View(model);
         }
 
@@ -114,8 +111,7 @@ namespace LeisureReviews.Controllers
         private async Task registerUserAsync(User user, string password, Func<Task> onSuccessAsync)
         {
             var result = await usersRepository.CreateAsync(user, password);
-            if (result.Succeeded)
-                await onSuccessAsync.Invoke();
+            if (result.Succeeded) await onSuccessAsync.Invoke();
             else addModelErrors(result.Errors);
         }
 

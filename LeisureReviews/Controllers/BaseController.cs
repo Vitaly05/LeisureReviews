@@ -9,13 +9,22 @@ namespace LeisureReviews.Controllers
     {
         protected IUsersRepository usersRepository { get; init; }
 
-        protected async Task configureBaseModel(BaseViewModel model)
+        public BaseController(IUsersRepository usersRepository)
         {
-            model.IsAuthorized = HttpContext.User.Identity.IsAuthenticated;
-            model.CurrentUser = await getCurrentUser();
+            this.usersRepository = usersRepository;
         }
 
-        protected async Task<User> getCurrentUser() =>
+        protected async Task configureBaseModelAsync(BaseViewModel model)
+        {
+            model.IsAuthorized = HttpContext.User.Identity.IsAuthenticated;
+            if (model.IsAuthorized)
+            {
+                model.CurrentUser = await getCurrentUserAsync();
+                model.CurrentUser.Roles = await usersRepository.GetRolesAsync(model.CurrentUser);
+            }
+        }
+
+        protected async Task<User> getCurrentUserAsync() =>
                     await usersRepository.GetAsync(HttpContext.User);
     }
 }
