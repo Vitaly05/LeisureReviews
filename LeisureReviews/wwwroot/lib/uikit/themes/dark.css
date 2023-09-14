@@ -31,6 +31,7 @@ body,
 .uk-icon-button:hover,
 .tokenfield-set-item,
 .tokenfield.tokenfield-mode-tokens .selected,
+.uk-notification-message,
 pre {
     background-color: #595959 !important;
 }
@@ -85,11 +86,24 @@ pre,
 .uk-textarea,
 .uk-textarea:focus,
 .uk-card-default .uk-card-title,
-.uk-form-label {
+.uk-form-label,
+.uk-pagination a {
     color: white;
 }
 
 .uk-logo:hover,
 .uk-button-default:hover {
     color: #595959;
+}
+
+.uk-notification-message-danger div {
+    color: #f0506e !important;
+}
+
+.uk-notification-message-success div {
+    color: #179e15 !important;
+}
+
+.uk-notification-message-warning div {
+    color: #a6ad23 !important;
 }
