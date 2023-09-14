@@ -5,15 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeisureReviews.Repositories
 {
-    public class CommentsRepository : ICommentsRepository
+    public class CommentsRepository : BaseRepository, ICommentsRepository
     {
-        private readonly ApplicationContext context;
-
         private readonly ISearchService searchService;
 
-        public CommentsRepository(ApplicationContext context, ISearchService searchService)
+        public CommentsRepository(ApplicationContext context, ISearchService searchService) : base(context)
         {
-            this.context = context;
             this.searchService = searchService;
         }
 

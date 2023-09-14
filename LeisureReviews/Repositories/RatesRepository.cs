@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeisureReviews.Repositories
 {
-    public class RatesRepository : IRatesRepository
+    public class RatesRepository : BaseRepository, IRatesRepository
     {
-        private readonly ApplicationContext context;
-
-        public RatesRepository(ApplicationContext context)
-        {
-            this.context = context;
-        }
+        public RatesRepository(ApplicationContext context) : base(context) { }
 
         public async Task<Rate> GetAsync(User user, Review review) =>
             await context.Rates.FirstOrDefaultAsync(r => r.User.Id == user.Id && r.Review.Id == review.Id);
@@ -19,7 +14,7 @@ namespace LeisureReviews.Repositories
         public async Task<double> GetAverageRateAsync(Review review)
         {
             IQueryable<Rate> allRates = context.Rates.Where(r => r.Review.Id == review.Id);
-            if (await allRates.CountAsync() == 0) return double.NaN;
+            if (!await allRates.AnyAsync()) return double.NaN;
             return Math.Round(await allRates.AverageAsync(r => r.Value), 1);
         }
 

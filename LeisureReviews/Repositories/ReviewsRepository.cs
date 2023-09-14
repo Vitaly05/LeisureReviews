@@ -8,15 +8,12 @@ using System.Linq.Expressions;
 
 namespace LeisureReviews.Repositories
 {
-    public class ReviewsRepository : IReviewsRepository
+    public class ReviewsRepository : BaseRepository, IReviewsRepository
     {
-        private readonly ApplicationContext context;
-
         private readonly ISearchService searchService;
 
-        public ReviewsRepository(ApplicationContext context, ISearchService searchService)
+        public ReviewsRepository(ApplicationContext context, ISearchService searchService) : base(context)
         {
-            this.context = context;
             this.searchService = searchService;
         }
 
@@ -41,7 +38,7 @@ namespace LeisureReviews.Repositories
 
         public async Task<List<Review>> GetTopLikedAsync(Expression<Func<Review, bool>> predicate, SortType sortType, int page, int pageSize)
         {
-            IQueryable<Review> query = orderReviews(sortType, r => r.Likes.Count());
+            IQueryable<Review> query = orderReviews(sortType, r => r.Likes.Count);
             return await getPageAsync(query, predicate, page, pageSize);
         }
 
@@ -52,9 +49,8 @@ namespace LeisureReviews.Repositories
         {
             if (context.Reviews.Any(r => r.Id == review.Id))
                 await updateReviewAsync(review);
-            else
-                await addReviewAsync(review);
-            context.SaveChanges();
+            else await addReviewAsync(review);
+            await context.SaveChangesAsync();
         }
 
         public async Task DeleteAsync(string id)

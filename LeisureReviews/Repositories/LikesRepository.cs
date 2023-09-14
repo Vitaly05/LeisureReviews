@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeisureReviews.Repositories
 {
-    public class LikesRepository : ILikesRepository
+    public class LikesRepository : BaseRepository, ILikesRepository
     {
-        private readonly ApplicationContext context;
-
-        public LikesRepository(ApplicationContext context)
-        {
-            this.context = context;
-        }
+        public LikesRepository(ApplicationContext context) : base(context) { }
 
         public async Task LikeAsync(Review review, User user)
         {
@@ -20,10 +15,8 @@ namespace LeisureReviews.Repositories
             await context.SaveChangesAsync();
         }
 
-        public async Task<int> GetCountAsync(User user)
-        {
-            var userReviews = (await context.Users.Include(u => u.AuthoredReviews).ThenInclude(r => r.Likes).FirstOrDefaultAsync(u => u.Id == user.Id)).AuthoredReviews;
-            return userReviews.Sum(r => r.Likes.Count());
-        }
+        public async Task<int> GetCountAsync(User user) =>
+            (await context.Users.Include(u => u.AuthoredReviews).ThenInclude(r => r.Likes).FirstOrDefaultAsync(u => u.Id == user.Id))
+                .AuthoredReviews.Sum(r => r.Likes.Count);
     }
 }

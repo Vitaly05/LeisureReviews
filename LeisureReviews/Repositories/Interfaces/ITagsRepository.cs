@@ -5,12 +5,12 @@ namespace LeisureReviews.Repositories.Interfaces
 {
     public interface ITagsRepository
     {
-        Task<List<Tag>> GetTagsAsync();
+        Task<List<Tag>> GetAsync();
 
-        Task<ICollection<Tag>> GetTagsAsync(IEnumerable<string> tagsNames);
+        Task<ICollection<Tag>> GetAsync(IEnumerable<string> tagsNames);
 
         Task<List<TagWeightModel>> GetWeightsAsync();
 
-        void AddNewTags(IEnumerable<string> tagsNames);
+        Task AddNewAsync(IEnumerable<string> tagsNames);
     }
 }

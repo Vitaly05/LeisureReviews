@@ -131,15 +131,15 @@ namespace LeisureReviews.Controllers
 
         private async Task addTagsAsync(ReviewModel model)
         {
-            tagsRepository.AddNewTags(model.TagsNames);
-            model.Tags = await tagsRepository.GetTagsAsync(model.TagsNames);
+            await tagsRepository.AddNewAsync(model.TagsNames);
+            model.Tags = await tagsRepository.GetAsync(model.TagsNames);
         }
 
         private async Task configureReviewEditorViewModel(ReviewEditorViewModel model)
         {
             await configureBaseModel(model);
             model.AuthorName = await usersRepository.GetUserNameAsync(model.Review.AuthorId);
-            model.Tags = await tagsRepository.GetTagsAsync();
+            model.Tags = await tagsRepository.GetAsync();
         }
 
         private async Task updateIllustrationAsync(ReviewModel model)

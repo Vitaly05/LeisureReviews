@@ -5,35 +5,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeisureReviews.Repositories
 {
-    public class TagsRepository : ITagsRepository
+    public class TagsRepository : BaseRepository, ITagsRepository
     {
-        private readonly ApplicationContext context;
+        public TagsRepository(ApplicationContext context) : base(context) { }
 
-        public TagsRepository(ApplicationContext context)
-        {
-            this.context = context;
-        }
-
-        public async Task<List<Tag>> GetTagsAsync() =>
+        public async Task<List<Tag>> GetAsync() =>
             await context.Tags.ToListAsync();
 
-        public async Task<ICollection<Tag>> GetTagsAsync(IEnumerable<string> tagsNames)
-        {
-            List<Tag> tags = new List<Tag>();
-            foreach (var tagName in tagsNames)
-                tags.Add(await context.Tags.FirstOrDefaultAsync(t => t.Name == tagName));
-            return tags;
-        }
+        public async Task<ICollection<Tag>> GetAsync(IEnumerable<string> tagsNames) =>
+            await context.Tags.Where(t => tagsNames.Contains(t.Name)).ToListAsync();
 
         public async Task<List<TagWeightModel>> GetWeightsAsync() =>
             await context.Tags.Where(r => r.Reviews.Count() > 0).Select(t => new TagWeightModel { Text = t.Name, Weight = t.Reviews.Count(), Link = $"/Home/{t.Name}" }).ToListAsync();
 
-        public void AddNewTags(IEnumerable<string> tagsNames)
+        public async Task AddNewAsync(IEnumerable<string> tagsNames)
         {
             foreach (var tagName in tagsNames)
-                if (!context.Tags.Any(t => t.Name == tagName))
-                    context.Tags.Add(new Tag() { Id = Guid.NewGuid().ToString(), Name = tagName });
-            context.SaveChanges();
+                if (!await context.Tags.AnyAsync(t => t.Name == tagName))
+                    await context.Tags.AddAsync(new Tag() { Id = Guid.NewGuid().ToString(), Name = tagName });
+            await context.SaveChangesAsync();
         }
     }
 }

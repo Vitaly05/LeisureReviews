@@ -6,11 +6,11 @@ using System.Security.Claims;
 
 namespace LeisureReviews.Repositories
 {
-    public class UsersRepository : IUsersRepository
+    public class UsersRepository : BaseRepository, IUsersRepository
     {
         private readonly UserManager<User> userManager;
 
-        public UsersRepository(UserManager<User> userManager)
+        public UsersRepository(UserManager<User> userManager, ApplicationContext context) : base(context)
         {
             this.userManager = userManager;
         }
