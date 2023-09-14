@@ -1,0 +1,95 @@
+body,
+.uk-icon-button,
+.uk-card-default,
+.uk-modal-dialog, 
+.uk-modal-header,
+.uk-modal-footer,
+.ais-Hits-item,
+.uk-input:focus,
+.uk-textarea:focus,
+.uk-background-default,
+.uk-modal-close-full {
+    background-color: #303030 !important;
+}
+
+.uk-background-muted,
+.uk-navbar-container:not(.uk-navbar-transparent),
+.uk-navbar-dropdown,
+.uk-input,
+.uk-select,
+.uk-textarea,
+.uk-button-default,
+.tokenfield.tokenfield-mode-tokens,
+.tokenfield .tokenfield-input,
+.tokenfield-suggest-item {
+    background-color: #212121 !important;
+}
+
+.uk-button-secondary,
+.uk-background-secondary,
+.uk-button-secondary,
+.uk-icon-button:hover,
+.tokenfield-set-item,
+.tokenfield.tokenfield-mode-tokens .selected,
+pre {
+    background-color: #595959 !important;
+}
+
+.ais-Pagination-link {
+    background-image: linear-gradient(-180deg, #303030, #3d3d3d) !important;
+    color: white !important;
+}
+
+mark {
+    background-color: #737373;
+    color: black;
+}
+
+.uk-button {
+    background-color: #4f4f4f;
+}
+
+.uk-button-primary {
+    background-color: #1e87f0 !important;
+}
+
+.uk-button-primary:hover {
+    background-color: #1063b5 !important;
+}
+
+.uk-label-success {
+    background-color: #179e15 !important;
+}
+
+.uk-button-danger {
+    background-color: #fc1944 !important;
+}
+
+.uk-button-danger:hover {
+    background-color: #ee395b !important;
+}
+
+.uk-modal-header {
+    border-bottom: 1px solid #303030;
+}
+
+*,
+h1, h2, h3, h4, h5, h6,
+pre,
+.uk-logo,
+.uk-navbar-dropdown-nav > li > a,
+.uk-navbar-dropdown-nav .uk-nav-header,
+.uk-button-default,
+.uk-input,
+.uk-input:focus,
+.uk-textarea,
+.uk-textarea:focus,
+.uk-card-default .uk-card-title,
+.uk-form-label {
+    color: white;
+}
+
+.uk-logo:hover,
+.uk-button-default:hover {
+    color: #595959;
+}
