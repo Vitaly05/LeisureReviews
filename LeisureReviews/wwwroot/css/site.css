@@ -102,3 +102,8 @@
 mark {
     border-radius: 10px;
 }
+
+.uk-modal-dialog .uk-button,
+.uk-notification-message {
+    border-radius: 5px;
+}
