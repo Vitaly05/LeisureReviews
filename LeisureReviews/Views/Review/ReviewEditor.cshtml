@@ -70,24 +70,31 @@
                                 <input class="review-field uk-input uk-border-rounded text-center" data-field="AuthorRate" value="@Model.Review.AuthorRate" />
                             </div>
                         </div>
-                        <div>
-                            <div class="uk-placeholder uk-text-center uk-border-rounded mb-0" id="upload-illustration-panel">
-                                <span class="uk-text-middle">Attach illustration by dropping them here or</span>
-                                <div uk-form-custom>
-                                    <input type="file" id="illustration-file-input" accept="image/png, image/jpeg">
-                                    <span class="uk-link">selecting one</span>
-                                </div>
+                        <div class="uk-placeholder uk-text-center uk-border-rounded mb-0" id="upload-illustration-panel">
+                            <span class="uk-text-middle">Attach illustrations by dropping them here or</span>
+                            <div uk-form-custom>
+                                <input type="file" id="illustration-file-input" multiple accept="image/png, image/jpeg">
+                                <span class="uk-link">selecting several</span>
                             </div>
                         </div>
-                        <div class="uk-cover-container uk-width-1-1 uk-width-1-2@m d-flex gap-3 align-items-center justify-content-center">
-                            <div id="illustration-block" style="display: none">
-                                <div class="d-flex flex-column gap-3 align-items-center justify-content-center">
-                                    <img class="get-image" id="illustration-image" data-file-id="@Model.Review.IllustrationId" uk-cover">
-                                    <button class="uk-button uk-border-rounded" id="delete-illustration-button">Delete illustration</button>
-                                </div>
+                     
+                        <div id="illustrations" class="uk-width-1-1 flex flex-column gap-3 align-items-center" style="display: none">
+                            <div class="uk-position-relative uk-light w-100" tabindex="-1" uk-slideshow>
+                                <ul class="uk-slideshow-items mx-0 mx-md-5 mt-4">
+                                    @foreach (var illustraiton in Model.Review.Illustrations)
+                                    {
+                                        <li class="illustration flex align-items-center justify-content-center">
+                                            <img class="get-image" id="illustration-image" data-file-id="@illustraiton.Id" uk-cover">
+                                            <div id="illustraion-spinner" uk-spinner style="display: none"></div>
+                                        </li>
+                                    }
+                                </ul>
+                                <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
+                                <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
                             </div>
-                            <div id="illustraion-spinner" uk-spinner style="display: none"></div>
+                            <button class="uk-button uk-border-rounded" id="delete-illustration-button">Delete illustrations</button>
                         </div>
+
                     </div>
                 </li>
                 <li>
@@ -106,7 +113,7 @@
         </div>
 
         <div class="d-flex justify-content-center">
-            <button type="button" id="save-review-button" class="uk-button uk-button-primary uk-border-rounded mt-4">
+            <button type="submit" id="save-review-button" class="uk-button uk-button-primary uk-border-rounded mt-4">
                 <div id="button-text">Save</div>
                 <div id="button-spinner" uk-spinner style="display: none"></div>
             </button>

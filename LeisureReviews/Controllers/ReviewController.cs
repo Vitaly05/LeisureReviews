@@ -19,16 +19,19 @@ namespace LeisureReviews.Controllers
         
         private readonly ILikesRepository likesRepository;
 
+        private readonly IIllustrationsRepository illustrationsRepository;
+        
         private readonly ICloudService cloudService;
 
         public ReviewController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository, 
             ITagsRepository tagsRepository, IRatesRepository ratesRepository, ILikesRepository likesRepository,
-            ICloudService cloudService) : base(usersRepository)
+            IIllustrationsRepository illustrationsRepository, ICloudService cloudService) : base(usersRepository)
         {
             this.reviewsRepository = reviewsRepository;
             this.tagsRepository = tagsRepository;
             this.ratesRepository = ratesRepository;
             this.likesRepository = likesRepository;
+            this.illustrationsRepository = illustrationsRepository;
             this.cloudService = cloudService;
         }
 
@@ -122,8 +125,8 @@ namespace LeisureReviews.Controllers
         private async Task saveReviewAsync(ReviewModel reviewModel)
         {
             if (reviewModel.TagsNames is not null) await addTagsAsync(reviewModel);
-            await updateIllustrationAsync(reviewModel);
             await reviewsRepository.SaveAsync(reviewModel);
+            await updateIllustrationAsync(reviewModel);
         }
 
         private async Task addTagsAsync(ReviewModel model)
@@ -165,24 +168,15 @@ namespace LeisureReviews.Controllers
         private async Task updateIllustrationAsync(ReviewModel model)
         {
             if (!model.IllustrationChanged) return;
-            var oldIllustrationId = model.IllustrationId;
-            model.IllustrationId = await uploadIllustrationAsync(model.Illustration);
-            await cloudService.DeleteAsync(oldIllustrationId);
+            await illustrationsRepository.DeleteAllAsync(model.Id);
+            if (model.IllustrationsFiles is not null && model.IllustrationsFiles.Any())
+                await uploadIllustrationsAsync(model.IllustrationsFiles, model.Id);
         }
 
-        private async Task<string> uploadIllustrationAsync(IFormFile illustration)
+        private async Task uploadIllustrationsAsync(List<IFormFile> illustrationsFiles, string reviewId)
         {
-            if (illustration is null) return null;
-            using (var reader = new StreamReader(illustration.OpenReadStream()))
-            {
-                var bytes = default(byte[]);
-                using (var memoryStream = new MemoryStream())
-                {
-                    reader.BaseStream.CopyTo(memoryStream);
-                    bytes = memoryStream.ToArray();
-                }
-                return await cloudService.UploadAsync(bytes, Path.GetExtension(illustration.FileName));
-            }
+            foreach (var file in illustrationsFiles)
+                await illustrationsRepository.AddAsync(reviewId, file);
         }
     }
 }
