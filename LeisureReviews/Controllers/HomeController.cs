@@ -75,6 +75,9 @@ namespace LeisureReviews.Controllers
             return View(model);
         }
 
+        [HttpGet("AccessDenied")]
+        public IActionResult AccessDenied() => View();
+
         private async Task configureReviewsListViewModel(ReviewsListViewModel model, Expression<Func<Review, bool>> predicate, int page, int pageSize)
         {
             configurePagesViewModel(model, page, pageSize, await reviewsRepository.GetPagesCountAsync(pageSize, predicate));
