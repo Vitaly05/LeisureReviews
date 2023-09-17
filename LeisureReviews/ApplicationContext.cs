@@ -19,6 +19,8 @@ namespace LeisureReviews
 
         public DbSet<Rate> Rates { get; set; }
 
+        public DbSet<Illustration> Illustrations { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Review>().HasQueryFilter(r => !r.IsDeleted);

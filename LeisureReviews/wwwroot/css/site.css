@@ -107,3 +107,13 @@ mark {
 .uk-notification-message {
     border-radius: 5px;
 }
+
+.uk-slideshow .uk-slidenav {
+    color: black;
+}
+.uk-slideshow .uk-slidenav:hover {
+    color: gray;
+}
+.uk-slideshow .uk-icon {
+    color: black;
+}

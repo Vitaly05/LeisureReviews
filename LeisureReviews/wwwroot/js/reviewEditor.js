@@ -29,31 +29,31 @@ const tagsInput = new Tokenfield({
     delimiters: [',']
 })
 
-var illustrationFile
+var illustrationsFiles = []
 
-var illustratoinChanged = false
+var illustratoinsChanged = false
 
 $('.get-image').each(async function () {
+    $(this).parents('#illustrations').show()
+    $(this).parents('.illustration').find('#illustraion-spinner').show()
     const fileId = $(this).data('fileId')
     if (fileId.length === 0) return
     const self = this
-    $('#illustraion-spinner').show()
     $('#upload-illustration-panel').hide()
     await $.get(`/Review/GetIllustration?fileId=${fileId}`).always(function () {
-        $('#illustraion-spinner').hide()
+        $(self).parents('.illustration #illustraion-spinner').hide()
     }).fail(function () {
         $('#upload-illustration-panel').show()
     }).done(function (file) {
-        $('#illustration-block').show()
         $(self).attr('src', file)
     })
 })
 
 $('#delete-illustration-button').on('click', function (e) {
     e.preventDefault()
-    illustrationFile = null
-    illustratoinChanged = true
-    $('#illustration-block').hide()
+    illustrationsFiles = []
+    illustratoinsChanged = true
+    $('#illustrations').hide()
     $('#upload-illustration-panel').show()
 })
 
@@ -71,20 +71,25 @@ $('#upload-illustration-panel').on('dragleave', function (e) {
 
 $('#upload-illustration-panel').on('drop', function (e) {
     $(this).removeClass('uk-dragover')
-    setImage(e.originalEvent.dataTransfer.files[0], e)
+    setImage(e.originalEvent.dataTransfer.files, e)
 })
 
 $('#illustration-file-input').on('change', function (e) {
-    setImage($(this).prop('files')[0], e)
+    setImage($(this).prop('files'), e)
 })
 
-function setImage(image, e) {
+function setImage(images, e) {
     e.preventDefault()
     e.stopPropagation()
-    if (image.type.startsWith('image/')) {
-        illustrationFile = image
-        illustratoinChanged = true
-        showImage(image)
+    if (Array.from(images).every(i => i.type.startsWith('image/'))) {
+        Array.from(images).forEach(image => {
+            $('#illustrations .uk-slideshow-items').empty()
+            $('#upload-illustration-panel').hide()
+            $('#illustrations').show()
+            illustrationsFiles.push(image)
+            illustratoinsChanged = true
+            showImage(image)
+        })
     }
     else {
         $('#upload-illustration-panel').addClass('uk-animation-shake')
@@ -96,8 +101,9 @@ function setImage(image, e) {
 function showImage(image) {
     const reader = new FileReader()
     reader.addEventListener('load', function () {
-        $('#illustration-image').attr('src', reader.result)
-        $('#illustration-block').show()
+        $('<li>').append($('<img>').attr('src', reader.result)).addClass('uk-active').appendTo('#illustrations .uk-slideshow-items')
+        clone.show()
+        $('#illustrations').show()
         $('#upload-illustration-panel').hide()
     })
     reader.readAsDataURL(image)
@@ -122,7 +128,7 @@ async function saveReview() {
         $('[name="Review.Id"]').val(data.id)
         $('[name="Review.AuthorId"]').val(data.authorId)
         $('#illustration-image').attr('data-file-id', data.illustrationId)
-        illustratoinChanged = false
+        illustratoinsChanged = false
         UIkit.modal($('#successful-save-modal')).show()
     })
 }
@@ -152,12 +158,10 @@ function appendReviewTags(formData) {
 }
 
 function appendIllustrationInfo(formData) {
-    formData.append('illustration', illustrationFile)
-    const illustrationId = $('#illustration-image').attr('data-file-id');
-    if (illustrationId !== undefined && illustrationId.length !== 0) {
-        formData.append('illustrationId', illustrationId);
-    }
-    formData.append('illustrationChanged', illustratoinChanged)
+    Array.from(illustrationsFiles).forEach(illustrationFile => {
+        formData.append('illustrationsFiles', illustrationFile)
+    })
+    formData.append('illustrationChanged', illustratoinsChanged)
 }
 
 function getReviewContent() {

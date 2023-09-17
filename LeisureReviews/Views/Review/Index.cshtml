@@ -58,10 +58,21 @@
                 <span id="average-rate">(@(Model.AverageRate is double.NaN ? "-" : Model.AverageRate))</span>
             </div>
         </div>
-        <div class="uk-cover-container mx-0 mx-md-5 mt-4 flex gap-3 align-items-center justify-content-center">
-            <img class="get-image" id="illustration-image" data-file-id="@Model.Review.IllustrationId" uk-cover">
-            <div id="illustraion-spinner" uk-spinner style="display: none"></div>
+
+        <div class="uk-position-relative uk-light" tabindex="-1" uk-slideshow style="display: none">
+            <ul class="uk-slideshow-items mx-0 mx-md-5 mt-4">
+                @foreach (var illustraiton in Model.Review.Illustrations)
+                {
+                    <li class="illustration flex gap-3 align-items-center justify-content-center">
+                        <img class="get-image" id="illustration-image" data-file-id="@illustraiton.Id" uk-cover">
+                        <div id="illustraion-spinner" uk-spinner style="display: none"></div>
+                    </li>
+                }
+            </ul>
+            <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slideshow-item="previous"></a>
+            <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slideshow-item="next"></a>
         </div>
+
         <div id="content" class="mt-4">@Model.Review.Content</div>
         @if (Model.IsAuthorized && !Model.Review.Likes.Any(l => l.User.Id == Model.CurrentUser.Id))
         {
