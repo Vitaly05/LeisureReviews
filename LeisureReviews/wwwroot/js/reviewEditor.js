@@ -1,3 +1,8 @@
+$(window).on('beforeunload', function (e) {
+    e.preventDefault()
+    return ''
+})
+
 const converter = new showdown.Converter()
 
 $('#markdown-preview').html(converter.makeHtml(getReviewContent()))
