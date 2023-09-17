@@ -22,7 +22,8 @@ option {
 .uk-button-default,
 .tokenfield.tokenfield-mode-tokens,
 .tokenfield .tokenfield-input,
-.tokenfield-suggest-item {
+.tokenfield-suggest-item,
+.uk-dropdown {
     background-color: #212121 !important;
 }
 

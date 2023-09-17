@@ -1,7 +1,9 @@
-﻿using LeisureReviews.Models.Database;
+﻿using LeisureReviews.Data;
+using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 
 namespace LeisureReviews.Repositories
@@ -30,6 +32,13 @@ namespace LeisureReviews.Repositories
         public async Task<User> GetAsync(ClaimsPrincipal principal) =>
             await userManager.GetUserAsync(principal);
 
+        public async Task<User> GetWithoutQueryFiltersAsync(ClaimsPrincipal principal)
+        {
+            if (principal.Claims.IsNullOrEmpty()) return null;
+            var id = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier).Value;
+            return await context.Users.IgnoreQueryFilters().FirstOrDefaultAsync(u => u.Id == id);
+        }
+
         public async Task<List<User>> GetAllAsync(int page, int pageSize) =>
             await userManager.Users.Skip(page * pageSize).Take(pageSize).ToListAsync();
 
@@ -41,5 +50,11 @@ namespace LeisureReviews.Repositories
 
         public async Task<string> GetUserNameAsync(string id) =>
             (await userManager.FindByIdAsync(id)).UserName;
+
+        public async Task ChangeStatusAsync(User user, AccountStatus status)
+        {
+            user.Status = status;
+            await userManager.UpdateAsync(user);
+        }
     }
 }

@@ -17,11 +17,9 @@ namespace LeisureReviews.Controllers
         protected async Task configureBaseModelAsync(BaseViewModel model)
         {
             model.IsAuthorized = HttpContext.User.Identity.IsAuthenticated;
-            if (model.IsAuthorized)
-            {
-                model.CurrentUser = await getCurrentUserAsync();
+            model.CurrentUser = await getCurrentUserAsync();
+            if (model.CurrentUser is not null)
                 model.CurrentUser.Roles = await usersRepository.GetRolesAsync(model.CurrentUser);
-            }
         }
 
         protected async Task<User> getCurrentUserAsync() =>

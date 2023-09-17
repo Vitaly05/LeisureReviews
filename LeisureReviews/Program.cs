@@ -1,6 +1,7 @@
 using Algolia.Search.Clients;
 using LeisureReviews;
 using LeisureReviews.Hubs;
+using LeisureReviews.Middlewares;
 using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories;
 using LeisureReviews.Repositories.Interfaces;
@@ -99,6 +100,8 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<CheckStatusMiddleware>();
 
 app.MapControllerRoute(
     name: "default",
