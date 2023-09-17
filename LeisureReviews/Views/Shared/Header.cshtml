@@ -16,7 +16,7 @@
                     </div>
                     <!-- MOBILE -->
                     <a class="uk-navbar-toggle uk-navbar-toggle-animate d-flex d-md-none" uk-navbar-toggle-icon href="#"></a>
-                    <div class="uk-navbar-dropdown text-center">
+                    <div class="uk-navbar-dropdown text-center uk-border-rounded">
                         <ul class="uk-nav uk-navbar-dropdown-nav">
                             @if (Model.IsAuthorized)
                             {
@@ -54,7 +54,7 @@
                         {
                             <li>
                                 <a href="#" class="text-transform-none"><span uk-icon="user"></span> <span id="user-name">@Model.CurrentUser.UserName</span> <span uk-navbar-parent-icon></span></a>
-                                <div class="uk-navbar-dropdown">
+                                <div class="uk-navbar-dropdown uk-border-rounded">
                                     <ul class="uk-nav uk-navbar-dropdown-nav">
                                         <li><a href="/Profile/@Model.CurrentUser.UserName">Profile</a></li>
                                         <li class="uk-nav-divider"></li>

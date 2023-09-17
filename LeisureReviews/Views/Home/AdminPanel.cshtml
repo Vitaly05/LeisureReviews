@@ -8,11 +8,10 @@
     await Html.RenderPartialAsync("Header", Model);
 }
 
-
 <div class="uk-border-rounded uk-background-muted mt-3 py-5 px-3">
     @foreach (var user in Model.Users)
     {
-        <div class="uk-background-default uk-border-rounded d-flex flex-column flex-sm-row justify-content-center justify-content-sm-between align-items-center gap-3 my-4 p-4">
+        <div data-user-name="@user.UserName" class="user-card uk-background-default uk-border-rounded flex flex-column flex-sm-row justify-content-center justify-content-sm-between align-items-center gap-3 my-4 p-4">
             <div class="d-flex gap-2">
                 <div class="d-flex align-items-center gap-1">
                     <span uk-icon="user"></span>
@@ -23,8 +22,38 @@
                     <span>@user.LikesCount</span>
                 </div>
             </div>
-            <div class="d-flex align-items-center">
-                <a href="/Profile/@user.UserName" class="uk-button uk-button-primary uk-border-rounded">To profile</a>
+            <div>
+                <div>
+                    <span>Status:</span>
+                    <span id="status">@user.Status</span>
+                </div>
+                <div>
+                    <span class="text-danger" id="role">
+                        @if (user.Roles.Contains(Roles.Admin.ToString()))
+                        {
+                            <text>Admin</text>
+                        }
+                    </span>
+                </div>
+            </div>
+            <div class="uk-button-group">
+                <a href="/Profile/@user.UserName" class="uk-button uk-button-primary rounded-start">To profile</a>
+                <div class="uk-inline">
+                    <button class="uk-button uk-button-default rounded-end px-2" type="button" aria-label="Toggle Dropdown"><span uk-icon="icon:  triangle-down"></span></button>
+                    <div uk-dropdown="mode: click; target: !.uk-button-group;" class="uk-border-rounded">
+                        <div class="d-flex flex-column justify-content-center gap-2">
+                            <div class="d-flex align-items-center justify-content-center gap-1">
+                                <span uk-icon="user"></span>
+                                <span>@user.UserName</span>
+                            </div>
+                            <button data-status="@((int)AccountStatus.Blocked)" data-action="block" class="change-status-button uk-button uk-button-danger uk-border-rounded">Block</button>
+                            <button data-status="@((int)AccountStatus.Active)" data-action="unblock" class="change-status-button uk-button uk-button-danger uk-border-rounded">Unblock</button>
+                            <button data-status="@((int)AccountStatus.Deleted)" data-action="delete" class="change-status-button uk-button uk-button-danger uk-border-rounded">Delete</button>
+
+                            <button data-role="@((int)Roles.Admin)" data-role-name="admin" class="change-role-button uk-button uk-button-danger uk-border-rounded">Make admin</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     }
@@ -32,3 +61,7 @@
         await Html.RenderPartialAsync("Pagination", Model);
     }
 </div>
+
+@section Scripts {
+    <script src="~/js//adminPanel.js"></script>
+}

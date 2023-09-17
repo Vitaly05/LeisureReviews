@@ -1,6 +1,8 @@
-﻿using LeisureReviews.Models;
+﻿using LeisureReviews.Data;
+using LeisureReviews.Models;
 using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +12,13 @@ namespace LeisureReviews.Controllers
     {
         private readonly SignInManager<User> signInManager;
 
-        public AccountController(IUsersRepository usersRepository, SignInManager<User> signInManager) : base(usersRepository)
+        private readonly UserManager<User> userManager;
+
+        public AccountController(IUsersRepository usersRepository, SignInManager<User> signInManager, 
+            UserManager<User> userManager) : base(usersRepository)
         {
             this.signInManager = signInManager;
+            this.userManager = userManager;
         }
 
         public IActionResult SignIn()
@@ -27,7 +33,7 @@ namespace LeisureReviews.Controllers
 
         public IActionResult AdditionalInfo(string externalProvider, string providerKey)
         {
-            var model = new AdditionalInfoModel { ExternalProvider = externalProvider, ProviderKey = providerKey};
+            var model = new AdditionalInfoModel { ExternalProvider = externalProvider, ProviderKey = providerKey };
             return View(model);
         }
 
@@ -36,11 +42,8 @@ namespace LeisureReviews.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
-                if (result.Succeeded)
+                if (await signInAsync(model))
                     return redirectTo(returnUrl);
-                else
-                    ModelState.AddModelError(string.Empty, "Incorrect username or password.");
             }
             return View(model);
         }
@@ -99,9 +102,61 @@ namespace LeisureReviews.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangeStatus([FromBody] ChangeStatusModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+            var user = await usersRepository.FindAsync(model.UserName);
+            if (user is null) return BadRequest();
+            await usersRepository.ChangeStatusAsync(user, model.Status);
+            return Ok(model.Status.ToString());
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangeRole([FromBody] ChangeRoleModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+            var user = await usersRepository.FindAsync(model.UserName);
+            if (user is null) return BadRequest();
+            await userManager.AddToRoleAsync(user, model.Role.ToString());
+            return Ok(model.Role.ToString());
+        }
+
+        private async Task<bool> signInAsync(LoginModel model)
+        {
+            var user = await usersRepository.FindAsync(model.Username);
+            if (!await passwordIsValidAsync(user, model.Password) || !accountIsActive(user)) return false;
+            var result = await signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, false);
+            if (!result.Succeeded) return false;
+            return true;
+        }
+
+        private async Task<bool> passwordIsValidAsync(User user, string password)
+        {
+            if (!await userManager.CheckPasswordAsync(user, password))
+            {
+                ModelState.AddModelError(string.Empty, "Incorrect username or password.");
+                return false;
+            }
+            return true;
+        }
+
+        private bool accountIsActive(User user)
+        {
+            if (user.Status == AccountStatus.Blocked)
+            {
+                ModelState.AddModelError(string.Empty, "Account was blocked.");
+                return false;
+            }
+            return true;
+        }
+
         private async Task<IActionResult> checkInfoAsync(ExternalLoginInfo info)
         {
             var user = await usersRepository.FindAsync(info.LoginProvider, info.ProviderKey);
+            if (user is not null && !accountIsActive(user)) return View("SignIn");
             if (user is null)
                 return RedirectToAction("AdditionalInfo", new { externalProvider = info.LoginProvider, providerKey = info.ProviderKey });
             await signInManager.SignInAsync(user, true);
