@@ -69,7 +69,7 @@ namespace LeisureReviews.Controllers
         public async Task<IActionResult> AdminPanel(int page = 0, int pageSize = 10)
         {
             var model = new AdminPanelViewModel { Users = await usersRepository.GetAllAsync(page, pageSize)};
-            foreach (var user in model.Users) user.LikesCount = await likesRepository.GetCountAsync(user);
+            await configureUsers(model);
             await configureBaseModelAsync(model);
             configurePagesViewModel(model, page, pageSize, await usersRepository.GetPagesCountAsync(pageSize));
             return View(model);
@@ -89,6 +89,15 @@ namespace LeisureReviews.Controllers
             model.Page = page;
             model.PageSize = pageSize;
             model.PagesCount = pagesCount;
+        }
+
+        private async Task configureUsers(AdminPanelViewModel model)
+        {
+            foreach (var user in model.Users)
+            {
+                user.LikesCount = await likesRepository.GetCountAsync(user);
+                user.Roles = await usersRepository.GetRolesAsync(user);
+            }
         }
 
         private async Task<List<Review>> getReviewsAsync(ReviewSortModel sortModel, Expression<Func<Review, bool>> predicate, int page, int pageSize) =>

@@ -14,7 +14,8 @@ namespace LeisureReviews.Controllers
 
         private readonly UserManager<User> userManager;
 
-        public AccountController(IUsersRepository usersRepository, SignInManager<User> signInManager, UserManager<User> userManager) : base(usersRepository)
+        public AccountController(IUsersRepository usersRepository, SignInManager<User> signInManager, 
+            UserManager<User> userManager) : base(usersRepository)
         {
             this.signInManager = signInManager;
             this.userManager = userManager;
@@ -110,6 +111,17 @@ namespace LeisureReviews.Controllers
             if (user is null) return BadRequest();
             await usersRepository.ChangeStatusAsync(user, model.Status);
             return Ok(model.Status.ToString());
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangeRole([FromBody] ChangeRoleModel model)
+        {
+            if (!ModelState.IsValid) return BadRequest();
+            var user = await usersRepository.FindAsync(model.UserName);
+            if (user is null) return BadRequest();
+            await userManager.AddToRoleAsync(user, model.Role.ToString());
+            return Ok(model.Role.ToString());
         }
 
         private async Task<bool> signInAsync(LoginModel model)

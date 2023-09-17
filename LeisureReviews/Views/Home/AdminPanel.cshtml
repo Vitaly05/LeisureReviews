@@ -23,8 +23,18 @@
                 </div>
             </div>
             <div>
-                <span>Status:</span>
-                <span id="status">@user.Status</span>
+                <div>
+                    <span>Status:</span>
+                    <span id="status">@user.Status</span>
+                </div>
+                <div>
+                    <span class="text-danger" id="role">
+                        @if (user.Roles.Contains(Roles.Admin.ToString()))
+                        {
+                            <text>Admin</text>
+                        }
+                    </span>
+                </div>
             </div>
             <div class="uk-button-group">
                 <a href="/Profile/@user.UserName" class="uk-button uk-button-primary rounded-start">To profile</a>
@@ -39,6 +49,8 @@
                             <button data-status="@((int)AccountStatus.Blocked)" data-action="block" class="change-status-button uk-button uk-button-danger uk-border-rounded">Block</button>
                             <button data-status="@((int)AccountStatus.Active)" data-action="unblock" class="change-status-button uk-button uk-button-danger uk-border-rounded">Unblock</button>
                             <button data-status="@((int)AccountStatus.Deleted)" data-action="delete" class="change-status-button uk-button uk-button-danger uk-border-rounded">Delete</button>
+
+                            <button data-role="@((int)Roles.Admin)" data-role-name="admin" class="change-role-button uk-button uk-button-danger uk-border-rounded">Make admin</button>
                         </div>
                     </div>
                 </div>

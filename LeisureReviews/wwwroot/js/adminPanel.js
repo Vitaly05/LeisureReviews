@@ -5,6 +5,13 @@ $('.change-status-button').on('click', async function (e) {
     }
 })
 
+$('.change-role-button').on('click', async function (e) {
+    e.preventDefault()
+    if (await modalConfirm(`Are you sure you want to add to this user role "${$(this).data('role-name')}"?`)) {
+        await changeRoleAsync($(this), $(this).closest('.user-card'))
+    }
+})
+
 async function modalConfirm(message) {
     return await UIkit.modal.confirm(message).then(() => true, () => false)
 }
@@ -21,11 +28,35 @@ async function changeStatusAsync(button, card) {
     })
 }
 
+async function changeRoleAsync(button, card) {
+    await $.ajax('/Account/ChangeRole', {
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(getChangeRoleData(button))
+    }).fail(function () {
+        UIkit.notification('An error occurred when changing the user role', { status: 'danger', pos: 'bottom-center' })
+    }).done(function (result) {
+        card.find('#role').text(result)
+        UIkit.notification('User role successfully changed', { status: 'success', pos: 'bottom-center' })
+    })
+}
+
 function getChangeStatusData(button) {
     return {
-        userName: button.closest('.user-card').data('user-name').toString(),
+        userName: getUserName(button),
         status: button.data('status')
     }
+}
+
+function getChangeRoleData(button) {
+    return {
+        userName: getUserName(button),
+        role: button.data('role')
+    }
+}
+
+function getUserName(button) {
+    return button.closest('.user-card').data('user-name').toString()
 }
 
 function deleteUser(card) {
@@ -35,5 +66,5 @@ function deleteUser(card) {
 
 function showStatus(card, status) {
     card.find('#status').text(status)
-    UIkit.notification('User status successfully changes', { status: 'success', pos: 'bottom-center' })
+    UIkit.notification('User status successfully changed', { status: 'success', pos: 'bottom-center' })
 }
