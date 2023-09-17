@@ -22,7 +22,8 @@ namespace LeisureReviews.Repositories
 
         public async Task<Review> GetAsync(string id) =>
             await context.Reviews.Include(r => r.Tags).Include(r => r.Author).Include(r => r.Likes).ThenInclude(l => l.User)
-                .Include(r => r.Comments).ThenInclude(c => c.Author).Include(r => r.Illustrations).FirstOrDefaultAsync(r => r.Id == id);
+                .Include(r => r.Comments).ThenInclude(c => c.Author).Include(r => r.Illustrations)
+                .AsSplitQuery().FirstOrDefaultAsync(r => r.Id == id);
 
         public async Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, SortType sortType, int page, int pageSize)
         {
@@ -93,8 +94,8 @@ namespace LeisureReviews.Repositories
         private IQueryable<Review> orderReviews<TKey>(SortType sortType, Expression<Func<Review, TKey>> keySelector) =>
             sortType switch
             {
-                SortType.Descending => context.Reviews.OrderByDescending(keySelector).Include(r => r.Tags).Include(r => r.Likes),
-                _ => context.Reviews.OrderBy(keySelector).Include(r => r.Tags).Include(r => r.Likes)
+                SortType.Descending => context.Reviews.OrderByDescending(keySelector).Include(r => r.Tags).Include(r => r.Likes).AsSplitQuery(),
+                _ => context.Reviews.OrderBy(keySelector).Include(r => r.Tags).Include(r => r.Likes).AsSplitQuery()
             };
     }
 }
