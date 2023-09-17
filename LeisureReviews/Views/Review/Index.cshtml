@@ -30,7 +30,7 @@
                     <span class="uk-text-small uk-text-muted">Review author</span>
                 </div>
                 <div>
-                    <div uk-tooltip="title: Number of likes; pos: bottom-left">
+                    <div uk-tooltip="title: Number of author's likes; pos: bottom-left">
                         <span uk-icon="heart"></span> @Model.Review.Author.LikesCount
                     </div>
                 </div>
@@ -40,7 +40,7 @@
             </div>
         </div>
         <div class="d-flex gap-4 justify-content-between">
-            <div uk-tooltip="title: Number of likes; pos: bottom-left">
+            <div uk-tooltip="title: Number of review likes; pos: bottom-left">
                 <span uk-icon="heart"></span> @Model.Review.Likes.Count()
             </div>
             <div uk-tooltip="title: Rating (average); pos: bottom-left" class="d-flex align-items-center">
