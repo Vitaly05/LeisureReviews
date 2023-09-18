@@ -48,7 +48,7 @@ namespace LeisureReviews.Controllers
         {
             if (fileId is null) return NotFound();
             var fileContent = await cloudService.GetAsync(fileId);
-            return Ok($"data:image;base64,{Convert.ToBase64String(fileContent)}");
+            return Ok($"data:image/jpeg;base64,{Convert.ToBase64String(fileContent)}");
         }
 
         [Authorize]

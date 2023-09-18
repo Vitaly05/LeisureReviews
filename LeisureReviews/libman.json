@@ -18,6 +18,16 @@
         "dist/browser/signalr.min.js",
         "dist/browser/signalr.js"
       ]
+    },
+    {
+      "library": "html2pdf.js@0.10.1",
+      "destination": "wwwroot/lib/html2pdf.js/",
+      "files": [
+        "html2pdf.bundle.min.js",
+        "html2pdf.min.js",
+        "html2pdf.js",
+        "html2pdf.bundle.js"
+      ]
     }
   ]
 }

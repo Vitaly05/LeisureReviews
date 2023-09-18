@@ -73,6 +73,21 @@ $('.rating-button').on('click', async function () {
     })
 })
 
+$('#save-as-pdf-button').on('click', async function (e) {
+    e.preventDefault()
+    var element = document.getElementById('pdf').cloneNode(true)
+    element.style.marginTop = '0 !important'
+    element.querySelector('#pdf-illustrations').style.display = 'flex'
+    var opt = {
+        margin: 0,
+        filename: 'Leisure Reviews.pdf',
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+    }
+    html2pdf().from(element).set(opt).save()
+})
+
 function updateRatingButtonsClass(currentRate, activeClass) {
     for (let i = 1; i <= currentRate; i++) {
         $(`[data-value="${i}"]`).removeClass('clear-svg-temp')

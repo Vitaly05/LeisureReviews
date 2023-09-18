@@ -8,10 +8,13 @@
     await Html.RenderPartialAsync("Header", Model);
 }
 
-<div class="uk-border-rounded uk-background-muted mt-3 p-3">
-    <div class="d-flex gap-4 align-items-center">
-        <span class="uk-label uk-background-secondary">@Model.Review.Group</span>
-        <span>@Model.Review.CreateTime.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture)</span>
+<div class="uk-border-rounded uk-background-muted mt-3 p-3" id="pdf">
+    <div class="d-flex flex-column flex-sm-row gap-3 align-items-sm-center justify-content-between">
+        <div class="d-flex gap-4 align-items-center">
+            <span class="uk-label uk-background-secondary">@Model.Review.Group</span>
+            <span>@Model.Review.CreateTime.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture)</span>
+        </div>
+        <button class="uk-button uk-button-default uk-border-rounded" data-html2canvas-ignore="true" id="save-as-pdf-button">Save as PDF</button>
     </div>
     <div class="mt-4">
         <div>
@@ -59,7 +62,7 @@
             </div>
         </div>
 
-        <div class="uk-position-relative uk-light" tabindex="-1" uk-slideshow style="display: none">
+        <div class="uk-position-relative uk-light" tabindex="-1" uk-slideshow style="display: none" data-html2canvas-ignore="true">
             <ul class="uk-slideshow-items mx-0 mx-md-5 mt-4">
                 @foreach (var illustraiton in Model.Review.Illustrations)
                 {
@@ -76,7 +79,7 @@
         <div id="content" class="mt-4">@Model.Review.Content</div>
         @if (Model.IsAuthorized && !Model.Review.Likes.Any(l => l.User.Id == Model.CurrentUser.Id))
         {
-            <div id="like-panel" class="flex flex-column flex-sm-row gap-2 justify-content-center align-items-center">
+            <div id="like-panel" class="flex flex-column flex-sm-row gap-2 justify-content-center align-items-center" data-html2canvas-ignore="true">
                 <span>Do you like this review?</span>
                 <button id="like-review-button" class="uk-button uk-border-rounded uk-button-default uk-label-success">
                     <div id="button-text"><span uk-icon="heart"></span> Like</div>
@@ -84,6 +87,16 @@
                 </button>
             </div>
         }
+        <div id="pdf-illustrations" class="flex flex-column gap-2" style="display: none">
+            <h3 class="text-center">Illustrations</h3>
+            @foreach (var illustraiton in Model.Review.Illustrations)
+            {
+                <div class="illustration flex gap-3 align-items-center justify-content-center">
+                    <img class="get-image" data-file-id="@illustraiton.Id" uk-cover">
+                    <div id="illustraion-spinner" uk-spinner style="display: none"></div>
+                </div>
+            }
+        </div>
     </div>
 </div>
 <div class="uk-border-rounded uk-background-muted mt-3 p-3">
@@ -121,6 +134,7 @@
 @section Scripts {
     <script src="~/lib/showdown/showdown.min.js"></script>
     <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/lib/html2pdf.js/html2pdf.bundle.min.js"></script>
     <script src="~/js/base.js"></script>
     <script src="~/js/review.js"></script>
 }
