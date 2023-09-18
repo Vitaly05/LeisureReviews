@@ -1,7 +1,11 @@
 $(window).on('beforeunload', function (e) {
-    e.preventDefault()
-    return ''
+    if (!changesSaved) {
+        e.preventDefault()
+        return ''
+    }
 })
+
+var changesSaved = false
 
 const converter = new showdown.Converter()
 
@@ -135,6 +139,7 @@ async function saveReview() {
         $('#illustration-image').attr('data-file-id', data.illustrationId)
         illustratoinsChanged = false
         UIkit.modal($('#successful-save-modal')).show()
+        changesSaved = true
     })
 }
 
