@@ -83,6 +83,7 @@ namespace LeisureReviews.Controllers
             if (!ModelState.IsValid) return BadRequest();
             await saveReviewAsync(reviewModel);
             reviewModel.Tags.Clear();
+            reviewModel.Leisure.Reviews.Clear();
             return Ok(reviewModel);
         }
 
