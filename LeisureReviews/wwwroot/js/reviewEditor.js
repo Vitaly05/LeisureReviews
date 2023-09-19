@@ -115,7 +115,7 @@ function showImage(image) {
     const reader = new FileReader()
     reader.addEventListener('load', function () {
         $('<li>').append($('<img>').attr('src', reader.result)).appendTo('#illustrations .uk-slideshow-items')
-        $('#illustrations .uk-slideshow-items:first').addClass('uk-active')
+        $('#illustrations .uk-slideshow-items li:first').addClass('uk-active')
         $('#illustrations').show()
         $('#upload-illustration-panel').hide()
     })
