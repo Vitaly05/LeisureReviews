@@ -3,7 +3,7 @@
 <div data-id="@Model.Review.Id" class="review-card uk-card uk-card-default uk-border-rounded uk-card-body uk-width-1-1 uk-width-3-4@l">
     <div class="uk-card-badge uk-label uk-background-secondary" id="group">@Model.Review.Group</div>
     <h3 class="uk-card-title" id="title">@Model.Review.Title</h3>
-    <span>Leisure: <b id="leisure">@Model.Review.Leisure</b></span>
+    <span>Leisure: <b id="leisure">@Model.Review.Leisure.Name</b></span>
     <div id="tags">
         @foreach (var tag in Model.Review.Tags.Select(t => t.Name))
         {
@@ -18,7 +18,7 @@
             <span uk-icon="heart"></span> <span id="likes-count">@Model.Review.Likes.Count()</span>
         </div>
         <div uk-tooltip="title: Average rating; pos: bottom-left">
-            <span uk-icon="star"></span> <span id="average-rate">@(Model.Review.AverageRate is double.NaN ? "-" : Model.Review.AverageRate)</span>/5
+            <span uk-icon="star"></span> <span id="average-rate">@(Model.Review.Leisure.AverageRate is double.NaN ? "-" : Model.Review.Leisure.AverageRate)</span>/5
         </div>
     </div>
     @if (Model.CanEdit)

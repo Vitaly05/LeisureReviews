@@ -78,6 +78,7 @@ builder.Services.AddScoped<ILikesRepository, LikesRepository>();
 builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
 builder.Services.AddScoped<IRatesRepository, RatesRepository>();
 builder.Services.AddScoped<IIllustrationsRepository, IllustrationsRepository>();
+builder.Services.AddScoped<ILeisuresRepository, LeisuresRepository>();
 builder.Services.AddScoped<ICloudService, CloudinaryCloudService>();
 
 builder.Services.AddSingleton<ISearchService, AlgoliaSearchService>();

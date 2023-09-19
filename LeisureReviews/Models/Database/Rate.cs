@@ -15,6 +15,8 @@ namespace LeisureReviews.Models.Database
         public User User { get; set; }
 
         [Required]
-        public Review Review { get; set; }
+        public string LeisureId { get; set; }
+
+        public Leisure Leisure { get; set; }
     }
 }

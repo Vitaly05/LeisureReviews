@@ -24,7 +24,7 @@
             }
         </div>
         <h1 class="mt-2"><b>@Model.Review.Title</b></h1>
-        <span>Leisure: <b>@Model.Review.Leisure</b></span>
+        <span>Leisure: <b>@Model.Review.Leisure.Name</b></span>
         <div class="d-flex align-items-center justify-content-between uk-background-default uk-border-pill py-1 px-3 mt-2">
             <div class="d-flex align-items-center gap-2">
                 <span uk-icon="user"></span>
@@ -99,6 +99,18 @@
         </div>
     </div>
 </div>
+@if (Model.RelatedReviews.Any())
+{
+    <div class="see-also-panel my-3 p-3 uk-background-muted uk-border-rounded">
+        <h3 class="text-center">See also</h3>
+        <div class="d-flex align-items-center gap-3 justify-content-sm-between overflow-auto">
+            @foreach (var review in Model.RelatedReviews)
+            {
+                await Html.RenderPartialAsync("ReviewCard", new ReviewCardViewModel { Review = review, CanEdit = false });
+            }
+        </div>
+    </div>
+}
 <div class="uk-border-rounded uk-background-muted mt-3 p-3">
     <h2 class="text-center">Comments</h2>
     @if (Model.IsAuthorized)

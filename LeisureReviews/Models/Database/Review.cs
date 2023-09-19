@@ -20,10 +20,9 @@ namespace LeisureReviews.Models.Database
         [MaxLength(255)]
         public string Title { get; set; }
 
-        [Required]
-        [Column(TypeName = "nvarchar(255)")]
-        [MaxLength(255)]
-        public string Leisure { get; set; }
+        public string LeisureId { get; set; }
+
+        public Leisure Leisure { get; set; }
 
         [Required]
         public LeisureGroup Group { get; set; }
@@ -41,11 +40,6 @@ namespace LeisureReviews.Models.Database
         public ICollection<Like> Likes { get; set; } = new List<Like>();
 
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-
-        public ICollection<Rate> Rates { get; set; } = new List<Rate>();
-
-        [NotMapped]
-        public double AverageRate { get; set; }
 
         [Required]
         [BindNever]

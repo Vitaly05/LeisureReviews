@@ -21,6 +21,8 @@ namespace LeisureReviews
 
         public DbSet<Illustration> Illustrations { get; set; }
 
+        public DbSet<Leisure> Leisures { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Review>().HasQueryFilter(r => !r.IsDeleted);

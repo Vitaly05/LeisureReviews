@@ -20,18 +20,22 @@ namespace LeisureReviews.Controllers
         private readonly ILikesRepository likesRepository;
 
         private readonly IIllustrationsRepository illustrationsRepository;
-        
+
+        private readonly ILeisuresRepository leisuresRepository;
+
         private readonly ICloudService cloudService;
 
         public ReviewController(IUsersRepository usersRepository, IReviewsRepository reviewsRepository, 
             ITagsRepository tagsRepository, IRatesRepository ratesRepository, ILikesRepository likesRepository,
-            IIllustrationsRepository illustrationsRepository, ICloudService cloudService) : base(usersRepository)
+            IIllustrationsRepository illustrationsRepository, ILeisuresRepository leisuresRepository,
+            ICloudService cloudService) : base(usersRepository)
         {
             this.reviewsRepository = reviewsRepository;
             this.tagsRepository = tagsRepository;
             this.ratesRepository = ratesRepository;
             this.likesRepository = likesRepository;
             this.illustrationsRepository = illustrationsRepository;
+            this.leisuresRepository = leisuresRepository;
             this.cloudService = cloudService;
         }
 
@@ -108,12 +112,12 @@ namespace LeisureReviews.Controllers
         {
             var rate = new Rate
             {
-                Review = await reviewsRepository.GetAsync(reviewId),
+                Leisure = await leisuresRepository.GetFromReviewAsync(reviewId),
                 User = await getCurrentUserAsync(),
                 Value = value
             };
             await ratesRepository.SaveAsync(rate);
-            return Ok(new { value = rate.Value, average = await ratesRepository.GetAverageRateAsync(rate.Review) });
+            return Ok(new { value = rate.Value, average = await ratesRepository.GetAverageRateAsync(rate.Leisure) });
         }
 
         private async Task<bool> canEditAsync(User user, Review review)
@@ -125,6 +129,7 @@ namespace LeisureReviews.Controllers
         private async Task saveReviewAsync(ReviewModel reviewModel)
         {
             if (reviewModel.TagsNames is not null) await addTagsAsync(reviewModel);
+            reviewModel.Leisure = await leisuresRepository.AddAsync(reviewModel.LeisureName);
             await reviewsRepository.SaveAsync(reviewModel);
             await updateIllustrationAsync(reviewModel);
         }
@@ -140,6 +145,7 @@ namespace LeisureReviews.Controllers
             var model = new ReviewViewModel { Review = await reviewsRepository.GetAsync(reviewId) };
             if (model.Review is null) return null;
             await configureReviewViewModelAsync(model);
+            await configureRelatedReviewsAsync(model);
             return model;
         }
 
@@ -147,9 +153,16 @@ namespace LeisureReviews.Controllers
         {
             model.Review.Author.LikesCount = await likesRepository.GetCountAsync(model.Review.Author);
             await configureCommentsAuthorsLikesCountAsync(model);
-            model.AverageRate = await ratesRepository.GetAverageRateAsync(model.Review);
+            model.AverageRate = await ratesRepository.GetAverageRateAsync(model.Review.Leisure);
             await configureBaseModelAsync(model);
-            if (model.IsAuthorized) model.CurrentUserRate = await ratesRepository.GetAsync(model.CurrentUser, model.Review);
+            if (model.IsAuthorized) model.CurrentUserRate = await ratesRepository.GetAsync(model.CurrentUser, model.Review.Leisure);
+        }
+
+        private async Task configureRelatedReviewsAsync(ReviewViewModel model)
+        {
+            model.RelatedReviews = await reviewsRepository.GetRelatedAsync(model.Review.Id, 5);
+            foreach (var review in model.RelatedReviews)
+                review.Leisure.AverageRate = model.AverageRate;
         }
 
         private async Task configureCommentsAuthorsLikesCountAsync(ReviewViewModel model)
