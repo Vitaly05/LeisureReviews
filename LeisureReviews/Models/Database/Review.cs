@@ -41,9 +41,6 @@ namespace LeisureReviews.Models.Database
 
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
-        [NotMapped]
-        public double AverageRate { get; set; }
-
         [Required]
         [BindNever]
         public DateTime CreateTime { get; set; } = DateTime.Now;

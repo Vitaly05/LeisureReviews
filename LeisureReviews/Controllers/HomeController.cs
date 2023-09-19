@@ -83,7 +83,7 @@ namespace LeisureReviews.Controllers
             configurePagesViewModel(model, page, pageSize, await reviewsRepository.GetPagesCountAsync(pageSize, predicate));
             model.Reviews = await getReviewsAsync(model.ReviewSortModel, predicate, page, pageSize);
             foreach (var review in model.Reviews)
-                review.AverageRate = await ratesRepository.GetAverageRateAsync(review.Leisure);
+                review.Leisure.AverageRate = await ratesRepository.GetAverageRateAsync(review.Leisure);
             await configureBaseModelAsync(model);
         }
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LeisureReviews.Models.Database
 {
@@ -14,5 +15,8 @@ namespace LeisureReviews.Models.Database
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
         public ICollection<Rate> Rates { get; set; } = new List<Rate>();
+
+        [NotMapped]
+        public double AverageRate { get; set; }
     }
 }

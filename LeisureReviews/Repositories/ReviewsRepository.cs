@@ -25,6 +25,13 @@ namespace LeisureReviews.Repositories
                 .Include(r => r.Comments).ThenInclude(c => c.Author).Include(r => r.Illustrations).Include(r => r.Leisure).ThenInclude(l => l.Rates)
                 .AsSplitQuery().FirstOrDefaultAsync(r => r.Id == id);
 
+        public async Task<List<Review>> GetRelatedAsync(string reviewId, int count)
+        {
+            var leisureId = await context.Reviews.Where(r => r.Id == reviewId).Select(r => r.LeisureId).FirstOrDefaultAsync();
+            return await context.Reviews.Where(r => r.LeisureId == leisureId).Where(r => r.Id != reviewId).OrderBy(x => Guid.NewGuid())
+                .Take(count).Include(r => r.Leisure).AsSplitQuery().ToListAsync();
+        }
+
         public async Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, SortType sortType, int page, int pageSize)
         {
             IQueryable<Review> query = orderReviews(sortType, r => r.CreateTime);

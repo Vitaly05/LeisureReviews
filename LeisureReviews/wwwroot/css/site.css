@@ -117,3 +117,7 @@ mark {
 .uk-slideshow .uk-icon {
     color: black;
 }
+
+.see-also-panel .review-card {
+    min-width: 265px;
+}

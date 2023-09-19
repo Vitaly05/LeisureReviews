@@ -145,6 +145,7 @@ namespace LeisureReviews.Controllers
             var model = new ReviewViewModel { Review = await reviewsRepository.GetAsync(reviewId) };
             if (model.Review is null) return null;
             await configureReviewViewModelAsync(model);
+            await configureRelatedReviewsAsync(model);
             return model;
         }
 
@@ -155,6 +156,13 @@ namespace LeisureReviews.Controllers
             model.AverageRate = await ratesRepository.GetAverageRateAsync(model.Review.Leisure);
             await configureBaseModelAsync(model);
             if (model.IsAuthorized) model.CurrentUserRate = await ratesRepository.GetAsync(model.CurrentUser, model.Review.Leisure);
+        }
+
+        private async Task configureRelatedReviewsAsync(ReviewViewModel model)
+        {
+            model.RelatedReviews = await reviewsRepository.GetRelatedAsync(model.Review.Id, 5);
+            foreach (var review in model.RelatedReviews)
+                review.Leisure.AverageRate = model.AverageRate;
         }
 
         private async Task configureCommentsAuthorsLikesCountAsync(ReviewViewModel model)
