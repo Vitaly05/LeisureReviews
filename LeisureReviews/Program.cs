@@ -1,4 +1,5 @@
 using Algolia.Search.Clients;
+using CloudinaryDotNet;
 using LeisureReviews;
 using LeisureReviews.Hubs;
 using LeisureReviews.Middlewares;
@@ -77,7 +78,7 @@ builder.Services.AddScoped<ILikesRepository, LikesRepository>();
 builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
 builder.Services.AddScoped<IRatesRepository, RatesRepository>();
 builder.Services.AddScoped<IIllustrationsRepository, IllustrationsRepository>();
-builder.Services.AddScoped<ICloudService, DropboxCloudService>();
+builder.Services.AddScoped<ICloudService, CloudinaryCloudService>();
 
 builder.Services.AddSingleton<ISearchService, AlgoliaSearchService>();
 builder.Services.AddSingleton<ISearchClient>(new SearchClient(
