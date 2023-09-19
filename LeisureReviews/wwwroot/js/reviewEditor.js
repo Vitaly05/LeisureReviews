@@ -7,6 +7,10 @@ $(window).on('beforeunload', function (e) {
 
 var changesSaved = false
 
+UIkit.util.on('#successful-save-modal', 'hidden', function () {
+    changesSaved = false
+})
+
 const converter = new showdown.Converter()
 
 $('#markdown-preview').html(converter.makeHtml(getReviewContent()))
@@ -110,8 +114,8 @@ function setImage(images, e) {
 function showImage(image) {
     const reader = new FileReader()
     reader.addEventListener('load', function () {
-        $('<li>').append($('<img>').attr('src', reader.result)).addClass('uk-active').appendTo('#illustrations .uk-slideshow-items')
-        clone.show()
+        $('<li>').append($('<img>').attr('src', reader.result)).appendTo('#illustrations .uk-slideshow-items')
+        $('#illustrations .uk-slideshow-items:first').addClass('uk-active')
         $('#illustrations').show()
         $('#upload-illustration-panel').hide()
     })
