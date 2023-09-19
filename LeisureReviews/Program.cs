@@ -91,7 +91,7 @@ using (var serviceProvider = builder.Services.BuildServiceProvider())
     var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-    //await new RolesInitializer(userManager, roleManager, configuration).InitializeAsync();
+    await new RolesInitializer(userManager, roleManager, configuration).InitializeAsync();
 }
 
 var app = builder.Build();

@@ -115,9 +115,6 @@ namespace LeisureReviews.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ReviewId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("UserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -128,8 +125,6 @@ namespace LeisureReviews.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("LeisureId");
-
-                    b.HasIndex("ReviewId");
 
                     b.HasIndex("UserId");
 
@@ -162,7 +157,6 @@ namespace LeisureReviews.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("LeisureId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Title")
@@ -470,14 +464,10 @@ namespace LeisureReviews.Migrations
             modelBuilder.Entity("LeisureReviews.Models.Database.Rate", b =>
                 {
                     b.HasOne("LeisureReviews.Models.Database.Leisure", "Leisure")
-                        .WithMany()
+                        .WithMany("Rates")
                         .HasForeignKey("LeisureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("LeisureReviews.Models.Database.Review", null)
-                        .WithMany("Rates")
-                        .HasForeignKey("ReviewId");
 
                     b.HasOne("LeisureReviews.Models.Database.User", "User")
                         .WithMany("Rates")
@@ -500,9 +490,7 @@ namespace LeisureReviews.Migrations
 
                     b.HasOne("LeisureReviews.Models.Database.Leisure", "Leisure")
                         .WithMany("Reviews")
-                        .HasForeignKey("LeisureId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("LeisureId");
 
                     b.Navigation("Author");
 
@@ -577,6 +565,8 @@ namespace LeisureReviews.Migrations
 
             modelBuilder.Entity("LeisureReviews.Models.Database.Leisure", b =>
                 {
+                    b.Navigation("Rates");
+
                     b.Navigation("Reviews");
                 });
 
@@ -587,8 +577,6 @@ namespace LeisureReviews.Migrations
                     b.Navigation("Illustrations");
 
                     b.Navigation("Likes");
-
-                    b.Navigation("Rates");
                 });
 
             modelBuilder.Entity("LeisureReviews.Models.Database.User", b =>

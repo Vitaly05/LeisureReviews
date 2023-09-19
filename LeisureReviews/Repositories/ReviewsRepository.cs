@@ -22,7 +22,7 @@ namespace LeisureReviews.Repositories
 
         public async Task<Review> GetAsync(string id) =>
             await context.Reviews.Include(r => r.Tags).Include(r => r.Author).Include(r => r.Likes).ThenInclude(l => l.User)
-                .Include(r => r.Comments).ThenInclude(c => c.Author).Include(r => r.Illustrations).Include(r => r.Leisure)
+                .Include(r => r.Comments).ThenInclude(c => c.Author).Include(r => r.Illustrations).Include(r => r.Leisure).ThenInclude(l => l.Rates)
                 .AsSplitQuery().FirstOrDefaultAsync(r => r.Id == id);
 
         public async Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, SortType sortType, int page, int pageSize)
@@ -79,7 +79,6 @@ namespace LeisureReviews.Repositories
             var config = new MapperConfiguration(cfg => cfg.CreateMap<Review, Review>()
                 .ForMember(r => r.Comments, opt => opt.Ignore())
                 .ForMember(r => r.Likes, opt => opt.Ignore())
-                .ForMember(r => r.Leisure.Rates, opt => opt.Ignore())
                 .ForMember(r => r.Illustrations, opt => opt.Ignore()));
             var mapper = new Mapper(config);
             return mapper.Map(updatedReview, existingReview);

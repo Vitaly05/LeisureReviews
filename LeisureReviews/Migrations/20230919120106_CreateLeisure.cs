@@ -18,27 +18,21 @@ namespace LeisureReviews.Migrations
                 name: "Leisure",
                 table: "Reviews");
 
+            migrationBuilder.RenameColumn(
+                name: "ReviewId",
+                table: "Rates",
+                newName: "LeisureId");
+
+            migrationBuilder.RenameIndex(
+                name: "IX_Rates_ReviewId",
+                table: "Rates",
+                newName: "IX_Rates_LeisureId");
+
             migrationBuilder.AddColumn<string>(
                 name: "LeisureId",
                 table: "Reviews",
                 type: "nvarchar(450)",
-                nullable: false,
-                defaultValue: "");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "ReviewId",
-                table: "Rates",
-                type: "nvarchar(450)",
-                nullable: true,
-                oldClrType: typeof(string),
-                oldType: "nvarchar(450)");
-
-            migrationBuilder.AddColumn<string>(
-                name: "LeisureId",
-                table: "Rates",
-                type: "nvarchar(450)",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "Leisures",
@@ -58,11 +52,6 @@ namespace LeisureReviews.Migrations
                 column: "LeisureId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Rates_LeisureId",
-                table: "Rates",
-                column: "LeisureId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Leisures_Name",
                 table: "Leisures",
                 column: "Name",
@@ -77,19 +66,11 @@ namespace LeisureReviews.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Rates_Reviews_ReviewId",
-                table: "Rates",
-                column: "ReviewId",
-                principalTable: "Reviews",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
                 name: "FK_Reviews_Leisures_LeisureId",
                 table: "Reviews",
                 column: "LeisureId",
                 principalTable: "Leisures",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
@@ -97,10 +78,6 @@ namespace LeisureReviews.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Rates_Leisures_LeisureId",
-                table: "Rates");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Rates_Reviews_ReviewId",
                 table: "Rates");
 
             migrationBuilder.DropForeignKey(
@@ -114,17 +91,19 @@ namespace LeisureReviews.Migrations
                 name: "IX_Reviews_LeisureId",
                 table: "Reviews");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Rates_LeisureId",
-                table: "Rates");
-
             migrationBuilder.DropColumn(
                 name: "LeisureId",
                 table: "Reviews");
 
-            migrationBuilder.DropColumn(
+            migrationBuilder.RenameColumn(
                 name: "LeisureId",
-                table: "Rates");
+                table: "Rates",
+                newName: "ReviewId");
+
+            migrationBuilder.RenameIndex(
+                name: "IX_Rates_LeisureId",
+                table: "Rates",
+                newName: "IX_Rates_ReviewId");
 
             migrationBuilder.AddColumn<string>(
                 name: "Leisure",
@@ -133,16 +112,6 @@ namespace LeisureReviews.Migrations
                 maxLength: 255,
                 nullable: false,
                 defaultValue: "");
-
-            migrationBuilder.AlterColumn<string>(
-                name: "ReviewId",
-                table: "Rates",
-                type: "nvarchar(450)",
-                nullable: false,
-                defaultValue: "",
-                oldClrType: typeof(string),
-                oldType: "nvarchar(450)",
-                oldNullable: true);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Rates_Reviews_ReviewId",
