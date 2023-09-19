@@ -157,11 +157,12 @@ function getData() {
 
 function appendMainReviewInfo(formData) {
     formData.append('title', $('[name="Review.Title"]').val())
-    formData.append('leisure', $('[name="Review.Leisure"]').val())
+    formData.append('leisureName', $('[name="Review.Leisure.Name"]').val())
     formData.append('group', $('[name="Review.Group"]').val())
     formData.append('authorRate', $('[name="Review.AuthorRate"]').val())
     formData.append('content', getReviewContent())
     formData.append('authorId', $('[name="Review.AuthorId"]').val())
+    formData.append('leisureId', $('[name="Review.LeisureId"]').val())
     formData.append('id', $('[name="Review.Id"]').val())
     formData.append('createTime', $('[name="Review.CreateTime"]').val())
 }

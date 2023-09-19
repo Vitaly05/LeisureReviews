@@ -78,6 +78,7 @@ builder.Services.AddScoped<ILikesRepository, LikesRepository>();
 builder.Services.AddScoped<ICommentsRepository, CommentsRepository>();
 builder.Services.AddScoped<IRatesRepository, RatesRepository>();
 builder.Services.AddScoped<IIllustrationsRepository, IllustrationsRepository>();
+builder.Services.AddScoped<ILeisuresRepository, LeisuresRepository>();
 builder.Services.AddScoped<ICloudService, CloudinaryCloudService>();
 
 builder.Services.AddSingleton<ISearchService, AlgoliaSearchService>();
@@ -90,7 +91,7 @@ using (var serviceProvider = builder.Services.BuildServiceProvider())
     var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var configuration = serviceProvider.GetRequiredService<IConfiguration>();
-    await new RolesInitializer(userManager, roleManager, configuration).InitializeAsync();
+    //await new RolesInitializer(userManager, roleManager, configuration).InitializeAsync();
 }
 
 var app = builder.Build();

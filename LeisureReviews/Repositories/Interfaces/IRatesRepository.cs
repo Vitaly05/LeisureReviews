@@ -4,9 +4,9 @@ namespace LeisureReviews.Repositories.Interfaces
 {
     public interface IRatesRepository
     {
-        Task<Rate> GetAsync(User user, Review review);
+        Task<Rate> GetAsync(User user, Leisure leisure);
 
-        Task<double> GetAverageRateAsync(Review review);
+        Task<double> GetAverageRateAsync(Leisure leisure);
 
         Task SaveAsync(Rate rate);
     }

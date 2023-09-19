@@ -6,6 +6,8 @@ namespace LeisureReviews.Models
     {
         public List<string> TagsNames { get; set; }
 
+        public string LeisureName { get; set; }
+
         public List<IFormFile> IllustrationsFiles { get; set; }
 
         public bool IllustrationChanged { get; set; }

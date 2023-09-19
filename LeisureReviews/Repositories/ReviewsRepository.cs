@@ -18,11 +18,11 @@ namespace LeisureReviews.Repositories
         }
 
         public async Task<List<Review>> GetAllAsync(string authorId) =>
-            await context.Reviews.Where(r => r.AuthorId == authorId).OrderByDescending(r => r.CreateTime).Include(r => r.Tags).ToListAsync();
+            await context.Reviews.Where(r => r.AuthorId == authorId).OrderByDescending(r => r.CreateTime).Include(r => r.Tags).Include(r => r.Leisure).AsSplitQuery().ToListAsync();
 
         public async Task<Review> GetAsync(string id) =>
             await context.Reviews.Include(r => r.Tags).Include(r => r.Author).Include(r => r.Likes).ThenInclude(l => l.User)
-                .Include(r => r.Comments).ThenInclude(c => c.Author).Include(r => r.Illustrations)
+                .Include(r => r.Comments).ThenInclude(c => c.Author).Include(r => r.Illustrations).Include(r => r.Leisure)
                 .AsSplitQuery().FirstOrDefaultAsync(r => r.Id == id);
 
         public async Task<List<Review>> GetLatestAsync(Expression<Func<Review, bool>> predicate, SortType sortType, int page, int pageSize)
@@ -33,7 +33,7 @@ namespace LeisureReviews.Repositories
 
         public async Task<List<Review>> GetTopRatedAsync(Expression<Func<Review, bool>> predicate, SortType sortType, int page, int pageSize)
         {
-            IQueryable<Review> query = orderReviews(sortType, r => r.Rates.Average(r => r.Value));
+            IQueryable<Review> query = orderReviews(sortType, r => r.Leisure.Rates.Average(r => r.Value));
             return await getPageAsync(query, predicate, page, pageSize);
         }
 
@@ -79,7 +79,7 @@ namespace LeisureReviews.Repositories
             var config = new MapperConfiguration(cfg => cfg.CreateMap<Review, Review>()
                 .ForMember(r => r.Comments, opt => opt.Ignore())
                 .ForMember(r => r.Likes, opt => opt.Ignore())
-                .ForMember(r => r.Rates, opt => opt.Ignore())
+                .ForMember(r => r.Leisure.Rates, opt => opt.Ignore())
                 .ForMember(r => r.Illustrations, opt => opt.Ignore()));
             var mapper = new Mapper(config);
             return mapper.Map(updatedReview, existingReview);
@@ -94,8 +94,8 @@ namespace LeisureReviews.Repositories
         private IQueryable<Review> orderReviews<TKey>(SortType sortType, Expression<Func<Review, TKey>> keySelector) =>
             sortType switch
             {
-                SortType.Descending => context.Reviews.OrderByDescending(keySelector).Include(r => r.Tags).Include(r => r.Likes).AsSplitQuery(),
-                _ => context.Reviews.OrderBy(keySelector).Include(r => r.Tags).Include(r => r.Likes).AsSplitQuery()
+                SortType.Descending => context.Reviews.OrderByDescending(keySelector).Include(r => r.Tags).Include(r => r.Likes).Include(r => r.Leisure).AsSplitQuery(),
+                _ => context.Reviews.OrderBy(keySelector).Include(r => r.Tags).Include(r => r.Likes).Include(r => r.Leisure).AsSplitQuery()
             };
     }
 }
