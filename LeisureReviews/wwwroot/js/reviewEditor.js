@@ -33,6 +33,7 @@ $('.review-field').on('input', function () {
 })
 
 $(`[name="Review.Group"]`).val($('.review-field[data-field="Group"]').val())
+$(`[name="LeisureName"]`).val($('.review-field[data-field="LeisureName"]').val())
 
 const tagsInput = new Tokenfield({
     el: document.querySelector('#tags-input'),
@@ -98,10 +99,10 @@ const leisureSearch = instantsearch({
 
 leisureSearch.start()
 
-const leisureAutocomplite = new Awesomplete(document.querySelector('[data-field="Leisure.Name"]'))
+const leisureAutocomplite = new Awesomplete(document.querySelector('[data-field="LeisureName"]'))
 
-Awesomplete.$('[data-field="Leisure.Name"]').addEventListener('awesomplete-selectcomplete', function (f) {
-    $(`[name="Review.Leisure.Name"]`).val(f.text.value)
+Awesomplete.$('[data-field="LeisureName"]').addEventListener('awesomplete-selectcomplete', function (f) {
+    $(`[name="LeisureName"]`).val(f.text.value)
 })
 
 leisureSearch.helper.on('change', function (res) {
@@ -112,7 +113,8 @@ leisureSearch.helper.on('change', function (res) {
     }
 })
 
-$('[data-field="Leisure.Name"]').on('input', function () {
+$('[data-field="LeisureName"]').on('input', function () {
+    $(`[name="LeisureName"]`).val($(this).val())
     leisureSearch.helper.setQuery($(this).val()).search()
 })
 
@@ -169,6 +171,8 @@ async function saveReview() {
         illustratoinsChanged = false
         UIkit.modal($('#successful-save-modal')).show()
         changesSaved = true
+    }).fail(function () {
+        UIkit.notification('An error occured while saving the review', { status: 'danger', pos: 'bottom-center' })
     })
 }
 
@@ -182,7 +186,7 @@ function getData() {
 
 function appendMainReviewInfo(formData) {
     formData.append('title', $('[name="Review.Title"]').val())
-    formData.append('leisureName', $('[name="Review.Leisure.Name"]').val())
+    formData.append('leisureName', $('[name="LeisureName"]').val())
     formData.append('group', $('[name="Review.Group"]').val())
     formData.append('authorRate', $('[name="Review.AuthorRate"]').val())
     formData.append('content', getReviewContent())

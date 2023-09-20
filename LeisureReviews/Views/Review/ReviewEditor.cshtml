@@ -16,7 +16,7 @@
         <input type="hidden" asp-for="Review.AuthorId" />
         <input type="hidden" asp-for="Review.LeisureId" />
         <input class="hidden-form-element" asp-for="Review.Title" />
-        <input class="hidden-form-element" asp-for="Review.Leisure.Name" />
+        <input class="hidden-form-element" asp-for="LeisureName" />
         <input class="hidden-form-element" asp-for="Review.Group" />
         <input class="hidden-form-element" asp-for="Review.AuthorRate" />
         <input class="hidden-form-element" asp-for="Review.Content" />
@@ -37,7 +37,7 @@
                         </div>
                         <div class="d-flex flex-column flex-md-row gap-1 gap-md-2 align-items-center uk-width-expand">
                             <span class="col-md-1 uk-text-right">Leisure</span>
-                            <input class="review-field uk-input uk-border-rounded text-center text-md-start" data-field="Leisure.Name" value="@Model.Review.Leisure?.Name" />
+                            <input class="review-field uk-input uk-border-rounded text-center text-md-start" data-field="LeisureName" value="@Model.Review.Leisure?.Name" />
                         </div>
                         <div class="d-flex flex-column flex-md-row gap-1 gap-md-2 align-items-center uk-width-expand">
                             <span class="col-md-1 uk-text-right">Tags</span>
