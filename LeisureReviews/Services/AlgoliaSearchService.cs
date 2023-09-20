@@ -10,20 +10,26 @@ namespace LeisureReviews.Services
     {
         private readonly ISearchIndex reviewSearchIndex;
 
+        private readonly ISearchIndex leisureSearchIndex;
+
         public AlgoliaSearchService(ISearchClient searchClient)
         {
             this.reviewSearchIndex = searchClient.InitIndex("reviews");
+            this.leisureSearchIndex = searchClient.InitIndex("leisures");
         }
 
-        public async Task CreateAsync(Review review) =>
+        public async Task CreateReviewAsync(Review review) =>
             await reviewSearchIndex.SaveObjectAsync(getSearchModel(review));
 
 
-        public async Task UpdateAsync(Review review) =>
+        public async Task UpdateReviewAsync(Review review) =>
             await reviewSearchIndex.PartialUpdateObjectAsync(getSearchModel(review));
 
-        public async Task DeleteAsync(Review review) =>
+        public async Task DeleteReviewAsync(Review review) =>
             await reviewSearchIndex.DeleteObjectAsync(review.Id);
+
+        public async Task CreateLeisureAsync(Leisure leisure) =>
+            await leisureSearchIndex.SaveObjectAsync(new LeisureSearchModel { Name = leisure.Name });
 
         private ReviewSearchModel getSearchModel(Review review) =>
             new Mapper(new MapperConfiguration(cfg => cfg.CreateMap<Review, ReviewSearchModel>()

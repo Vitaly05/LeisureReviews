@@ -4,10 +4,12 @@ namespace LeisureReviews.Services.Interfaces
 {
     public interface ISearchService
     {
-        Task CreateAsync(Review review);
+        Task CreateReviewAsync(Review review);
 
-        Task UpdateAsync(Review review);
+        Task UpdateReviewAsync(Review review);
 
-        Task DeleteAsync(Review review);
+        Task DeleteReviewAsync(Review review);
+
+        Task CreateLeisureAsync(Leisure leisure);
     }
 }

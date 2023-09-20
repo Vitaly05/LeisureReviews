@@ -1,7 +1,7 @@
 body,
 .uk-icon-button,
 .uk-card-default,
-.uk-modal-dialog, 
+.uk-modal-dialog,
 .uk-modal-header,
 .uk-modal-footer,
 .ais-Hits-item,
@@ -9,6 +9,7 @@ body,
 .uk-textarea:focus,
 .uk-background-default,
 .uk-modal-close-full,
+.awesomplete ul,
 option {
     background-color: #303030 !important;
 }
@@ -34,8 +35,13 @@ option {
 .tokenfield-set-item,
 .tokenfield.tokenfield-mode-tokens .selected,
 .uk-notification-message,
+.awesomplete ul > li:hover,
 pre {
     background-color: #595959 !important;
+}
+
+.awesomplete ul {
+    background: none;
 }
 
 .ais-Pagination-link {

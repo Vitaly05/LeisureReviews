@@ -27,12 +27,12 @@ $('#theme-switcher')?.on('click', function (e) {
 
 $('#theme-link').attr('href', localStorage.getItem('themeHref') ?? '')
 
-const searchClient = algoliasearch('MS6370NITB', 'ddd1467673a13e7a1031cd9aff4a0130');
+const searchClient = algoliasearch('MS6370NITB', 'ddd1467673a13e7a1031cd9aff4a0130')
 
 const search = instantsearch({
     indexName: 'reviews',
-    searchClient,
-});
+    searchClient
+})
 
 search.addWidgets([
     instantsearch.widgets.hits({
@@ -50,7 +50,7 @@ search.addWidgets([
     })
 ])
 
-search.start();
+search.start()
 
 function displayHit(hit) {
     const reviewCard = $('#hit-template').clone()

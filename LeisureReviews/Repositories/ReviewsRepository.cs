@@ -65,7 +65,7 @@ namespace LeisureReviews.Repositories
         {
             var review = await context.Reviews.FirstOrDefaultAsync(r => r.Id == id);
             review.IsDeleted = true;
-            await searchService.DeleteAsync(review);
+            await searchService.DeleteReviewAsync(review);
             context.SaveChanges();
         }
 
@@ -78,7 +78,7 @@ namespace LeisureReviews.Repositories
             context.Entry(updatedReview).Property(r => r.CreateTime).IsModified = false;
             context.Entry(updatedReview).Property(r => r.AuthorId).IsModified = false;
             context.Reviews.Update(updatedReview);
-            await searchService.UpdateAsync(await GetAsync(updatedReview.Id));
+            await searchService.UpdateReviewAsync(await GetAsync(updatedReview.Id));
         }
 
         private Review getUpdatedReview(Review existingReview, Review updatedReview)
@@ -94,7 +94,7 @@ namespace LeisureReviews.Repositories
         private async Task addReviewAsync(Review review)
         {
             context.Reviews.Add(review);
-            await searchService.CreateAsync(review);
+            await searchService.CreateReviewAsync(review);
         }
 
         private IQueryable<Review> orderReviews<TKey>(SortType sortType, Expression<Func<Review, TKey>> keySelector) =>

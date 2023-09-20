@@ -91,6 +91,33 @@ $('#illustration-file-input').on('change', function (e) {
     setImage($(this).prop('files'), e)
 })
 
+const leisuresSearchClient = algoliasearch('MS6370NITB', 'ddd1467673a13e7a1031cd9aff4a0130')
+
+const leisureSearch = instantsearch({
+    indexName: 'leisures',
+    searchClient: leisuresSearchClient
+})
+
+leisureSearch.start()
+
+const leisureAutocomplite = new Awesomplete(document.querySelector('[data-field="Leisure.Name"]'))
+
+Awesomplete.$('[data-field="Leisure.Name"]').addEventListener('awesomplete-selectcomplete', function (f) {
+    $(`[name="Review.Leisure.Name"]`).val(f.text.value)
+})
+
+leisureSearch.helper.on('change', function (res) {
+    if (res.results != null) {
+        leisureAutocomplite.list = res.results.hits.map(h => h.name)
+    } else {
+        leisureAutocomplite.list = []
+    }
+})
+
+$('[data-field="Leisure.Name"]').on('input', function () {
+    leisureSearch.helper.setQuery($(this).val()).search()
+})
+
 function setImage(images, e) {
     e.preventDefault()
     e.stopPropagation()

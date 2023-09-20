@@ -18,7 +18,7 @@ namespace LeisureReviews.Repositories
         {
             await context.Comments.AddAsync(comment);
             await context.SaveChangesAsync();
-            await searchService.UpdateAsync(await context.Reviews.FirstOrDefaultAsync(r => r.Id == comment.Review.Id));
+            await searchService.UpdateReviewAsync(await context.Reviews.FirstOrDefaultAsync(r => r.Id == comment.Review.Id));
         }
     }
 }

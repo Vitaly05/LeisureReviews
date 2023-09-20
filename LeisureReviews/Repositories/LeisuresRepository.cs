@@ -1,12 +1,18 @@
 ﻿using LeisureReviews.Models.Database;
 using LeisureReviews.Repositories.Interfaces;
+using LeisureReviews.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeisureReviews.Repositories
 {
     public class LeisuresRepository : BaseRepository, ILeisuresRepository
     {
-        public LeisuresRepository(ApplicationContext context) : base(context) { }
+        private readonly ISearchService searchService;
+
+        public LeisuresRepository(ApplicationContext context, ISearchService searchService) : base(context)
+        {
+            this.searchService = searchService;
+        }
 
         public async Task<Leisure> AddAsync(string name)
         {
@@ -26,6 +32,7 @@ namespace LeisureReviews.Repositories
         private async Task saveAsync(Leisure leisure)
         {
             await context.Leisures.AddAsync(leisure);
+            await searchService.CreateLeisureAsync(leisure);
             await context.SaveChangesAsync();
         }
     }

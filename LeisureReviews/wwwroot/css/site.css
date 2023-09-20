@@ -121,3 +121,7 @@ mark {
 .see-also-panel .review-card {
     min-width: 265px;
 }
+
+.awesomplete {
+    width: 100%;
+}

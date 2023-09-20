@@ -82,8 +82,7 @@ namespace LeisureReviews.Controllers
         {
             if (!ModelState.IsValid) return BadRequest();
             await saveReviewAsync(reviewModel);
-            reviewModel.Tags.Clear();
-            reviewModel.Leisure.Reviews.Clear();
+            clearCycles(reviewModel);
             return Ok(reviewModel);
         }
 
@@ -191,6 +190,13 @@ namespace LeisureReviews.Controllers
         {
             foreach (var file in illustrationsFiles)
                 await illustrationsRepository.AddAsync(reviewId, file);
+        }
+
+        private void clearCycles(ReviewModel model)
+        {
+            model.Tags.Clear();
+            model.Leisure.Reviews.Clear();
+            model.Author?.AuthoredReviews.Clear();
         }
     }
 }
