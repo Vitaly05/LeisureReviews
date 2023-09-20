@@ -13,6 +13,9 @@
         <div class="d-flex gap-4 align-items-center">
             <span class="uk-label uk-background-secondary">@Model.Review.Group</span>
             <span>@Model.Review.CreateTime.ToString("dd.MM.yyyy", CultureInfo.InvariantCulture)</span>
+            <div uk-tooltip="title: Number of review likes; pos: bottom-left" class="d-flex align-items-center gap-1">
+                <span uk-icon="heart"></span> @Model.Review.Likes.Count()
+            </div>
         </div>
         <button class="uk-button uk-button-default uk-border-rounded" data-html2canvas-ignore="true" id="save-as-pdf-button">Save as PDF</button>
     </div>
@@ -24,7 +27,23 @@
             }
         </div>
         <h1 class="mt-2"><b>@Model.Review.Title</b></h1>
-        <span>Leisure: <b>@Model.Review.Leisure.Name</b></span>
+        <div class="d-flex flex-wrap align-items-center gap-2 gap-sm-4">
+            <span>Leisure: <b>@Model.Review.Leisure.Name</b></span>
+            <div uk-tooltip="title: Rating (average); pos: top-right" class="d-flex align-items-center">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (Model.CurrentUserRate is not null && Model.CurrentUserRate.Value >= i)
+                    {
+                        <a class="rating-button yellow-svg px-1 d-flex align-items-center" data-value="@i"><span uk-icon="star"></span></a>
+                    }
+                    else
+                    {
+                        <a class="rating-button px-1 d-flex align-items-center" data-value="@i"><span uk-icon="star"></span></a>
+                    }
+                }
+                <span id="average-rate">(@(Model.AverageRate is double.NaN ? "-" : Model.AverageRate))</span>
+            </div>
+        </div>
         <div class="d-flex align-items-center justify-content-between uk-background-default uk-border-pill py-1 px-3 mt-2">
             <div class="d-flex align-items-center gap-2">
                 <span uk-icon="user"></span>
@@ -32,33 +51,12 @@
                     <a href="/Profile/@Model.Review.Author.UserName" class="uk-link">@Model.Review.Author.UserName</a>
                     <span class="uk-text-small uk-text-muted">Review author</span>
                 </div>
-                <div>
-                    <div uk-tooltip="title: Number of author's likes; pos: bottom-left">
-                        <span uk-icon="heart"></span> @Model.Review.Author.LikesCount
-                    </div>
+                <div uk-tooltip="title: Number of author's likes; pos: bottom-left" class="d-flex align-items-center gap-1">
+                    <span uk-icon="heart"></span> @Model.Review.Author.LikesCount
                 </div>
             </div>
             <div uk-tooltip="title: Rating from the author; pos: top-left" style="width: fit-content">
                 <span uk-icon="happy"></span> @Model.Review.AuthorRate/10
-            </div>
-        </div>
-        <div class="d-flex gap-4 justify-content-between">
-            <div uk-tooltip="title: Number of review likes; pos: bottom-left">
-                <span uk-icon="heart"></span> @Model.Review.Likes.Count()
-            </div>
-            <div uk-tooltip="title: Rating (average); pos: bottom-left" class="d-flex align-items-center">
-                @for (int i = 1; i <= 5; i++)
-                {
-                    if (Model.CurrentUserRate is not null && Model.CurrentUserRate.Value >= i)
-                    {
-                        <a class="rating-button yellow-svg px-1" data-value="@i"><span uk-icon="star"></span></a>
-                    }
-                    else
-                    {
-                        <a class="rating-button px-1" data-value="@i"><span uk-icon="star"></span></a>
-                    }
-                }
-                <span id="average-rate">(@(Model.AverageRate is double.NaN ? "-" : Model.AverageRate))</span>
             </div>
         </div>
 
@@ -147,6 +145,5 @@
     <script src="~/lib/showdown/showdown.min.js"></script>
     <script src="~/lib/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/lib/html2pdf.js/html2pdf.bundle.min.js"></script>
-    <script src="~/js/base.js"></script>
     <script src="~/js/review.js"></script>
 }

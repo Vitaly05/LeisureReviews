@@ -91,11 +91,9 @@ $('#illustration-file-input').on('change', function (e) {
     setImage($(this).prop('files'), e)
 })
 
-const leisuresSearchClient = algoliasearch('MS6370NITB', 'ddd1467673a13e7a1031cd9aff4a0130')
-
 const leisureSearch = instantsearch({
     indexName: 'leisures',
-    searchClient: leisuresSearchClient
+    searchClient
 })
 
 leisureSearch.start()
