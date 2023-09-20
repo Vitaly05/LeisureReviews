@@ -130,6 +130,7 @@ namespace LeisureReviews.Controllers
         {
             if (reviewModel.TagsNames is not null) await addTagsAsync(reviewModel);
             reviewModel.Leisure = await leisuresRepository.AddAsync(reviewModel.LeisureName);
+            reviewModel.LeisureId = reviewModel.Leisure.Id;
             await reviewsRepository.SaveAsync(reviewModel);
             await updateIllustrationAsync(reviewModel);
         }
@@ -196,6 +197,7 @@ namespace LeisureReviews.Controllers
         {
             model.Tags.Clear();
             model.Leisure.Reviews.Clear();
+            model.Illustrations.Clear();
             model.Author?.AuthoredReviews.Clear();
         }
     }
