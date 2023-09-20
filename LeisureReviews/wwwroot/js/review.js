@@ -4,7 +4,6 @@ const converter = new showdown.Converter()
 $('#content').html(converter.makeHtml($('#content').html()))
 
 $('.get-image').each(async function () {
-    $(this).parents('.uk-slideshow').show()
     $(this).parents('.illustration').find('#illustraion-spinner').show()
     const fileId = $(this).data('fileId')
     if (fileId.length === 0) {
@@ -77,8 +76,8 @@ $('#save-as-pdf-button').on('click', async function (e) {
     e.preventDefault()
     var element = document.getElementById('pdf').cloneNode(true)
     element.style.marginTop = '0 !important'
-    element.querySelector('#pdf-illustrations').style.display = 'flex'
-    var opt = {
+    replaceImagesToPdfPanel(Array.from(element.querySelectorAll('.get-image')), element.querySelector('#pdf-illustrations'))
+    const opt = {
         margin: 0,
         filename: 'Leisure Reviews.pdf',
         image: { type: 'jpeg', quality: 1 },
@@ -87,6 +86,13 @@ $('#save-as-pdf-button').on('click', async function (e) {
     }
     html2pdf().from(element).set(opt).save()
 })
+
+function replaceImagesToPdfPanel(images, panel, callback) {
+    panel.style.display = 'flex'
+    images.forEach(function (image) {
+        panel.appendChild(image.cloneNode(true))
+    })
+}
 
 function updateRatingButtonsClass(currentRate, activeClass) {
     for (let i = 1; i <= currentRate; i++) {
