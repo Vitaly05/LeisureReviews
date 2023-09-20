@@ -22,6 +22,7 @@ option {
 .uk-textarea,
 .uk-button-default,
 .tokenfield.tokenfield-mode-tokens,
+.uk-notification-message,
 .tokenfield .tokenfield-input,
 .tokenfield-suggest-item,
 .uk-dropdown {
@@ -34,7 +35,6 @@ option {
 .uk-icon-button:hover,
 .tokenfield-set-item,
 .tokenfield.tokenfield-mode-tokens .selected,
-.uk-notification-message,
 .awesomplete ul > li:hover,
 pre {
     background-color: #595959 !important;
@@ -82,6 +82,10 @@ mark {
     border-bottom: 1px solid #303030;
 }
 
+.uk-notification-message {
+    border: 1px solid white;
+}
+
 *,
 h1, h2, h3, h4, h5, h6,
 pre,
@@ -95,12 +99,14 @@ pre,
 .uk-textarea:focus,
 .uk-card-default .uk-card-title,
 .uk-form-label,
-.uk-pagination a {
+.uk-pagination a,
+.uk-tab a {
     color: white;
 }
 
 .uk-logo:hover,
-.uk-button-default:hover {
+.uk-button-default:hover,
+.uk-tab > .uk-active > a {
     color: #595959;
 }
 
