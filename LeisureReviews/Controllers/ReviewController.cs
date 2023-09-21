@@ -197,6 +197,7 @@ namespace LeisureReviews.Controllers
         {
             model.Tags.Clear();
             model.Leisure.Reviews.Clear();
+            model.Leisure.Rates.Clear();
             model.Illustrations.Clear();
             model.Author?.AuthoredReviews.Clear();
         }
